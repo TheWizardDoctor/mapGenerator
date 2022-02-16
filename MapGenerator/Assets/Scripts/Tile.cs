@@ -12,11 +12,15 @@ public class Tile
     private float precipitation;
     private bool city;
     private bool road;
+	private int x;
+	private int y;
     public Tile up;
     public Tile down;
     public Tile left;
     public Tile right;
-
+	
+	GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+	
     //constructor
     public Tile()
     {
@@ -26,20 +30,25 @@ public class Tile
         city = false;
         road = false;
     }
-    public Tile(Biome b, float e, float p)
+    public Tile(Biome b, int xCord, int yCord)
     {
         biome = b;
-        elevation = e;
-        precipitation = p;
+        elevation = 0;
+        precipitation = 0;
         city = false;
         road = false;
+		x = xCord;
+		y = yCord;
+		cube.transform.position = new Vector3(x, elevation, y);
     }
 
     //properties
     public float Elevation
     {
         get { return elevation; }
-        set { elevation = value; }
+        set { elevation = value; 
+			cube.transform.position = new Vector3(x, elevation, y);
+		}
     }
     public float Precipitation
     {
@@ -49,7 +58,7 @@ public class Tile
     public Biome Biome
     {
         get { return biome; }
-        set { biome=value; }
+        set { biome = value; }
     }
     public bool City
     {
@@ -61,7 +70,23 @@ public class Tile
         get { return road; }
         set { Road = value; }
     }
-
+	public int X
+    {
+        get { return x; }
+        set { x = value; 
+			cube.transform.position = new Vector3(x, elevation, y);
+		}
+    }
+	public int Y
+    {
+        get { return y; }
+        set { y = value; 
+			cube.transform.position = new Vector3(x, elevation, y);
+		}
+    }
     //methods
+	
+	
+	
 
 }
