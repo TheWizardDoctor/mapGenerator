@@ -9,7 +9,6 @@ public class Test : MonoBehaviour
     public GameObject tilePrefab;
     int width = 100;
     int height = 100;
-    int c = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -18,7 +17,7 @@ public class Test : MonoBehaviour
 		
         Tile[,] t = new Tile[height, width];
 
-        var filePath = @"Book1.csv";
+        var filePath = @"Elevation.csv";
 		var data = File.ReadLines(filePath);
 		int[,] exampleMapElevation = new int[height,width];
 		int indexi = 0;		
@@ -27,13 +26,21 @@ public class Test : MonoBehaviour
 			indexj = 0;
 			string[] items = row.Split(',');
 			foreach (string s in items){
-				int n = Convert.ToInt32(s);
-				exampleMapElevation[indexi,indexj] = n;
+                int n;
+                if(s=="")
+                {
+                    n = 0;
+                }
+                else
+                { 
+				    n = Convert.ToInt32(s);
+                }
+                exampleMapElevation[indexi,indexj] = n;
 				indexj++;
 			}
 			indexi++;
 		}
-		filePath = @"Book2.csv";
+		filePath = @"Precipitation.csv";
 		data = File.ReadLines(filePath);
 		int[,] exampleMapPrecipitation = new int[height,width];
 		indexi = 0;		
@@ -89,6 +96,7 @@ public class Test : MonoBehaviour
 			}
 		}
 
+        CreateCities.generateCities(t, 10);
         
     }
 
