@@ -14,10 +14,10 @@ public class Tile
     private bool road;
 	private int x;
 	private int y;
-    public Tile up;
-    public Tile down;
-    public Tile left;
-    public Tile right;
+    public Tile up = null;
+    public Tile down = null;
+    public Tile left = null;
+    public Tile right = null;
 	
 	GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 	
@@ -30,7 +30,7 @@ public class Tile
         city = false;
         road = false;
     }
-    public Tile(Biome b, int xCord, int yCord)
+    public Tile(Biome b, int xCord, int yCord, Transform tileSet)
     {
         biome = b;
         elevation = 0;
@@ -39,7 +39,9 @@ public class Tile
         road = false;
 		x = xCord;
 		y = yCord;
-		cube.transform.position = new Vector3(x, elevation, y);
+		cube.transform.SetParent(tileSet);
+		cube.transform.position = new Vector3(x, (elevation + 10)/2, y);
+		cube.transform.localScale = new Vector3(10, elevation + 10, 10);
     }
 
     //properties
@@ -47,7 +49,8 @@ public class Tile
     {
         get { return elevation; }
         set { elevation = value; 
-			cube.transform.position = new Vector3(x, elevation, y);
+			cube.transform.localScale = new Vector3(10, elevation + 10, 10);
+			cube.transform.position = new Vector3(x, (elevation + 10)/2, y);
 		}
     }
     public float Precipitation
@@ -74,14 +77,14 @@ public class Tile
     {
         get { return x; }
         set { x = value; 
-			cube.transform.position = new Vector3(x, elevation, y);
+			cube.transform.position = new Vector3(x, 0, y);
 		}
     }
 	public int Y
     {
         get { return y; }
         set { y = value; 
-			cube.transform.position = new Vector3(x, elevation, y);
+			cube.transform.position = new Vector3(x, 0, y);
 		}
     }
     //methods
