@@ -42,7 +42,7 @@ public class CreateCities : MonoBehaviour
 
         bestTile.City = true;
         GameObject city = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-        city.transform.position = new Vector3(bestTile.X, 50, bestTile.Y);
+        city.transform.position = new Vector3(bestTile.X, ((bestTile.Elevation+10)/2)+1, bestTile.Y);
     }
 
     public static int calculateValue(Tile[,] tiles, Tile tile)
@@ -58,15 +58,19 @@ public class CreateCities : MonoBehaviour
 
         Tile scan = tile.left;
         value += biomeValue(scan);
+        value += hasCity(scan);
 
         scan = tile.up;
         value += biomeValue(scan);
+        value += hasCity(scan);
 
         scan = tile.right;
         value += biomeValue(scan);
+        value += hasCity(scan);
 
         scan = tile.down;
         value += biomeValue(scan);
+        value += hasCity(scan);
 
         return value;
     }
@@ -87,6 +91,18 @@ public class CreateCities : MonoBehaviour
                 return -10;
             default:
                 return 0;
+        }
+    }
+
+    public static int hasCity(Tile tile)
+    {
+        if(tile.City==true)
+        {
+            return -1000;
+        }
+        else
+        {
+            return 0;
         }
     }
 }

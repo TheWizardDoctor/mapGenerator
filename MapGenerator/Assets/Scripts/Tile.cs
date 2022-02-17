@@ -40,10 +40,9 @@ public class Tile
         road = false;
 		x = xCord;
 		y = yCord;
-		latitude = (((xCord/10) + 1) * 90/(height/2)) - 90;
+		latitude = ((xCord + 1) * 90/(height/2)) - 90;
 		cube.transform.SetParent(tileSet);
 		cube.transform.position = new Vector3(x, (elevation + 10)/2, y);
-		cube.transform.localScale = new Vector3(10, elevation + 10, 10);
     }
 
     //properties
@@ -51,7 +50,6 @@ public class Tile
     {
         get { return elevation; }
         set { elevation = value; 
-			cube.transform.localScale = new Vector3(10, elevation + 10, 10);
 			cube.transform.position = new Vector3(x, (elevation + 10)/2, y);
 		}
     }
@@ -110,12 +108,12 @@ public class Tile
 		Material tundraMat = Resources.Load("Tundra", typeof(Material)) as Material;
 		
 		double temperature = (((elevation * -0.8 + 40) * 2 + (Math.Abs(latitude) * -.65 + 30) * 3) / 5);
-		Debug.Log("x: " + (x/10).ToString() + "    temperature: " + temperature.ToString() + "    latitude: " + latitude.ToString());
+		Debug.Log("x: " + (x).ToString() + "    temperature: " + temperature.ToString() + "    latitude: " + latitude.ToString());
 
 		if (elevation <= 0){
 			biome = Biome.Ocean;
 			cube.GetComponent<Renderer>().material = oceanMat;
-		} else if(elevation >= 50){
+		} else if(elevation >= 5){
 			biome = Biome.Mountain;
 			cube.GetComponent<Renderer>().material = mountainMat;
 		} else if(temperature <= 5){
