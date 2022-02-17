@@ -38,8 +38,9 @@ public class Test : MonoBehaviour
         {
             for (int j=0; j<width; j++)
             {
-                t[i, j] = new Tile(Biome.BorealForest, i * 10, j * 10, tileSet.transform);
+                t[i, j] = new Tile(height, i * 10, j * 10, tileSet.transform);
 				t[i, j].Elevation = exampleMap[i,j];
+				t[i, j].calculateBiome();
             }
         }
 
