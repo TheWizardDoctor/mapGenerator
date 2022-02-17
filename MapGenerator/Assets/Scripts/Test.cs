@@ -20,7 +20,7 @@ public class Test : MonoBehaviour
 
         var filePath = @"Book1.csv";
 		var data = File.ReadLines(filePath);
-		int[,] exampleMap = new int[height,width];
+		int[,] exampleMapElevation = new int[height,width];
 		int indexi = 0;		
 		int indexj = 0;
 		foreach (string row in data){
@@ -28,18 +28,35 @@ public class Test : MonoBehaviour
 			string[] items = row.Split(',');
 			foreach (string s in items){
 				int n = Convert.ToInt32(s);
-				exampleMap[indexi,indexj] = n;
+				exampleMapElevation[indexi,indexj] = n;
 				indexj++;
 			}
 			indexi++;
 		}
+		filePath = @"Book2.csv";
+		data = File.ReadLines(filePath);
+		int[,] exampleMapPrecipitation = new int[height,width];
+		indexi = 0;		
+		indexj = 0;
+		foreach (string row in data){
+			indexj = 0;
+			string[] items = row.Split(',');
+			foreach (string s in items){
+				int n = Convert.ToInt32(s);
+				exampleMapPrecipitation[indexi,indexj] = n;
+				indexj++;
+			}
+			indexi++;
+		}
+		
 		
 		for(int i=0; i<height; i++)
         {
             for (int j=0; j<width; j++)
             {
                 t[i, j] = new Tile(height, i * 10, j * 10, tileSet.transform);
-				t[i, j].Elevation = exampleMap[i,j];
+				t[i, j].Elevation = exampleMapElevation[i,j];
+				t[i, j].Precipitation = exampleMapPrecipitation[i,j];
 				t[i, j].calculateBiome();
             }
         }

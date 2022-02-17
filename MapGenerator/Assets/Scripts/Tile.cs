@@ -40,7 +40,7 @@ public class Tile
         road = false;
 		x = xCord;
 		y = yCord;
-		latitude = ((xCord/10 + 1) * 90/(height/2)) - 90;
+		latitude = (((xCord/10) + 1) * 90/(height/2)) - 90;
 		cube.transform.SetParent(tileSet);
 		cube.transform.position = new Vector3(x, (elevation + 10)/2, y);
 		cube.transform.localScale = new Vector3(10, elevation + 10, 10);
@@ -109,7 +109,7 @@ public class Tile
 		Material temperateForestMat = Resources.Load("TemperateForest", typeof(Material)) as Material;
 		Material tundraMat = Resources.Load("Tundra", typeof(Material)) as Material;
 		
-		double temperature = (((elevation * -0.8 + 40) + (Math.Abs(latitude) * -.5 + 30) * 3) / 4);
+		double temperature = (((elevation * -0.8 + 40) * 2 + (Math.Abs(latitude) * -.65 + 30) * 3) / 5);
 		Debug.Log("x: " + (x/10).ToString() + "    temperature: " + temperature.ToString() + "    latitude: " + latitude.ToString());
 
 		if (elevation <= 0){
@@ -119,7 +119,7 @@ public class Tile
 			biome = Biome.Mountain;
 			cube.GetComponent<Renderer>().material = mountainMat;
 		} else if(temperature <= 5){
-			if(precipitation <= 100){
+			if(precipitation < 100){
 				biome = Biome.Tundra;
 				cube.GetComponent<Renderer>().material = tundraMat;
 			} else{
@@ -127,10 +127,10 @@ public class Tile
 				cube.GetComponent<Renderer>().material = borealMat;
 			}
 		} else if(temperature <= 20){
-			if (precipitation <= 100){
+			if (precipitation < 100){
 				biome = Biome.Prairie;
 				cube.GetComponent<Renderer>().material = prairieMat;
-			} else if(precipitation <= 200){
+			} else if(precipitation < 200){
 				biome = Biome.Shrubland;
 				cube.GetComponent<Renderer>().material = shrublandMat;
 			} else {
@@ -138,10 +138,10 @@ public class Tile
 				cube.GetComponent<Renderer>().material = temperateForestMat;
 			}
 		} else{
-			if (precipitation <= 100) {
+			if (precipitation < 100) {
 				biome = Biome.Desert;
 				cube.GetComponent<Renderer>().material = desertMat;
-			} else if(precipitation <= 200){
+			} else if(precipitation < 200){
 				biome = Biome.Savannah;
 				cube.GetComponent<Renderer>().material = savanahMat;
 			} else{
