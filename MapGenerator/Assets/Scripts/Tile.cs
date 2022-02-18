@@ -42,7 +42,8 @@ public class Tile
 		y = yCord;
 		latitude = ((xCord + 1) * 90/(height/2)) - 90;
 		cube.transform.SetParent(tileSet);
-		cube.transform.position = new Vector3(x, (elevation/10 + 10)/2, y);
+		cube.transform.localScale = new Vector3(1, elevation/10 + 1, 1);
+		cube.transform.position = new Vector3(x, (elevation/10 + 1)/2, y);
     }
 
     //properties
@@ -50,7 +51,8 @@ public class Tile
     {
         get { return elevation; }
         set { elevation = value; 
-			cube.transform.position = new Vector3(x, (elevation/10 + 10)/2, y);
+			cube.transform.localScale = new Vector3(1, elevation/10 + 1, 1);
+			cube.transform.position = new Vector3(x, (elevation/10 + 1)/2, y);
 		}
     }
     public float Precipitation
