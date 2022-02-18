@@ -65,7 +65,7 @@ public class Test : MonoBehaviour
             for (int j=0; j<width; j++)
             {
                 t[i, j] = new Tile(height, i, j, tileSet.transform);
-				t[i, j].Elevation = exampleMapElevation[i,j]/10;
+				t[i, j].Elevation = exampleMapElevation[i,j];
 				t[i, j].Precipitation = exampleMapPrecipitation[i,j];
 				t[i, j].calculateBiome();
             }
