@@ -34,15 +34,17 @@ public class Tile
     }
     public Tile(int height, int xCord, int yCord, Transform tileSet)
     {
-        elevation = 0;
+        elevation = -1;
         precipitation = 0;
         city = false;
         road = false;
+		biome = Biome.Ocean;
 		x = xCord;
 		y = yCord;
-		latitude = ((xCord + 1) * 90/(height/2)) - 90;
+		latitude = ((yCord + 1) * 90/(height/2)) - 90;
 		cube.transform.SetParent(tileSet);
-		cube.transform.position = new Vector3(x, (elevation/10 + 10)/2, y);
+		cube.transform.localScale = new Vector3(1, elevation/10 + 1, 1);
+		cube.transform.position = new Vector3(x, (elevation/10 + 1)/2, y);
     }
 
     //properties
@@ -50,7 +52,9 @@ public class Tile
     {
         get { return elevation; }
         set { elevation = value; 
-			cube.transform.position = new Vector3(x, (elevation/10 + 10)/2, y);
+			cube.transform.localScale = new Vector3(1, elevation/10 + 1, 1);
+			cube.transform.position = new Vector3(x, (elevation/10 + 1)/2, y);
+			this.calculateBiome();
 		}
     }
     public float Precipitation
@@ -108,7 +112,7 @@ public class Tile
 		Material tundraMat = Resources.Load("Tundra", typeof(Material)) as Material;
 		
 		double temperature = (((elevation * -0.8 + 40) * 2 + (Math.Abs(latitude) * -.65 + 30) * 3) / 5);
-		Debug.Log("x: " + (x).ToString() + "    temperature: " + temperature.ToString() + "    latitude: " + latitude.ToString());
+		//Debug.Log("x: " + (x).ToString() + "    temperature: " + temperature.ToString() + "    latitude: " + latitude.ToString());
 
 		if (elevation <= 0){
 			biome = Biome.Ocean;
