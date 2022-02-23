@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum Biome { Ocean, Mountain, Tundra, BorealForest, Prairie, Shrubland, TemperateForest, Desert, Savannah, Rainforest };
 
-public class Tile
+public class Tile : IComparable<Tile>
 {
     //attributes
     private Biome biome;
@@ -15,7 +15,12 @@ public class Tile
     private bool road;
 	private int x;
 	private int y;
+	private float gVal;
+	private float hVal;
+	//private float fVal;
 	private float latitude;
+	private bool explored;
+	public Tile previous = null;
     public Tile up = null;
     public Tile down = null;
     public Tile left = null;
@@ -31,6 +36,7 @@ public class Tile
         precipitation = 0;
         city = false;
         road = false;
+		explored = false;
     }
     public Tile(int height, int xCord, int yCord, Transform tileSet)
     {
@@ -38,6 +44,7 @@ public class Tile
         precipitation = 0;
         city = false;
         road = false;
+		explored = false;
 		x = xCord;
 		y = yCord;
 		latitude = ((xCord + 1) * 90/(height/2)) - 90;
@@ -60,7 +67,22 @@ public class Tile
         get { return precipitation; }
         set { precipitation = value; }
     }
-    public Biome Biome
+	public float GVal
+	{
+		get { return gVal; }
+		set { gVal = value; }
+	}
+	public float HVal
+	{
+		get { return hVal; }
+		set { hVal = value; }
+	}
+	//public float FVal
+	//{
+	//	get { return fVal; }
+	//	set { fVal = value; }
+	//}
+	public Biome Biome
     {
         get { return biome; }
         set { biome = value; }
@@ -75,6 +97,12 @@ public class Tile
         get { return road; }
         set { Road = value; }
     }
+	public bool Explored
+	{
+		get { return explored; }
+		set { explored = value; }
+	}
+
 	public int X
     {
         get { return x; }
@@ -110,7 +138,7 @@ public class Tile
 		Material tundraMat = Resources.Load("Tundra", typeof(Material)) as Material;
 		
 		double temperature = (((elevation * -0.8 + 40) * 2 + (Math.Abs(latitude) * -.65 + 30) * 3) / 5);
-		Debug.Log("x: " + (x).ToString() + "    temperature: " + temperature.ToString() + "    latitude: " + latitude.ToString());
+		//Debug.Log("x: " + (x).ToString() + "    temperature: " + temperature.ToString() + "    latitude: " + latitude.ToString());
 
 		if (elevation <= 0){
 			biome = Biome.Ocean;
@@ -150,6 +178,10 @@ public class Tile
 			}
 		}
 		return 0;
-	}		
+	}
 
+    public int CompareTo(Tile other)
+    {
+		return GVal.CompareTo(other.GVal);
+    }
 }

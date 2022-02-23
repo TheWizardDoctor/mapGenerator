@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CreateCities : MonoBehaviour
+public class City : MonoBehaviour
 {
     const int scanSize = 1;
     const int oceanVal = 30;
@@ -39,7 +39,7 @@ public class CreateCities : MonoBehaviour
             }
         }
 
-        Debug.Log("Best City Location (X:" + bestTile.X + " Y:" + bestTile.Y + ")");
+        //Debug.Log("Best City Location (X:" + bestTile.X + " Y:" + bestTile.Y + ")");
 
         bestTile.City = true;
         GameObject city = GameObject.CreatePrimitive(PrimitiveType.Capsule);
