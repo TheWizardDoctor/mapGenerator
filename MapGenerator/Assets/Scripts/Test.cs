@@ -77,14 +77,14 @@ public class Test : MonoBehaviour
                 {
                     t[i, j].left = t[i, j - 1];
                 } else {
-					t[i, j].left = t[i, width - 1];
+					//t[i, j].left = t[i, width - 1];
 				}
 				
                 if(j < width - 1)
                 {
                     t[i, j].right = t[i, j + 1];
                 } else {
-					t[i, j].right = t[i, 0];
+					//t[i, j].right = t[i, 0];
 				}
 				
                 if(i>0)
@@ -109,7 +109,8 @@ public class Test : MonoBehaviour
         System.Random r = new System.Random();
 
 		Tile one, two;
-		while(true)
+
+		/*while(true)
         {
 			one = t[r.Next(100), r.Next(100)];
 			if(one.Biome!=Biome.Ocean)
@@ -124,8 +125,10 @@ public class Test : MonoBehaviour
 			{
 				break;
 			}
-		}
+		}*/
 
+		one = t[r.Next(100), r.Next(100)];
+		two = t[r.Next(100), r.Next(100)];
 
 		watch = System.Diagnostics.Stopwatch.StartNew();
 		Road.createRoad(t, one, two);

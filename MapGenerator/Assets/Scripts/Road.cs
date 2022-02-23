@@ -32,8 +32,9 @@ public class Road : MonoBehaviour
             if(current.Equals(end))
             {
                 Tile temp = current;
-                while(temp.previous!=null)
+                while(temp!=null)
                 {
+                    //temp.Road = true break causes a stack overflow for some reason
                     //temp.Road = true;
                     GameObject c = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                     c.transform.position = new Vector3(temp.X, 10, temp.Y);
