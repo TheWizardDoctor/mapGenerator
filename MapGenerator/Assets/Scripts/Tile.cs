@@ -17,7 +17,6 @@ public class Tile : IComparable<Tile>
 	private int y;
 	private float gVal;
 	private float hVal;
-	//private float fVal;
 	private float latitude;
 	private bool explored;
 	public Tile previous = null;

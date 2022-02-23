@@ -14,95 +14,19 @@ public class Test : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+		//used for orthographic Camera
+		//cam.orthographicSize = 50;
+
+		//used for perspective Camera
 		cam.transform.position = new Vector3(height/2, height, width/2);
 
-		GameObject tileSet = new GameObject("Tiles");
-		
-        Tile[,] t = new Tile[height, width];
+		Map.createMap(width, height);
 
-        var filePath = @"Elevation.csv";
-		var data = File.ReadLines(filePath);
-		int[,] exampleMapElevation = new int[height,width];
-		int indexi = 0;		
-		int indexj = 0;
-		foreach (string row in data){
-			indexj = 0;
-			string[] items = row.Split(',');
-			foreach (string s in items){
-                int n;
-                if(s=="")
-                {
-                    n = 0;
-                }
-                else
-                { 
-				    n = Convert.ToInt32(s);
-                }
-                exampleMapElevation[indexi,indexj] = n;
-				indexj++;
-			}
-			indexi++;
-		}
-		filePath = @"Precipitation.csv";
-		data = File.ReadLines(filePath);
-		int[,] exampleMapPrecipitation = new int[height,width];
-		indexi = 0;		
-		indexj = 0;
-		foreach (string row in data){
-			indexj = 0;
-			string[] items = row.Split(',');
-			foreach (string s in items){
-				int n = Convert.ToInt32(s);
-				exampleMapPrecipitation[indexi,indexj] = n;
-				indexj++;
-			}
-			indexi++;
-		}
-		
-		
-		for(int i=0; i<height; i++)
-        {
-            for (int j=0; j<width; j++)
-            {
-                t[i, j] = new Tile(height, i, j, tileSet.transform);
-				t[i, j].Elevation = exampleMapElevation[i,j];
-				t[i, j].Precipitation = exampleMapPrecipitation[i,j];
-				t[i, j].calculateBiome();
-            }
-        }
-
-		for(int i = 0; i < height; i++){
-			for(int j = 0; j < width; j++){
-				if(j > 0)
-                {
-                    t[i, j].left = t[i, j - 1];
-                } else {
-					//t[i, j].left = t[i, width - 1];
-				}
-				
-                if(j < width - 1)
-                {
-                    t[i, j].right = t[i, j + 1];
-                } else {
-					//t[i, j].right = t[i, 0];
-				}
-				
-                if(i>0)
-                {
-                    t[i, j].up = t[i - 1, j];
-                }
-				
-                if (i<height-1)
-                {
-                    t[i, j].down = t[i + 1, j];
-                }
-			}
-		}
 
 		//very simplistic city creation
 		//(currently only checks 8 nearby tiles to get tile's creation value)
 		var watch = System.Diagnostics.Stopwatch.StartNew();
-		City.generateCities(t, 0);
+		City.generateCities(Map.tiles, 0);
 		watch.Stop();
 		Debug.Log("Time to create 0 cities is:" + watch.ElapsedMilliseconds + "ms");
 
@@ -127,11 +51,11 @@ public class Test : MonoBehaviour
 			}
 		}*/
 
-		one = t[r.Next(100), r.Next(100)];
-		two = t[r.Next(100), r.Next(100)];
+		one = Map.tiles[r.Next(100), r.Next(100)];
+		two = Map.tiles[r.Next(100), r.Next(100)];
 
 		watch = System.Diagnostics.Stopwatch.StartNew();
-		Road.createRoad(t, one, two);
+		Road.createRoad(Map.tiles, one, two);
 		watch.Stop();
 		Debug.Log("Time to create 1 road(s) is:" + watch.ElapsedMilliseconds + "ms");
 
