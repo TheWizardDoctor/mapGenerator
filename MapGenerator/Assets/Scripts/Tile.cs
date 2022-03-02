@@ -8,6 +8,7 @@ public enum Biome { Ocean, Mountain, Tundra, BorealForest, Prairie, Shrubland, T
 public class Tile
 {
     //attributes
+	//elavation is in 100m scale aka 60 = 6000m
     private Biome biome;
     private float elevation;
     private float precipitation;
@@ -20,7 +21,7 @@ public class Tile
     public Tile down = null;
     public Tile left = null;
     public Tile right = null;
-	
+	public Tile previous = null;
 	public GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 	
     //constructor
@@ -52,9 +53,7 @@ public class Tile
     {
         get { return elevation; }
         set { elevation = value; 
-			cube.transform.localScale = new Vector3(1, elevation/10 + 1, 1);
-			cube.transform.position = new Vector3(x, (elevation/10 + 1)/2, y);
-			this.calculateBiome();
+
 		}
     }
     public float Precipitation
@@ -111,16 +110,19 @@ public class Tile
 		Material temperateForestMat = Resources.Load("TemperateForest", typeof(Material)) as Material;
 		Material tundraMat = Resources.Load("Tundra", typeof(Material)) as Material;
 		
-		double temperature = (((elevation * -0.8 + 40) * 2 + (Math.Abs(latitude) * -.65 + 30) * 3) / 5);
+		float l = Math.Abs(latitude);
+		double temperature = (((elevation * -0.8 + 40) + (30 - l*1.7 + 0.059*Math.Pow(l, 2) - 0.0007*Math.Pow(l, 3)) * 3) / 4);
 		//Debug.Log("x: " + (x).ToString() + "    temperature: " + temperature.ToString() + "    latitude: " + latitude.ToString());
-
-		if (elevation <= 0){
+		cube.transform.localScale = new Vector3(1, elevation/10 + 1, 1);
+		cube.transform.position = new Vector3(x, (elevation/10 + 1)/2, y);
+		
+		if (elevation <= 3){
 			biome = Biome.Ocean;
 			cube.GetComponent<Renderer>().material = oceanMat;
 		} else if(elevation >= 50){
 			biome = Biome.Mountain;
 			cube.GetComponent<Renderer>().material = mountainMat;
-		} else if(temperature <= 5){
+		} else if(temperature <= 0){
 			if(precipitation < 100){
 				biome = Biome.Tundra;
 				cube.GetComponent<Renderer>().material = tundraMat;
