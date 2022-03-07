@@ -4,22 +4,22 @@ using UnityEngine;
 
 public class Border : MonoBehaviour
 {
-    public static void generateBorders(Tile[,] map, int countryNum)
+    public static void generateBorders(Tile[,] tiles, int countryNum)
     {
         while (countryNum > 0)
         {
-            if (genBorder(map))
+            if (genBorder(tiles))
             {
                 countryNum--;
             }
         }
     }
 
-    public static bool genBorder(Tile[,] map)
+    public static bool genBorder(Tile[,] tiles)
     {
-        if(map != null)
+        if(tiles != null)
         {
-            Tile startTile = genStartTile(map);
+            Tile startTile = genStartTile(tiles);
             if (startTile == null)
             {
                 return false;
