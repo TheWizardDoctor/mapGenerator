@@ -5,9 +5,12 @@ using UnityEngine;
 public class Road : MonoBehaviour
 {
     private static List<Tile> fringe;
+    static private GameObject roadSet;
     public static void createRoad(Tile[,] tiles, Tile start, Tile end)
     {
-        foreach(Tile t in tiles)
+        roadSet = new GameObject("Roads");
+
+        foreach (Tile t in tiles)
         {
             t.Explored = false;
             t.previous = null;
@@ -37,6 +40,7 @@ public class Road : MonoBehaviour
                     //temp.Road = true break causes a stack overflow for some reason
                     //temp.Road = true;
                     GameObject c = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+                    c.transform.SetParent(roadSet.transform);
                     c.transform.position = new Vector3(temp.X, 10, temp.Y);
                     temp = temp.previous;
                 }
