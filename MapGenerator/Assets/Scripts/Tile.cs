@@ -42,8 +42,9 @@ public class Tile
 
     //City Stuff
     public float tileValue;
-    
 
+    //Border stuff
+    public bool border = false;
 
     //constructor
     public Tile()
