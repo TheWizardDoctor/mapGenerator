@@ -10,7 +10,7 @@ public class Tile : IComparable<Tile>
     //attributes
 	//elavation is in 100m scale aka 60 = 6000m
     private Biome biome;
-    private float elevation;
+    public float elevation;
     private float precipitation;
     private bool city;
     private bool road;
@@ -26,6 +26,8 @@ public class Tile : IComparable<Tile>
     public Tile down = null;
     public Tile left = null;
     public Tile right = null;
+    public bool border = false;
+
 	public GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 	
     //constructor
