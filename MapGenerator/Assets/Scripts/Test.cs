@@ -29,35 +29,5 @@ public class Test : MonoBehaviour
 		City.generateCities(Map.tiles, 0);
 		watch.Stop();
 		Debug.Log("Time to create 0 cities is:" + watch.ElapsedMilliseconds + "ms");
-
-        System.Random r = new System.Random();
-
-		Tile one, two;
-
-		/*while(true)
-        {
-			one = t[r.Next(100), r.Next(100)];
-			if(one.Biome!=Biome.Ocean)
-            {
-				break;
-            }
-		}
-		while (true)
-		{
-			two = t[r.Next(100), r.Next(100)];
-			if (two.Biome != Biome.Ocean)
-			{
-				break;
-			}
-		}*/
-
-		one = Map.tiles[r.Next(100), r.Next(100)];
-		two = Map.tiles[r.Next(100), r.Next(100)];
-
-		watch = System.Diagnostics.Stopwatch.StartNew();
-		Road.createRoad(Map.tiles, one, two);
-		watch.Stop();
-		Debug.Log("Time to create 1 road(s) is:" + watch.ElapsedMilliseconds + "ms");
-
 	}
 }
