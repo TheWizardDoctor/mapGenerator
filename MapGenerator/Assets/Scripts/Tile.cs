@@ -15,6 +15,7 @@ public class Tile : IComparable<Tile>
     private bool road;
 	private int x;
 	private int y;
+	private float fVal;
 	private float gVal;
 	private float hVal;
 	private float latitude;
@@ -76,11 +77,11 @@ public class Tile : IComparable<Tile>
 		get { return hVal; }
 		set { hVal = value; }
 	}
-	//public float FVal
-	//{
-	//	get { return fVal; }
-	//	set { fVal = value; }
-	//}
+	public float FVal
+	{
+		get { return fVal; }
+		set { fVal = value; }
+	}
 	public Biome Biome
     {
         get { return biome; }
@@ -180,7 +181,7 @@ public class Tile : IComparable<Tile>
 	}
 
     public int CompareTo(Tile other)
-    {
-		return GVal.CompareTo(other.GVal);
+	{
+		return fVal.CompareTo(other.fVal);
     }
 }
