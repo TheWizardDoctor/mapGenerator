@@ -3,14 +3,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class City : MonoBehaviour
+public class City
 {
-    const int scanSize = 1;
-    const int oceanVal = 30;
+    //static fields
+    static int scanRadius;
+    private static Material cityMat = (Material)Resources.Load("Materials/City.mat");
+    public static List<City> cityList = new List<City>();
+
+    //instance fields
+    public int x, y;
+
+    private City(int xVal, int yVal)
+    {
+        this.x = xVal;
+        this.y = yVal;
+        cityList.Add(this);
+    }
 
     //create num number of cities
     public static void generateCities(Tile[,] t, int num)
     {
+        scanRadius = (int)Math.Floor(0.05 * Map.width);
+        Debug.Log("scanRadius:" + scanRadius);
+
         while(num>0)
         {
             generateCity(t);
@@ -19,7 +34,7 @@ public class City : MonoBehaviour
     }
 
     //create a single city
-    public static void generateCity(Tile[,] tiles)
+    private static void generateCity(Tile[,] tiles)
     {
         int bestVal = int.MinValue;
         ref Tile bestTile = ref tiles[0, 0];
@@ -31,11 +46,18 @@ public class City : MonoBehaviour
                 continue;
             }
 
-            int currentValue = calculateValue(tiles, tile);
-            if (currentValue > bestVal)
+            int currentVal = calculateValue(tiles, tile);
+            if (currentVal > bestVal)
             {
-                bestVal = currentValue;
+                bestVal = currentVal;
                 bestTile = tile;
+            }
+            else if (currentVal==bestVal)
+            {
+                if(Random.r.NextDouble()>0.5)
+                {
+                    bestTile = tile;
+                }
             }
         }
 
@@ -43,61 +65,31 @@ public class City : MonoBehaviour
 
         bestTile.City = true;
         GameObject city = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-        city.transform.position = new Vector3(bestTile.X, ((bestTile.Elevation+10)/2)+1, bestTile.Y);
+        city.gameObject.GetComponent<MeshRenderer>().material = cityMat;
+        city.transform.position = new Vector3(bestTile.X, 6, bestTile.Y);
+        City newCity = new City(bestTile.X, bestTile.Y);
+        Debug.Log("best val:" + bestVal);
     }
 
     //get value of current tile based on neighboring tiles
     public static int calculateValue(Tile[,] tiles, Tile tile)
     {
-        int scan = scanNearby(tiles, tile);
-
-        return scan;
-    }
-
-    public static int scanNearby(Tile[,] tiles, Tile tile)
-    {
         int value = 0;
 
-        //left
-        Tile scan = tile.left;
-        value += biomeValue(scan);
-        value += hasCity(scan);
+        for (int i = -scanRadius; i <= scanRadius; i++)
+        {
+            for (int j = -scanRadius; j <= scanRadius; j++)
+            {
+                if (tile.X + i < 0 || tile.Y + j < 0 || tile.X + i > Map.width - 1 || tile.Y + j > Map.height - 1)
+                {
+                    continue;
+                }
 
-        //left up diag
-        scan = scan.up;
-        value += biomeValue(scan);
-        value += hasCity(scan);
-
-        //up
-        scan = tile.up;
-        value += biomeValue(scan);
-        value += hasCity(scan);
-
-        //right diag up
-        scan = scan.right;
-        value += biomeValue(scan);
-        value += hasCity(scan);
-
-        //right
-        scan = tile.right;
-        value += biomeValue(scan);
-        value += hasCity(scan);
-
-        //right diag down
-        scan = scan.down;
-        value += biomeValue(scan);
-        value += hasCity(scan);
-
-        //down
-        scan = tile.down;
-        value += biomeValue(scan);
-        value += hasCity(scan);
-
-        //left diag down
-        scan = scan.left;
-        value += biomeValue(scan);
-        value += hasCity(scan);
-
+                Tile temp = tiles[tile.X + i, tile.Y + j];
+                value += biomeValue(temp);
+                value += hasCity(temp);
+            }
+        }
         return value;
     }
 
@@ -112,7 +104,7 @@ public class City : MonoBehaviour
             case Biome.Mountain:
                 return -10;
             case Biome.Ocean:
-                return 30;
+                return 25;
             case Biome.Prairie:
                 return 20;
             case Biome.Rainforest:
@@ -134,7 +126,7 @@ public class City : MonoBehaviour
     {
         if(tile.City==true)
         {
-            return -1000;
+            return -50*scanRadius;
         }
         else
         {

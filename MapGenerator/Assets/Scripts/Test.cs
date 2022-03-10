@@ -21,13 +21,5 @@ public class Test : MonoBehaviour
 		cam.transform.position = new Vector3(height/2, height, width/2);
 
 		Map.createMap(width, height);
-
-
-		//very simplistic city creation
-		//(currently only checks 8 nearby tiles to get tile's creation value)
-		var watch = System.Diagnostics.Stopwatch.StartNew();
-		City.generateCities(Map.tiles, 0);
-		watch.Stop();
-		Debug.Log("Time to create 0 cities is:" + watch.ElapsedMilliseconds + "ms");
 	}
 }
