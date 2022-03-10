@@ -51,6 +51,7 @@ public class Tile : IComparable<Tile>
 		cube.transform.SetParent(tileSet);
 		cube.transform.localScale = new Vector3(1, elevation/10 + 1, 1);
 		cube.transform.position = new Vector3(x, (elevation/10 + 1)/2, y);
+		cube.gameObject.GetComponent<MeshRenderer>().receiveShadows = false;
     }
 
     //properties
@@ -95,7 +96,7 @@ public class Tile : IComparable<Tile>
     public bool Road
     {
         get { return road; }
-        set { Road = value; }
+        set { road = value; }
     }
 	public bool Explored
 	{

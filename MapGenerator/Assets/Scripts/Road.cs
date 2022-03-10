@@ -6,7 +6,7 @@ public class Road : MonoBehaviour
 {
     private static List<Tile> fringe;
     static private GameObject roadSet;
-    private static int minCost=5;
+    private static int minCost=3;
     public static void createRoad(Tile[,] tiles, Tile start, Tile end)
     {
         roadSet = new GameObject("Roads");
@@ -18,8 +18,6 @@ public class Road : MonoBehaviour
             t.GVal = float.MaxValue;
             t.FVal = float.MaxValue;
             t.HVal = minCost*(Mathf.Abs(end.X - t.X) + Mathf.Abs(end.Y - t.Y));
-
-            
         }
 
         fringe = new List<Tile>();
@@ -44,8 +42,7 @@ public class Road : MonoBehaviour
                 Tile temp = current;
                 while(temp!=null)
                 {
-                    //temp.Road = true break causes a stack overflow for some reason
-                    //temp.Road = true;
+                    temp.Road = true;
                     GameObject c = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
                     c.transform.SetParent(roadSet.transform);
                     c.transform.position = new Vector3(temp.X, 10, temp.Y);
@@ -130,6 +127,11 @@ public class Road : MonoBehaviour
     }
     private static float calculateCost(Tile t)
     { 
+        if(t.Road)
+        {
+            return minCost;
+        }
+
         switch(t.Biome)
         {
             case Biome.BorealForest:
