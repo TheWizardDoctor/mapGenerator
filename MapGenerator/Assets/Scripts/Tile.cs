@@ -45,6 +45,7 @@ public class Tile
 
     //Border stuff
     public bool border = false;
+    private float navDifficulty = 0;
 
     //constructor
     public Tile()
@@ -109,6 +110,17 @@ public class Tile
         get => latitude;
         set => latitude = value;
     }
+    public float Border
+    {
+        get { return border; }
+        set { border = value; }
+    }
+    public float NavigationDifficulty
+    {
+        get { return navDifficulty; }
+        set { navDifficulty = value; }
+    }
+    
     //methods
     public static void CalculateAllValues()
     {
@@ -148,11 +160,13 @@ public class Tile
         {
             biome = Biome.Ocean;
             cube.GetComponent<Renderer>().material = oceanMat;
+            navDifficulty = 12;
         }
         else if (elevation >= 50)
         {
             biome = Biome.Mountain;
             cube.GetComponent<Renderer>().material = mountainMat;
+            navDifficulty = 9;
         }
         else if (temperature <= 0)
         {
@@ -160,11 +174,13 @@ public class Tile
             {
                 biome = Biome.Tundra;
                 cube.GetComponent<Renderer>().material = tundraMat;
+                navDifficulty = 7;
             }
             else
             {
                 biome = Biome.BorealForest;
                 cube.GetComponent<Renderer>().material = borealMat;
+                navDifficulty = 5;
             }
         }
         else if (temperature <= 20)
@@ -173,16 +189,19 @@ public class Tile
             {
                 biome = Biome.Prairie;
                 cube.GetComponent<Renderer>().material = prairieMat;
+                navDifficulty = 1;
             }
             else if (precipitation < 200)
             {
                 biome = Biome.Shrubland;
                 cube.GetComponent<Renderer>().material = shrublandMat;
+                navDifficulty = 2;
             }
             else
             {
                 biome = Biome.TemperateForest;
                 cube.GetComponent<Renderer>().material = temperateForestMat;
+                navDifficulty = 3;
             }
         }
         else
@@ -191,16 +210,19 @@ public class Tile
             {
                 biome = Biome.Desert;
                 cube.GetComponent<Renderer>().material = desertMat;
+                navDifficulty = 6;
             }
             else if (precipitation < 200)
             {
                 biome = Biome.Savanna;
                 cube.GetComponent<Renderer>().material = savanahMat;
+                navDifficulty = 4;
             }
             else
             {
                 biome = Biome.Rainforest;
                 cube.GetComponent<Renderer>().material = rainforestMat;
+                navDifficulty = 8;
             }
         }
         return 0;
