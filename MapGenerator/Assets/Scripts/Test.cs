@@ -23,7 +23,7 @@ public class Test : MonoBehaviour
 		Map.createMap(width, height);
 
         //Simple Border creation
-        Border.generateBorders(Map.tiles, 5);
+        Border.generateBorders(Map.tiles, 4);
 
 		
 		//very simplistic city creation
