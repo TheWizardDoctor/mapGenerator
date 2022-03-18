@@ -9,7 +9,7 @@ public class Tile : IComparable<Tile>
 {
     //attributes
     private Biome biome;
-    public float elevation;
+    private float elevation;
     private float precipitation;
     private bool city;
     private bool road;
@@ -24,7 +24,8 @@ public class Tile : IComparable<Tile>
     public Tile down = null;
     public Tile left = null;
     public Tile right = null;
-    public bool border = false;
+    private float border = 0;
+    private float navDifficulty = 0;
 	
 	public GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 	
@@ -122,9 +123,19 @@ public class Tile : IComparable<Tile>
         get { return latitude; }
         set { latitude = value; }
     }
+    public float Border
+    {
+        get { return border; }
+        set { border = value; }
+    }
+    public float NavigationDifficulty
+    {
+        get { return navDifficulty; }
+        set { navDifficulty = value; }
+    }
+    
     //methods
-	
-	public int calculateBiome()
+    public int calculateBiome()
 	{
 		Material borealMat = Resources.Load("BorealForest", typeof(Material)) as Material;
 		Material desertMat = Resources.Load("Desert", typeof(Material)) as Material;
@@ -143,40 +154,56 @@ public class Tile : IComparable<Tile>
 		if (elevation <= 0){
 			biome = Biome.Ocean;
 			cube.GetComponent<Renderer>().material = oceanMat;
-		} else if(elevation >= 50){
+        } else if(elevation >= 50){
 			biome = Biome.Mountain;
 			cube.GetComponent<Renderer>().material = mountainMat;
+            navDifficulty = 9;
 		} else if(temperature <= 5){
 			if(precipitation < 100){
 				biome = Biome.Tundra;
 				cube.GetComponent<Renderer>().material = tundraMat;
-			} else{
+                navDifficulty = 7;
+            }
+            else
+            {
 				biome = Biome.BorealForest;
 				cube.GetComponent<Renderer>().material = borealMat;
-			}
-		} else if(temperature <= 20){
+                navDifficulty = 5;
+            }
+        } else if(temperature <= 20){
 			if (precipitation < 100){
 				biome = Biome.Prairie;
 				cube.GetComponent<Renderer>().material = prairieMat;
-			} else if(precipitation < 200){
+                navDifficulty = 1;
+            }
+            else if(precipitation < 200){
 				biome = Biome.Shrubland;
 				cube.GetComponent<Renderer>().material = shrublandMat;
-			} else {
+                navDifficulty = 2;
+            }
+            else {
 				biome = Biome.TemperateForest;
 				cube.GetComponent<Renderer>().material = temperateForestMat;
-			}
-		} else{
+                navDifficulty = 3;
+            }
+        } else{
 			if (precipitation < 100) {
 				biome = Biome.Desert;
 				cube.GetComponent<Renderer>().material = desertMat;
-			} else if(precipitation < 200){
+                navDifficulty = 6;
+            }
+            else if(precipitation < 200){
 				biome = Biome.Savannah;
 				cube.GetComponent<Renderer>().material = savanahMat;
-			} else{
+                navDifficulty = 4;
+            }
+            else
+            {
 				biome = Biome.Rainforest;
 				cube.GetComponent<Renderer>().material = rainforestMat;
-			}
-		}
+                navDifficulty = 8;
+            }
+        }
 		return 0;
 	}
 
