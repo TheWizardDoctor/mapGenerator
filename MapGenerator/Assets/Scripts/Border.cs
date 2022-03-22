@@ -143,16 +143,317 @@ public class Border : MonoBehaviour
         Tile finishTile = awayTile;
         int burstLength = Map.height / 20;
 
-//        while(detectBorder(finishTile) == false || detectOcean(finishTile) == 0)
+        while(detectBorder(tiles, finishTile) == false && detectOcean(tiles, finishTile) <= 0)
         {
-            Tile prevTile = findPrev(tiles, awayTile);
+            Tile prevTile = findPrev(tiles, finishTile);
             int xCord = prevTile.X - finishTile.X;
             int yCord = prevTile.Y - finishTile.Y;
+
+            if (xCord < 0) // S, SE, SW
+            {
+                if (yCord < 0) // SE
+                {
+                    finishTile = burstSE(tiles, finishTile, burstLength);
+                }
+                if(yCord == 0) // S
+                {
+                    finishTile = burstS(tiles, finishTile, burstLength);
+                }
+                if (yCord > 0) // SW
+                {
+                    finishTile = burstSW(tiles, finishTile, burstLength);
+                }
+            }
+            if(xCord == 0) // E, W
+            {
+                if (yCord < 0) // E
+                {
+                    finishTile = burstE(tiles, finishTile, burstLength);
+                }
+                if (yCord > 0) // W
+                {
+                    finishTile = burstW(tiles, finishTile, burstLength);
+                }
+            }
+            if(xCord > 0) // N, NE, NW
+            {
+                if (yCord < 0) // NE
+                {
+                    finishTile = burstNE(tiles, finishTile, burstLength);
+                }
+                if (yCord == 0) // N
+                {
+                    finishTile = burstN(tiles, finishTile, burstLength);
+                }
+                if (yCord > 0) // NW
+                {
+                    finishTile = burstN(tiles, finishTile, burstLength);
+                }
+            }
         }
 
         return finishTile;
     }
 
+    // Extends the border in a given general direction for a given length
+    public static Tile burstN(Tile[,] map, Tile selected, int burst)
+    {
+        if (burst == 0 || detectBorder(map, selected) == true || detectOcean(map, selected) > 0)
+        {
+            //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
+            selected.Border = 1;
+            return selected;
+        }
+
+        int rand = Random.Range(-1, 2);
+        Tile next = map[selected.X - 1, selected.Y + rand];
+        if (next.Biome == Biome.Ocean)
+        {
+            return selected;
+        }
+        //        Debug.Log("Next point is " + next.X + ", " + next.Y);
+        burst--;
+        Tile endPoint = burstN(map, next, burst);
+        if (endPoint == null)
+        {
+            return null;
+        }
+
+        selected.Border = 1;
+        return endPoint;
+    }
+    public static Tile burstNE(Tile[,] map, Tile selected, int burst)
+    {
+        if (burst == 0 || detectBorder(map, selected) == true || detectOcean(map, selected) > 0)
+        {
+            //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
+            selected.Border = 1;
+            return selected;
+        }
+
+        int rand = Random.Range(0, 2);
+        Tile next;
+        switch (rand)
+        {
+            case 0:
+                next = map[selected.X - 1, selected.Y];
+                break;
+            case 1:
+                next = map[selected.X - 1, selected.Y + 1];
+                break;
+            default:
+                next = map[selected.X, selected.Y + 1];
+                break;
+        }
+        if (next.Biome == Biome.Ocean)
+        {
+            return selected;
+        }
+        //        Debug.Log("Next point is " + next.X + ", " + next.Y);
+        burst--;
+        Tile endPoint = burstNE(map, next, burst);
+        if (endPoint == null)
+        {
+            return null;
+        }
+
+        selected.Border = 1;
+        return endPoint;
+    }
+    public static Tile burstE(Tile[,] map, Tile selected, int burst)
+    {
+        if (burst == 0 || detectBorder(map, selected) == true || detectOcean(map, selected) > 0)
+        {
+            //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
+            selected.Border = 1;
+            return selected;
+        }
+
+        int rand = Random.Range(-1, 2);
+        Tile next = map[selected.X + rand, selected.Y + 1];
+        if (next.Biome == Biome.Ocean)
+        {
+            return selected;
+        }
+        //        Debug.Log("Next point is " + next.X + ", " + next.Y);
+        burst--;
+        Tile endPoint = burstE(map, next, burst);
+        if (endPoint == null)
+        {
+            return null;
+        }
+
+        selected.Border = 1;
+        return endPoint;
+    }
+    public static Tile burstSE(Tile[,] map, Tile selected, int burst)
+    {
+        if (burst == 0 || detectBorder(map, selected) == true || detectOcean(map, selected) > 0)
+        {
+            //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
+            selected.Border = 1;
+            return selected;
+        }
+
+        int rand = Random.Range(0, 2);
+        Tile next;
+        switch (rand)
+        {
+            case 0:
+                next = map[selected.X + 1, selected.Y];
+                break;
+            case 1:
+                next = map[selected.X + 1, selected.Y+1];
+                break;
+            default:
+                next = map[selected.X, selected.Y + 1];
+                break;
+        }
+        if (next.Biome == Biome.Ocean)
+        {
+            return selected;
+        }
+        //        Debug.Log("Next point is " + next.X + ", " + next.Y);
+        burst--;
+        Tile endPoint = burstSE(map, next, burst);
+        if (endPoint == null)
+        {
+            return null;
+        }
+
+        selected.Border = 1;
+        return endPoint;
+    }
+    public static Tile burstS(Tile[,] map, Tile selected, int burst)
+    {
+        if (burst == 0 || detectBorder(map, selected) == true || detectOcean(map, selected) > 0)
+        {
+            //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
+            selected.Border = 1;
+            return selected;
+        }
+
+        int rand = Random.Range(-1, 2);
+        Tile next = map[selected.X + 1, selected.Y + rand];
+        if (next.Biome == Biome.Ocean)
+        {
+            return selected;
+        }
+        //        Debug.Log("Next point is " + next.X + ", " + next.Y);
+        burst--;
+        Tile endPoint = burstS(map, next, burst);
+        if (endPoint == null)
+        {
+            return null;
+        }
+
+        selected.Border = 1;
+        return endPoint;
+    }
+    public static Tile burstSW(Tile[,] map, Tile selected, int burst)
+    {
+        if (burst == 0 || detectBorder(map, selected) == true || detectOcean(map, selected) > 0)
+        {
+            //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
+            selected.Border = 1;
+            return selected;
+        }
+
+        int rand = Random.Range(0, 2);
+        Tile next;
+        switch (rand)
+        {
+            case 0:
+                next = map[selected.X + 1, selected.Y];
+                break;
+            case 1:
+                next = map[selected.X + 1, selected.Y - 1];
+                break;
+            default:
+                next = map[selected.X, selected.Y - 1];
+                break;
+        }
+        if (next.Biome == Biome.Ocean)
+        {
+            return selected;
+        }
+        //        Debug.Log("Next point is " + next.X + ", " + next.Y);
+        burst--;
+        Tile endPoint = burstSW(map, next, burst);
+        if (endPoint == null)
+        {
+            return null;
+        }
+
+        selected.Border = 1;
+        return endPoint;
+    }
+    public static Tile burstW(Tile[,] map, Tile selected, int burst)
+    {
+        if (burst == 0 || detectBorder(map, selected) == true || detectOcean(map, selected) > 0)
+        {
+            //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
+            selected.Border = 1;
+            return selected;
+        }
+
+        int rand = Random.Range(-1, 2);
+        Tile next = map[selected.X + rand, selected.Y - 1];
+        if (next.Biome == Biome.Ocean)
+        {
+            return selected;
+        }
+        //        Debug.Log("Next point is " + next.X + ", " + next.Y);
+        burst--;
+        Tile endPoint = burstW(map, next, burst);
+        if (endPoint == null)
+        {
+            return null;
+        }
+
+        selected.Border = 1;
+        return endPoint;
+    }
+    public static Tile burstNW(Tile[,] map, Tile selected, int burst)
+    {
+        if (burst == 0 || detectBorder(map, selected) == true || detectOcean(map, selected) > 0)
+        {
+            //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
+            selected.Border = 1;
+            return selected;
+        }
+
+        int rand = Random.Range(0, 2);
+        Tile next;
+        switch (rand)
+        {
+            case 0:
+                next = map[selected.X - 1, selected.Y];
+                break;
+            case 1:
+                next = map[selected.X - 1, selected.Y - 1];
+                break;
+            default:
+                next = map[selected.X, selected.Y - 1];
+                break;
+        }
+        if (next.Biome == Biome.Ocean)
+        {
+            return selected;
+        }
+        //        Debug.Log("Next point is " + next.X + ", " + next.Y);
+        burst--;
+        Tile endPoint = burstNW(map, next, burst);
+        if (endPoint == null)
+        {
+            return null;
+        }
+
+        selected.Border = 1;
+        return endPoint;
+    }
+
+    // Finds the previous border tile
     public static Tile findPrev(Tile[,] tiles, Tile awayTile)
     {
         Tile prevTile = awayTile;
