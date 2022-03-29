@@ -28,6 +28,6 @@ public class Test : MonoBehaviour
 		var watch = System.Diagnostics.Stopwatch.StartNew();
 		City.generateCities(Map.tiles, 0);
 		watch.Stop();
-		Debug.Log("Time to create 0 cities is:" + watch.ElapsedMilliseconds + "ms");
+		//Debug.Log("Time to create 0 cities is:" + watch.ElapsedMilliseconds + "ms");
 	}
 }
