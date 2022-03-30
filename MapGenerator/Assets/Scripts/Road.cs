@@ -172,7 +172,7 @@ public class Road : MonoBehaviour
                 return 5;
             case Biome.Rainforest:
                 return 30;
-            case Biome.Savannah:
+            case Biome.Savanna:
                 return 5;
             case Biome.Shrubland:
                 return 5;

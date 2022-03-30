@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum Biome { Ocean, Mountain, Tundra, BorealForest, Prairie, Shrubland, TemperateForest, Desert, Savannah, Rainforest };
+public enum Biome { Ocean, Mountain, Tundra, BorealForest, Prairie, Shrubland, TemperateForest, Desert, Savanna, Rainforest };
 
 public class Tile : IComparable<Tile>
 {
@@ -25,19 +25,11 @@ public class Tile : IComparable<Tile>
     public Tile down = null;
     public Tile left = null;
     public Tile right = null;
+	public float tileValue;
 	
 	public GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 	
     //constructor
-    public Tile()
-    {
-        biome = Biome.Ocean;
-        elevation = 0;
-        precipitation = 0;
-        city = null;
-        road = false;
-		explored = false;
-    }
     public Tile(int height, int xCord, int yCord, Transform tileSet)
     {
         elevation = 0;
@@ -123,8 +115,32 @@ public class Tile : IComparable<Tile>
         get { return latitude; }
         set { latitude = value; }
     }
-    //methods
-	
+	//methods
+	public static void CalculateAllValues()
+	{
+		Tile[,] tiles = Map.tiles;
+
+		foreach (Tile tile in tiles)
+		{
+			tile.tileValue = 0;
+
+			for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
+			{
+				for (int j = -Map.scanRadius; j <= Map.scanRadius; j++)
+				{
+					if (tile.X + i < 0 || tile.Y + j < 0 || tile.X + i > Map.width - 1 || tile.Y + j > Map.height - 1)
+					{
+						continue;
+					}
+
+					Tile temp = tiles[tile.X + i, tile.Y + j];
+					tile.tileValue += City.BiomeValue(temp);
+					tile.tileValue += City.HasCity(temp);
+				}
+			}
+		}
+	}
+
 	public int calculateBiome()
 	{
 		Material borealMat = Resources.Load("BorealForest", typeof(Material)) as Material;
@@ -171,7 +187,7 @@ public class Tile : IComparable<Tile>
 				biome = Biome.Desert;
 				cube.GetComponent<Renderer>().material = desertMat;
 			} else if(precipitation < 200){
-				biome = Biome.Savannah;
+				biome = Biome.Savanna;
 				cube.GetComponent<Renderer>().material = savanahMat;
 			} else{
 				biome = Biome.Rainforest;

@@ -6,8 +6,7 @@ using UnityEngine;
 public class City
 {
     //static fields
-    static int scanRadius;
-    private static Material cityMat = (Material)Resources.Load("Materials/City.mat");
+    private static readonly Material cityMat = (Material)Resources.Load("Materials/City.mat");
     public static List<City> cityList = new List<City>();
 
     //instance fields
@@ -31,9 +30,6 @@ public class City
     //create num number of cities
     public static void GenerateCities(int num)
     {
-        scanRadius = (int)Math.Floor(0.05 * Map.width);
-       // Debug.Log("scanRadius:" + scanRadius);
-
         while (num > 0)
         {
             GenerateCity();
@@ -42,28 +38,29 @@ public class City
     }
 
     //create a single city
+    /*
     private static void GenerateCity()
     {
         Tile[,] tiles = Map.tiles;
-        int bestVal = int.MinValue;
+        float bestVal = int.MinValue;
         ref Tile bestTile = ref tiles[0, 0];
 
         foreach (Tile tile in tiles)
         {
-            if(tile.City!=null || tile.Biome==Biome.Ocean)
+            if (tile.City != null || tile.Biome == Biome.Ocean)
             {
                 continue;
             }
 
-            int currentVal = CalculateValue(tile);
+            float currentVal = GetValue(tile);
             if (currentVal > bestVal)
             {
                 bestVal = currentVal;
                 bestTile = tile;
             }
-            else if (currentVal==bestVal)
+            else if (currentVal == bestVal)
             {
-                if(Random.r.NextDouble()>0.5)
+                if (Random.r.NextDouble() > 0.5)
                 {
                     bestTile = tile;
                 }
@@ -71,14 +68,30 @@ public class City
         }
 
         //Debug.Log("Best City Location (X:" + bestTile.X + " Y:" + bestTile.Y + ")");
-
-        
+        AddCity(bestTile);
         GameObject city = GameObject.CreatePrimitive(PrimitiveType.Capsule);
         city.gameObject.GetComponent<MeshRenderer>().material = cityMat;
         city.transform.position = new Vector3(bestTile.X, 6, bestTile.Y);
         City newCity = new City(bestTile.X, bestTile.Y);
         bestTile.City = newCity;
-        //Debug.Log("best val:" + bestVal);
+        Debug.Log("best val:" + bestVal);
+    }
+    */
+    private static void GenerateCity()
+    {
+        Tile[,] tiles = Map.tiles;
+
+        Tile randTile = tiles[Random.r.Next(Map.width), Random.r.Next(Map.height)];
+        while (randTile.Biome == Biome.Ocean)
+        {
+            randTile = tiles[Random.r.Next(Map.width), Random.r.Next(Map.height)];
+        }
+        AddCity(randTile);
+        GameObject city = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+        city.gameObject.GetComponent<MeshRenderer>().material = cityMat;
+        city.transform.position = new Vector3(randTile.X, 6, randTile.Y);
+        City newCity = new City(randTile.X, randTile.Y);
+        randTile.City = newCity;
     }
 
     public static void TradeRouteFood(City start)
@@ -129,15 +142,18 @@ public class City
         Road.CreateRoad(start, bestGuessCity);
     }
 
-    //get value of current tile based on neighboring tiles
-    public static int CalculateValue(Tile tile)
+    public static float GetValue(Tile tile)
+    {
+        return tile.tileValue;
+    }
+
+    private static void AddCity(Tile tile)
     {
         Tile[,] tiles = Map.tiles;
-        int value = 0;
 
-        for (int i = -scanRadius; i <= scanRadius; i++)
+        for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
         {
-            for (int j = -scanRadius; j <= scanRadius; j++)
+            for (int j = -Map.scanRadius; j <= Map.scanRadius; j++)
             {
                 if (tile.X + i < 0 || tile.Y + j < 0 || tile.X + i > Map.width - 1 || tile.Y + j > Map.height - 1)
                 {
@@ -145,11 +161,9 @@ public class City
                 }
 
                 Tile temp = tiles[tile.X + i, tile.Y + j];
-                value += BiomeValue(temp);
-                value += HasCity(temp);
+                temp.tileValue-=50*Map.scanRadius;
             }
         }
-        return value;
     }
 
     public static int BiomeValue(Tile tile)
@@ -168,7 +182,7 @@ public class City
                 return 20;
             case Biome.Rainforest:
                 return 25;
-            case Biome.Savannah:
+            case Biome.Savanna:
                 return 20;
             case Biome.Shrubland:
                 return 10;
@@ -183,9 +197,9 @@ public class City
 
     public static int HasCity(Tile tile)
     {
-        if(tile.City!=null)
+        if (tile.City != null)
         {
-            return -50 * scanRadius;
+            return -50 * Map.scanRadius;
         }
         else
         {
