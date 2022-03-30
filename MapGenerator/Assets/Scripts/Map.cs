@@ -10,7 +10,7 @@ public class Map : MonoBehaviour
     public static int height;
     public static Tile[,] tiles;
 
-    public static void createMap(int w, int h)
+    public static void CreateMap(int w, int h)
     {
 		width = w;
 		height = h;
@@ -23,7 +23,7 @@ public class Map : MonoBehaviour
 		var data = File.ReadLines(filePath);
 		int[,] exampleMapElevation = new int[height, width];
 		int indexi = 0;
-		int indexj = 0;
+		int indexj;
 		foreach (string row in data)
 		{
 			indexj = 0;
@@ -82,18 +82,10 @@ public class Map : MonoBehaviour
 				{
 					tiles[i, j].left = tiles[i, j - 1];
 				}
-				else
-				{
-					//t[i, j].left = t[i, width - 1];
-				}
 
 				if (j < width - 1)
 				{
 					tiles[i, j].right = tiles[i, j + 1];
-				}
-				else
-				{
-					//t[i, j].right = t[i, 0];
 				}
 
 				if (i > 0)

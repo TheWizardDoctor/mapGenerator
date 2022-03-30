@@ -11,7 +11,7 @@ public class Tile : IComparable<Tile>
     private Biome biome;
     private float elevation;
     private float precipitation;
-    private bool city;
+    private City city;
     private bool road;
 	private int x;
 	private int y;
@@ -34,7 +34,7 @@ public class Tile : IComparable<Tile>
         biome = Biome.Ocean;
         elevation = 0;
         precipitation = 0;
-        city = false;
+        city = null;
         road = false;
 		explored = false;
     }
@@ -42,7 +42,7 @@ public class Tile : IComparable<Tile>
     {
         elevation = 0;
         precipitation = 0;
-        city = false;
+        city = null;
         road = false;
 		explored = false;
 		x = xCord;
@@ -88,7 +88,7 @@ public class Tile : IComparable<Tile>
         get { return biome; }
         set { biome = value; }
     }
-    public bool City
+    public City City
     {
         get { return city; }
         set { city = value; }

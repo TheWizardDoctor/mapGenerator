@@ -5,11 +5,30 @@ using UnityEngine;
 public class Road : MonoBehaviour
 {
     private static List<Tile> fringe;
-    static private GameObject roadSet;
-    private static int minCost=3;
-    public static void createRoad(Tile[,] tiles, Tile start, Tile end)
+    private static readonly int minCost = 3;
+
+    public static void CreateRoad(City start, City end)
     {
-        roadSet = new GameObject("Roads");
+        if (start == null || end == null)
+        {
+            Debug.Log("NULL ERROR");
+            return;
+        }
+
+        Tile startTile = Map.tiles[start.x, start.y];
+        Tile endTile = Map.tiles[end.x, end.y];
+        CreateRoad(startTile, endTile);
+    }
+    public static void CreateRoad(Tile start, Tile end)
+    {
+        if (start == null || end == null || Map.tiles==null)
+        {
+            Debug.Log("NULL ERROR");
+            return;
+        }
+        Tile[,] tiles = Map.tiles;
+
+        RoadSet = new GameObject("Roads");
 
         foreach (Tile t in tiles)
         {
@@ -17,7 +36,7 @@ public class Road : MonoBehaviour
             t.previous = null;
             t.GVal = float.MaxValue;
             t.FVal = float.MaxValue;
-            t.HVal = minCost*(Mathf.Abs(end.X - t.X) + Mathf.Abs(end.Y - t.Y));
+            t.HVal = minCost * (Mathf.Abs(end.X - t.X) + Mathf.Abs(end.Y - t.Y));
         }
 
         fringe = new List<Tile>();
@@ -34,17 +53,24 @@ public class Road : MonoBehaviour
             //current.Explored = true;
             fringe.RemoveAt(0);
 
+            if (current.GVal > start.City.wealth)
+            {
+                Debug.Log("Too Much Money");
+                return;
+            }
+
             //print("cur loc:(" + current.Y + "," + current.X + ")");
             //print("\tfVal:" + current.FVal);
 
             if(current.Equals(end))
             {
+                Debug.Log("cost:" + current.GVal);
                 Tile temp = current;
-                while(temp!=null)
+                while (temp != null)
                 {
                     temp.Road = true;
                     GameObject c = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                    c.transform.SetParent(roadSet.transform);
+                    c.transform.SetParent(RoadSet.transform);
                     c.transform.position = new Vector3(temp.X, 10, temp.Y);
                     temp = temp.previous;
                 }
@@ -59,7 +85,7 @@ public class Road : MonoBehaviour
                     fringe.Add(current.up);
                 }
 
-                float neighborCost = calculateCost(current.up);
+                float neighborCost = CalculateCost(current.up);
                 if (current.up.GVal > current.GVal + neighborCost)
                 {
                     current.up.GVal = current.GVal + neighborCost;
@@ -71,13 +97,13 @@ public class Road : MonoBehaviour
 
             if (current.left != null)
             {
-                if(current.left.Explored == false)
+                if (current.left.Explored == false)
                 {
                     current.left.Explored = true;
                     fringe.Add(current.left);
                 }
 
-                float neighborCost = calculateCost(current.left);
+                float neighborCost = CalculateCost(current.left);
                 if (current.left.GVal > current.GVal + neighborCost)
                 {
                     current.left.GVal = current.GVal + neighborCost;
@@ -95,7 +121,7 @@ public class Road : MonoBehaviour
                     fringe.Add(current.right);
                 }
 
-                float neighborCost = calculateCost(current.right);
+                float neighborCost = CalculateCost(current.right);
                 if (current.right.GVal > current.GVal + neighborCost)
                 {
                     current.right.GVal = current.GVal + neighborCost;
@@ -107,13 +133,13 @@ public class Road : MonoBehaviour
 
             if (current.down != null)
             {
-                if(current.down.Explored == false)
+                if (current.down.Explored == false)
                 {
                     fringe.Add(current.down);
                     current.down.Explored = true;
                 }
 
-                float neighborCost = calculateCost(current.down);
+                float neighborCost = CalculateCost(current.down);
                 if (current.down.GVal > current.GVal + neighborCost)
                 {
                     current.down.GVal = current.GVal + neighborCost;
@@ -125,7 +151,7 @@ public class Road : MonoBehaviour
             fringe.Sort();
         }
     }
-    private static float calculateCost(Tile t)
+    private static float CalculateCost(Tile t)
     { 
         if(t.Road)
         {
@@ -158,5 +184,6 @@ public class Road : MonoBehaviour
                 return 0;
         }
     }
-    
+
+    public static GameObject RoadSet { get; set; }
 }

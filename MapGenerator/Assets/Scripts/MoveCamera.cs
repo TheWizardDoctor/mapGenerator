@@ -42,28 +42,35 @@ public class MoveCamera : MonoBehaviour
             
         }
 
+        if(Input.GetKeyDown(KeyCode.T))
+        {
+            City start = City.cityList[0];
+
+            City.TradeRouteFood(start);
+        }
+        
         if(Input.GetKeyDown(KeyCode.R))
         {
             Tile one, two;
             var watch = System.Diagnostics.Stopwatch.StartNew();
             one = Map.tiles[Random.r.Next(100), Random.r.Next(100)];
             two = Map.tiles[Random.r.Next(100), Random.r.Next(100)];
-            Road.createRoad(Map.tiles, one, two);
+            Road.CreateRoad(one, two);
             watch.Stop();
-            Debug.Log("Time to create 1 road(s) is:" + watch.ElapsedMilliseconds + "ms");
+            //Debug.Log("Time to create 1 road(s) is:" + watch.ElapsedMilliseconds + "ms");
         }
         if(Input.GetKeyDown(KeyCode.C))
         {
             //very simplistic city creation
             //(currently only checks 8 nearby tiles to get tile's creation value)
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            City.generateCities(Map.tiles, 1);
+            City.GenerateCities(1);
             watch.Stop();
             Debug.Log("Time to create 1 cities is:" + watch.ElapsedMilliseconds + "ms");
         }
         if(Input.GetKeyDown(KeyCode.N))
         {
-            int random=0, random2 =0;
+            int random=0, random2=0;
             while(random==random2 && City.cityList.Count>1)
             {
                 random = Random.r.Next(City.cityList.Count);
@@ -75,7 +82,7 @@ public class MoveCamera : MonoBehaviour
 
             if (one != null && two != null)
             {
-                Road.createRoad(Map.tiles, one, two);
+                Road.CreateRoad(one, two);
             }
         }
     }

@@ -12,41 +12,50 @@ public class City
 
     //instance fields
     public int x, y;
+    public int wealth;
+    public float water;
+    public float lumber;
+    public float food;
 
     private City(int xVal, int yVal)
     {
-        this.x = xVal;
-        this.y = yVal;
+        x = xVal;
+        y = yVal;
+        wealth = 10000;
+        water = (float)Random.r.NextDouble();
+        lumber = (float)Random.r.NextDouble();
+        food = (float)Random.r.NextDouble();
         cityList.Add(this);
     }
 
     //create num number of cities
-    public static void generateCities(Tile[,] t, int num)
+    public static void GenerateCities(int num)
     {
         scanRadius = (int)Math.Floor(0.05 * Map.width);
-        Debug.Log("scanRadius:" + scanRadius);
+       // Debug.Log("scanRadius:" + scanRadius);
 
-        while(num>0)
+        while (num > 0)
         {
-            generateCity(t);
+            GenerateCity();
             num--;
         }
     }
 
     //create a single city
-    private static void generateCity(Tile[,] tiles)
+    private static void GenerateCity()
     {
+        Tile[,] tiles = Map.tiles;
         int bestVal = int.MinValue;
         ref Tile bestTile = ref tiles[0, 0];
 
         foreach (Tile tile in tiles)
         {
-            if(tile.City==true || tile.Biome==Biome.Ocean)
+            if(tile.City!=null || tile.Biome==Biome.Ocean)
             {
                 continue;
             }
 
-            int currentVal = calculateValue(tiles, tile);
+            int currentVal = CalculateValue(tile);
             if (currentVal > bestVal)
             {
                 bestVal = currentVal;
@@ -63,17 +72,67 @@ public class City
 
         //Debug.Log("Best City Location (X:" + bestTile.X + " Y:" + bestTile.Y + ")");
 
-        bestTile.City = true;
+        
         GameObject city = GameObject.CreatePrimitive(PrimitiveType.Capsule);
         city.gameObject.GetComponent<MeshRenderer>().material = cityMat;
         city.transform.position = new Vector3(bestTile.X, 6, bestTile.Y);
         City newCity = new City(bestTile.X, bestTile.Y);
-        Debug.Log("best val:" + bestVal);
+        bestTile.City = newCity;
+        //Debug.Log("best val:" + bestVal);
+    }
+
+    public static void TradeRouteFood(City start)
+    {
+        float bestGuessVal = 0;
+        City bestGuessCity = null;
+        foreach(City c in cityList)
+        {
+            if (c.food > bestGuessVal)
+            {
+                Debug.Log("food:" + c.food);
+                bestGuessVal = c.food;
+                bestGuessCity = c;
+            }
+        }
+        Debug.Log("Best:" + bestGuessVal);
+
+        Road.CreateRoad(start, bestGuessCity);
+    }
+    public static void TradeRouteWater(City start)
+    {
+        float bestGuessVal = 0;
+        City bestGuessCity = null;
+        foreach (City c in cityList)
+        {
+            if (c.water > bestGuessVal && c != start)
+            {
+                bestGuessVal = c.water;
+                bestGuessCity = c;
+            }
+        }
+
+        Road.CreateRoad(start, bestGuessCity);
+    }
+    public static void TradeRouteLumber(City start)
+    {
+        float bestGuessVal = 0;
+        City bestGuessCity = null;
+        foreach (City c in cityList)
+        {
+            if (c.lumber > bestGuessVal && c != start)
+            {
+                bestGuessVal = c.lumber;
+                bestGuessCity = c;
+            }
+        }
+
+        Road.CreateRoad(start, bestGuessCity);
     }
 
     //get value of current tile based on neighboring tiles
-    public static int calculateValue(Tile[,] tiles, Tile tile)
+    public static int CalculateValue(Tile tile)
     {
+        Tile[,] tiles = Map.tiles;
         int value = 0;
 
         for (int i = -scanRadius; i <= scanRadius; i++)
@@ -86,14 +145,14 @@ public class City
                 }
 
                 Tile temp = tiles[tile.X + i, tile.Y + j];
-                value += biomeValue(temp);
-                value += hasCity(temp);
+                value += BiomeValue(temp);
+                value += HasCity(temp);
             }
         }
         return value;
     }
 
-    public static int biomeValue(Tile tile)
+    public static int BiomeValue(Tile tile)
     {
         switch (tile.Biome)
         {
@@ -122,11 +181,11 @@ public class City
         }
     }
 
-    public static int hasCity(Tile tile)
+    public static int HasCity(Tile tile)
     {
-        if(tile.City==true)
+        if(tile.City!=null)
         {
-            return -50*scanRadius;
+            return -50 * scanRadius;
         }
         else
         {

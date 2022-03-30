@@ -20,6 +20,6 @@ public class Test : MonoBehaviour
 		//used for perspective Camera
 		cam.transform.position = new Vector3(height/2, height, width/2);
 
-		Map.createMap(width, height);
+		Map.CreateMap(width, height);
 	}
 }
