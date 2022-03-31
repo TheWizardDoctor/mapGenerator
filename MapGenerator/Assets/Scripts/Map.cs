@@ -17,8 +17,10 @@ public class Map : MonoBehaviour
 
 		GameObject tileSet = new GameObject("Tiles");
 
-		tiles = new Tile[height, width];
-
+		tiles = new Tile[width, height];
+		
+		//this is the code for loading the demo map
+		/*
 		var filePath = @"Elevation.csv";
 		var data = File.ReadLines(filePath);
 		int[,] exampleMapElevation = new int[height, width];
@@ -107,5 +109,21 @@ public class Map : MonoBehaviour
 				}
 			}
 		}
+		*/
+		
+		List<Tile> unsetTiles = CreateTerrain.createInitialMountains();
+		while(unsetTiles.Count > 0){
+			CreateTerrain.setElevations(unsetTiles);
+		}
+		
+		for(int j=0; j<height; j++)
+        {
+            for (int i=0; i<width; i++)
+            {
+                tiles[i, j].cube.transform.localScale = new Vector3(1, tiles[i, j].Elevation/10 + 1, 1);
+				tiles[i, j].cube.transform.position = new Vector3(tiles[i, j].X, (tiles[i, j].Elevation/10 + 1)/2, tiles[i, j].Y);
+				tiles[i, j].calculateBiome();
+            }
+        }
 	}
 }

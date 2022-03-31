@@ -6,16 +6,16 @@ using UnityEngine;
 public class CreateTerrain : MonoBehaviour
 {
 	//height y, width x
-    public static List<Tile> createInitialMountains(Tile[,] tiles, int width, int height){
+    public static List<Tile> createInitialMountains(){
 		List<Tile> unsetTiles = new List<Tile>();
 		Tile thisTile;
 		int initialX; 
 		int initialY; 
 		//Debug.Log("x: " + initialX.ToString() + "    y: " + initialY.ToString());
 		for(int i = 0; i < 5; i++) {
-			initialX = Random.Range((int)(width*.25), (int)(width*.75)); 
-			initialY = Random.Range((int)(height*.25), (int)(height*.75));
-			thisTile = tiles[initialX, initialY];
+			initialX = Random.Range((int)(Map.width*.25), (int)(Map.width*.75)); 
+			initialY = Random.Range((int)(Map.height*.25), (int)(Map.height*.75));
+			thisTile = Map.tiles[initialX, initialY];
 			if(thisTile.Elevation <= 0){
 				foreach(Tile t in getNeighbors(thisTile)){
 					if(!unsetTiles.Contains(t) & t.Elevation <= 0){
@@ -23,14 +23,14 @@ public class CreateTerrain : MonoBehaviour
 						unsetTiles.Add(t);
 					}
 				}
-				unsetTiles = setMountainRange(unsetTiles, tiles, thisTile, Random.Range(18, 25));
+				unsetTiles = setMountainRange(unsetTiles, thisTile, Random.Range(18, 25));
 			}
 		}	
 				
 		return unsetTiles;
 	}
 	
-	private static List<Tile> setMountainRange(List<Tile> unsetTiles, Tile[,] tiles, Tile thisTile, int rangeLength){
+	private static List<Tile> setMountainRange(List<Tile> unsetTiles, Tile thisTile, int rangeLength){
 		List<Tile> neighbors = getNeighbors(thisTile);
 		thisTile.Elevation = Random.Range(55f, 60f);
 		unsetTiles.Remove(thisTile);
@@ -46,7 +46,7 @@ public class CreateTerrain : MonoBehaviour
 							unsetTiles.Add(t);
 						}
 					}
-					return setMountainRange(unsetTiles, tiles, nextTile, rangeLength - 1);
+					return setMountainRange(unsetTiles, nextTile, rangeLength - 1);
 				} else {
 					index++;
 					if(index >= neighbors.Count){
