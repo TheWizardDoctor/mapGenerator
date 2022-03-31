@@ -75,53 +75,62 @@ public class Map : MonoBehaviour
 				tiles[i, j].calculateBiome();
 			}
 		}
-
+		*/
+		//creating initial tiles
+		for (int i = 0; i < height; i++)
+		{
+			for (int j = 0; j < width; j++)
+			{
+				tiles[j, i] = new Tile(j, i, tileSet.transform);
+				tiles[j, i].calculateBiome();
+			}
+		}
+		//setting lefts and rights and ups and downs
 		for (int i = 0; i < height; i++)
 		{
 			for (int j = 0; j < width; j++)
 			{
 				if (j > 0)
 				{
-					tiles[i, j].left = tiles[i, j - 1];
+					tiles[j, i].left = tiles[j - 1, i];
 				}
 				else
 				{
-					//t[i, j].left = t[i, width - 1];
+					tiles[j, i].left = tiles[width - 1, i];
 				}
 
 				if (j < width - 1)
 				{
-					tiles[i, j].right = tiles[i, j + 1];
+					tiles[j, i].right = tiles[j + 1, i];
 				}
 				else
 				{
-					//t[i, j].right = t[i, 0];
+					tiles[j, i].right = tiles[0, i];
 				}
 
 				if (i > 0)
 				{
-					tiles[i, j].up = tiles[i - 1, j];
+					tiles[j, i].up = tiles[j, i - 1];
 				}
 
 				if (i < height - 1)
 				{
-					tiles[i, j].down = tiles[i + 1, j];
+					tiles[j, i].down = tiles[j, i + 1];
 				}
 			}
 		}
-		*/
+
 		
 		List<Tile> unsetTiles = CreateTerrain.createInitialMountains();
 		while(unsetTiles.Count > 0){
 			CreateTerrain.setElevations(unsetTiles);
 		}
 		
+		
 		for(int j=0; j<height; j++)
         {
             for (int i=0; i<width; i++)
             {
-                tiles[i, j].cube.transform.localScale = new Vector3(1, tiles[i, j].Elevation/10 + 1, 1);
-				tiles[i, j].cube.transform.position = new Vector3(tiles[i, j].X, (tiles[i, j].Elevation/10 + 1)/2, tiles[i, j].Y);
 				tiles[i, j].calculateBiome();
             }
         }

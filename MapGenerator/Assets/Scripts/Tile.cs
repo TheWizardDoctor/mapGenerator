@@ -38,7 +38,7 @@ public class Tile : IComparable<Tile>
         road = false;
 		explored = false;
     }
-    public Tile(int height, int xCord, int yCord, Transform tileSet)
+    public Tile(int xCord, int yCord, Transform tileSet)
     {
         elevation = -1;
         precipitation = 0;
@@ -48,7 +48,7 @@ public class Tile : IComparable<Tile>
 		explored = false;
 		x = xCord;
 		y = yCord;
-		latitude = ((yCord + 1) * 90/(height/2)) - 90;
+		latitude = ((yCord + 1) * 90/(Map.height/2)) - 90;
 		cube.transform.SetParent(tileSet);
 		cube.transform.localScale = new Vector3(1, elevation/10 + 1, 1);
 		cube.transform.position = new Vector3(x, (elevation/10 + 1)/2, y);
