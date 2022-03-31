@@ -5,7 +5,7 @@ using UnityEngine;
 
 public enum Biome { Ocean, Mountain, Tundra, BorealForest, Prairie, Shrubland, TemperateForest, Desert, Savannah, Rainforest };
 
-public class Tile
+public class Tile : IComparable<Tile>
 {
     //attributes
 	//elavation is in 100m scale aka 60 = 6000m
@@ -16,7 +16,12 @@ public class Tile
     private bool road;
 	private int x;
 	private int y;
+	private float fVal;
+	private float gVal;
+	private float hVal;
 	private float latitude;
+	private bool explored;
+	public Tile previous = null;
     public Tile up = null;
     public Tile down = null;
     public Tile left = null;
@@ -32,6 +37,7 @@ public class Tile
         precipitation = 0;
         city = false;
         road = false;
+		explored = false;
     }
     public Tile(int height, int xCord, int yCord, Transform tileSet)
     {
@@ -40,12 +46,14 @@ public class Tile
         city = false;
         road = false;
 		biome = Biome.Ocean;
+		explored = false;
 		x = xCord;
 		y = yCord;
 		latitude = ((yCord + 1) * 90/(height/2)) - 90;
 		cube.transform.SetParent(tileSet);
 		cube.transform.localScale = new Vector3(1, elevation/10 + 1, 1);
 		cube.transform.position = new Vector3(x, (elevation/10 + 1)/2, y);
+		cube.gameObject.GetComponent<MeshRenderer>().receiveShadows = false;
     }
 
     //properties
@@ -59,7 +67,22 @@ public class Tile
         get { return precipitation; }
         set { precipitation = value; }
     }
-    public Biome Biome
+	public float GVal
+	{
+		get { return gVal; }
+		set { gVal = value; }
+	}
+	public float HVal
+	{
+		get { return hVal; }
+		set { hVal = value; }
+	}
+	public float FVal
+	{
+		get { return fVal; }
+		set { fVal = value; }
+	}
+	public Biome Biome
     {
         get { return biome; }
         set { biome = value; }
@@ -72,8 +95,14 @@ public class Tile
     public bool Road
     {
         get { return road; }
-        set { Road = value; }
+        set { road = value; }
     }
+	public bool Explored
+	{
+		get { return explored; }
+		set { explored = value; }
+	}
+
 	public int X
     {
         get { return x; }
@@ -110,7 +139,6 @@ public class Tile
 		
 		float l = Math.Abs(latitude);
 		double temperature = (((elevation * -0.8 + 40) + (30 - l*1.7 + 0.059*Math.Pow(l, 2) - 0.0007*Math.Pow(l, 3)) * 3) / 4);
-		//Debug.Log("x: " + (x).ToString() + "    temperature: " + temperature.ToString() + "    latitude: " + latitude.ToString());
 		cube.transform.localScale = new Vector3(1, elevation/10 + 1, 1);
 		cube.transform.position = new Vector3(x, (elevation/10 + 1)/2, y);
 		
@@ -152,6 +180,10 @@ public class Tile
 			}
 		}
 		return 0;
-	}		
+	}
 
+    public int CompareTo(Tile other)
+	{
+		return fVal.CompareTo(other.fVal);
+    }
 }
