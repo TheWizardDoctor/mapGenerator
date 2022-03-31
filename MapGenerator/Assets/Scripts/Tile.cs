@@ -52,9 +52,7 @@ public class Tile
     public float Elevation
     {
         get { return elevation; }
-        set { elevation = value; 
-
-		}
+        set { elevation = value; }
     }
     public float Precipitation
     {

@@ -26,16 +26,7 @@ public class CreateTerrain : MonoBehaviour
 				unsetTiles = setMountainRange(unsetTiles, tiles, thisTile, Random.Range(18, 25));
 			}
 		}	
-		/*
-		Debug.Log("count: " + unsetTiles.Count.ToString());
-
-		foreach (Tile t in unsetTiles.ToArray()){
-			t.Elevation = 30;
-			Debug.Log("x: " + t.X.ToString() + "    y: " + t.Y.ToString());
-			unsetTiles.Remove(t);
-		}
-		
-		*/	
+				
 		return unsetTiles;
 	}
 	
@@ -69,8 +60,10 @@ public class CreateTerrain : MonoBehaviour
 	
 	public static void setElevations(List<Tile> unsetTiles){
 		int scale = 1;
-		Tile thisTile = unsetTiles[0];
-		unsetTiles.Remove(thisTile);
+		int rand = Random.Range((int)0, (int)unsetTiles.Count);
+		
+		Tile thisTile = unsetTiles[rand];
+		unsetTiles.RemoveAt(rand);
 		List<Tile> neighbors = getNeighbors(thisTile);
 		foreach(Tile t in neighbors){
 			if(!unsetTiles.Contains(t) & t.Elevation <= 0){
@@ -79,18 +72,22 @@ public class CreateTerrain : MonoBehaviour
 			}
 		}
 		List<float> slopes = new List<float>();
-		slopes.Add(estSlope(thisTile));
-		Tile prevTile = thisTile.previous;
-		slopes.Add(calculateSlopeLeft(prevTile));
-		slopes.Add(calculateSlopeLeft(prevTile));
-		slopes.Add(calculateSlopeUp(prevTile));
-		slopes.Add(calculateSlopeDown(prevTile));
+		thisTile.Elevation = estSlope(thisTile);
+		
+		slopes.Add(calculateSlopeLeft(thisTile));
+		slopes.Add(calculateSlopeRight(thisTile));
+		
+		slopes.Add(calculateSlopeUp(thisTile));
+		slopes.Add(calculateSlopeDown(thisTile));
+		
+		//Debug.Log("Est: " + estSlope(thisTile).ToString() + "	Left: " + .ToString() + "	Right: " + .ToString() + "	Up: " + .ToString() + "	Down: " + .ToString() + calculateSlopeDown(prevTile).ToString());
 		float averageSlope = averageSlopes(slopes, slopes.Count);
-		float elevation = prevTile.Elevation;
+		float elevation = thisTile.Elevation;
 		elevation = averageSlope * scale + elevation;
-		elevation = Random.Range(elevation - 7.5f, elevation + 2.5f);
-		if(elevation <= 0){
-			elevation = 0;
+		elevation = Random.Range(elevation - 2.5f, elevation + 2.5f);
+		
+		if(elevation <= -10){
+			elevation = -10;
 		}
 		if(elevation >= 70){
 			elevation = 70;
@@ -101,12 +98,13 @@ public class CreateTerrain : MonoBehaviour
 	private static float estSlope(Tile thisTile){
 		Tile prevTile = thisTile.previous;
 		double e = prevTile.Elevation;
-		e = 0.5 + 0.044*e - System.Math.Pow(0.000*e, 2) - System.Math.Pow(0.00001*e, 3);
-		float slope = (float)e;
-		if(float.IsNaN(slope)){
-			slope = 0;
+		e = 0.9*e - System.Math.Pow(0.002*e, 2);
+		float newElevation = (float)e;
+		if(float.IsNaN(newElevation)){
+			newElevation = 0;
 		}
-		return slope * -1;
+		//Debug.Log("y1: " + prevTile.Elevation.ToString() + "    y2: " + newElevation.ToString());
+		return newElevation;
 	}
 	
 	private static float calculateSlopeLeft(Tile c){
@@ -119,17 +117,19 @@ public class CreateTerrain : MonoBehaviour
 		Tile b2 = a2.right;
 		List<float> slopes = new List<float>();
 		if(a1.Elevation > 0){
-			slopes.Add(pointSlope(0, -1, c.Elevation, a1.Elevation));
+			slopes.Add(pointSlope(0, c.Elevation, 1, a1.Elevation));
 		}
 		if(b1.Elevation > 0){
-			slopes.Add(pointSlope(0, -2, c.Elevation, b1.Elevation));
+			slopes.Add(pointSlope(0, c.Elevation, 2, b1.Elevation));
 		}
+		/*
 		if(a2.Elevation > 0){
-			slopes.Add(pointSlope(0, 1, c.Elevation, a2.Elevation));
+			slopes.Add(pointSlope(0, c.Elevation, 1, a2.Elevation));
 		}
 		if(b2.Elevation > 0){
-			slopes.Add(pointSlope(0, 2, c.Elevation, b2.Elevation));
+			slopes.Add(pointSlope(0, c.Elevation, 2, b2.Elevation));
 		}
+		*/
 		return averageSlopes(slopes, slopes.Count);
 	}
 
@@ -143,17 +143,19 @@ public class CreateTerrain : MonoBehaviour
 		Tile b2 = a2.left;
 		List<float> slopes = new List<float>();
 		if(a1.Elevation > 0){
-			slopes.Add(pointSlope(0, 1, c.Elevation, a1.Elevation));
+			slopes.Add(pointSlope(0, c.Elevation, 1, a1.Elevation));
 		}
 		if(b1.Elevation > 0){
-			slopes.Add(pointSlope(0, 2, c.Elevation, b1.Elevation));
+			slopes.Add(pointSlope(0, c.Elevation, 2, b1.Elevation));
 		}
+		/*
 		if(a2.Elevation > 0){
-			slopes.Add(pointSlope(0, -1, c.Elevation, a2.Elevation));
+			slopes.Add(pointSlope(0, c.Elevation, -1, a2.Elevation));
 		}
 		if(b2.Elevation > 0){
-			slopes.Add(pointSlope(0, -2, c.Elevation, b2.Elevation));
+			slopes.Add(pointSlope(0, c.Elevation, -2, b2.Elevation));
 		}
+		*/
 		return averageSlopes(slopes, slopes.Count);
 	}
 	
@@ -165,27 +167,29 @@ public class CreateTerrain : MonoBehaviour
 		if(c.up != null){
 			Tile a1 = c.up;
 			if(a1.Elevation > 0){
-				slopes.Add(pointSlope(0, 1, c.Elevation, a1.Elevation));
+				slopes.Add(pointSlope(0, c.Elevation, 1, a1.Elevation));
 			}
 			if(a1.up != null){
 				Tile b1 = a1.up;
 				if(b1.Elevation > 0){
-					slopes.Add(pointSlope(0, 2, c.Elevation, b1.Elevation));
+					slopes.Add(pointSlope(0, c.Elevation, 2, b1.Elevation));
 				}
 			}
 		}
+		/*
 		if(c.down != null){
 			Tile a2 = c.down;
 			if(a2.Elevation > 0){
-				slopes.Add(pointSlope(0, -1, c.Elevation, a2.Elevation));
+				slopes.Add(pointSlope(0, c.Elevation, -1, a2.Elevation));
 			}
 			if(a2.down != null){
 				Tile b2 = a2.down;
 				if(b2.Elevation > 0){
-					slopes.Add(pointSlope(0, -2, c.Elevation, b2.Elevation));
+					slopes.Add(pointSlope(0, c.Elevation, -2, b2.Elevation));
 				}
 			}
 		}
+		*/
 		return averageSlopes(slopes, slopes.Count);
 	}
 	
@@ -194,34 +198,36 @@ public class CreateTerrain : MonoBehaviour
 		//tile arangement looks like this
 		// b1 <-> a1 <-> c <-> a2 <-> b2
 		List<float> slopes = new List<float>();
+		/*
 		if(c.up != null){
 			Tile a2 = c.up;
 			if(a2.Elevation > 0){
-				slopes.Add(pointSlope(0, 1, c.Elevation, a2.Elevation));
+				slopes.Add(pointSlope(0, c.Elevation, 1, a2.Elevation));
 			}
 			if(a2.up != null){
 				Tile b2 = a2.up;
 				if(b2.Elevation > 0){
-					slopes.Add(pointSlope(0, 2, c.Elevation, b2.Elevation));
+					slopes.Add(pointSlope(0, c.Elevation, 2, b2.Elevation));
 				}
 			}
 		}
+		*/
 		if(c.down != null){
 			Tile a1 = c.down;
 			if(a1.Elevation > 0){
-				slopes.Add(pointSlope(0, -1, c.Elevation, a1.Elevation));
+				slopes.Add(pointSlope(0, c.Elevation, 1, a1.Elevation));
 			}
 			if(a1.down != null){
 				Tile b1 = a1.down;
 				if(b1.Elevation > 0){
-					slopes.Add(pointSlope(0, -2, c.Elevation, b1.Elevation));
+					slopes.Add(pointSlope(0, c.Elevation, 2, b1.Elevation));
 				}
 			}
 		}
 		return averageSlopes(slopes, slopes.Count);
 	}
 	
-	private static float pointSlope(float x1, float x2, float y1, float y2){
+	private static float pointSlope(float x1, float y1, float x2, float y2){
 		float m = (y2 - y1)/(x2 - x1);
 		return m;
 	}
@@ -261,7 +267,7 @@ public class CreateTerrain : MonoBehaviour
 			}
 		}
 		
-		return unsetNeighbors;
+		return unsetNeighbors.OrderBy(t => Random.Range(0, 10)).ToList();
 	}
 	
 }
