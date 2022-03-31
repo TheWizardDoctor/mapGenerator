@@ -8,8 +8,8 @@ public class Test : MonoBehaviour
 {
     public GameObject tilePrefab;
 	public Camera cam;
-    int width = 100;
-    int height = 100;
+    int width = 300;	//x
+    int height = 200;	//y
 
     // Start is called before the first frame update
     void Start()
@@ -23,8 +23,23 @@ public class Test : MonoBehaviour
 		Map.createMap(width, height);
 
 
+		List<Tile> unsetTiles = CreateTerrain.createInitialMountains(t, width, height);
+		while(unsetTiles.Count > 0){
+			CreateTerrain.setElevations(unsetTiles);
+		}
+		
+		for(int j=0; j<height; j++)
+        {
+            for (int i=0; i<width; i++)
+            {
+                t[i, j].cube.transform.localScale = new Vector3(1, t[i, j].Elevation/10 + 1, 1);
+				t[i, j].cube.transform.position = new Vector3(t[i, j].X, (t[i, j].Elevation/10 + 1)/2, t[i, j].Y);
+				t[i, j].calculateBiome();
+            }
+        }
 		//very simplistic city creation
 		//(currently only checks 8 nearby tiles to get tile's creation value)
+
 		var watch = System.Diagnostics.Stopwatch.StartNew();
 		City.generateCities(Map.tiles, 0);
 		watch.Stop();
