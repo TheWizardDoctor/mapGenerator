@@ -127,6 +127,7 @@ public class Map : MonoBehaviour
 		}
 		
 		
+		
 		for(int j=0; j<height; j++)
         {
             for (int i=0; i<width; i++)
@@ -134,5 +135,9 @@ public class Map : MonoBehaviour
 				tiles[i, j].calculateBiome();
             }
         }
+		
+		for(int i=0; i < 3; i++){
+			CreateTerrain.unclutterOcean();
+		}
 	}
 }

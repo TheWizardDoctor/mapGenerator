@@ -141,7 +141,7 @@ public class Tile : IComparable<Tile>
 		cube.transform.localScale = new Vector3(1, elevation/10 + 1, 1);
 		cube.transform.position = new Vector3(x, (elevation/10 + 1)/2, y);
 		
-		if (elevation <= 3){
+		if (elevation < 5){
 			biome = Biome.Ocean;
 			cube.GetComponent<Renderer>().material = oceanMat;
 		} else if(elevation >= 50){

@@ -12,7 +12,7 @@ public class CreateTerrain : MonoBehaviour
 		int initialX; 
 		int initialY; 
 		//Debug.Log("x: " + initialX.ToString() + "    y: " + initialY.ToString());
-		for(int i = 0; i < 5; i++) {
+		for(int i = 0; i < 7; i++) {
 			initialX = Random.Range((int)(Map.width*.25), (int)(Map.width*.75)); 
 			initialY = Random.Range((int)(Map.height*.25), (int)(Map.height*.75));
 			thisTile = Map.tiles[initialX, initialY];
@@ -23,7 +23,7 @@ public class CreateTerrain : MonoBehaviour
 						unsetTiles.Add(t);
 					}
 				}
-				unsetTiles = setMountainRange(unsetTiles, thisTile, Random.Range(18, 25));
+				unsetTiles = setMountainRange(unsetTiles, thisTile, Random.Range(30, 45));
 			}
 		}	
 				
@@ -84,6 +84,7 @@ public class CreateTerrain : MonoBehaviour
 		float averageSlope = averageSlopes(slopes, slopes.Count);
 		float elevation = thisTile.Elevation;
 		elevation = averageSlope * scale + elevation;
+		//float wobble = elevation + (float)System.Math.Pow(6, 1 - 0.0025 * elevation) - 3.5f;
 		elevation = Random.Range(elevation - 2.5f, elevation + 2.5f);
 		
 		if(elevation <= -10){
@@ -270,4 +271,33 @@ public class CreateTerrain : MonoBehaviour
 		return unsetNeighbors.OrderBy(t => Random.Range(0, 10)).ToList();
 	}
 	
+	public static void unclutterOcean(){
+		for(int j = 0; j < Map.height; j++){
+            for(int i = 0; i < Map.width; i++){
+				//Debug.Log("biome: " + Map.tiles[i, j].Biome.ToString());
+				int oceanCount = 0;
+				if(Map.tiles[i, j].Biome != Biome.Ocean){
+					for(int x = -3; x <= 3; x++){
+						for(int y = -3; y <= 3; y++){
+							try {
+								if(Map.tiles[i + x, j + y].Biome == Biome.Ocean){
+									oceanCount++;
+								}
+							}
+							catch(System.IndexOutOfRangeException ex){
+								System.IndexOutOfRangeException e = ex;
+								oceanCount++;
+							}
+						}
+					}
+					if(oceanCount >= 39){
+						//Debug.Log("x: " + i.ToString() + "	y: " + j.ToString());
+						Map.tiles[i, j].Elevation = 4;
+						Map.tiles[i, j].calculateBiome();
+					}
+					
+				}
+            }
+        }
+	}
 }
