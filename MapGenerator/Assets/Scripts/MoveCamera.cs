@@ -57,7 +57,7 @@ public class MoveCamera : MonoBehaviour
             two = Map.tiles[Random.r.Next(100), Random.r.Next(100)];
             Road.CreateRoad(one, two);
             watch.Stop();
-            //Debug.Log("Time to create 1 road(s) is:" + watch.ElapsedMilliseconds + "ms");
+            Debug.Log("Time to create 1 road(s) is:" + watch.ElapsedMilliseconds + "ms");
         }
         if(Input.GetKeyDown(KeyCode.C))
         {

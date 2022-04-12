@@ -6,7 +6,6 @@ using UnityEngine;
 public class City
 {
     //static fields
-    private static readonly Material cityMat = (Material)Resources.Load("Materials/City.mat");
     public static List<City> cityList = new List<City>();
 
     //instance fields
@@ -87,9 +86,11 @@ public class City
             randTile = tiles[Random.r.Next(Map.width), Random.r.Next(Map.height)];
         }
         AddCity(randTile);
-        GameObject city = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-        city.gameObject.GetComponent<MeshRenderer>().material = cityMat;
-        city.transform.position = new Vector3(randTile.X, 6, randTile.Y);
+        //GameObject city = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+
+        GameObject city = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
+        city.transform.position = new Vector3(randTile.X, (randTile.Elevation / 10) + 1, randTile.Y);
+        
         City newCity = new City(randTile.X, randTile.Y);
         randTile.City = newCity;
     }

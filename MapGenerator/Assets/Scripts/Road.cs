@@ -6,6 +6,7 @@ public class Road : MonoBehaviour
 {
     private static List<Tile> fringe;
     private static readonly int minCost = 3;
+    private static readonly Material roadMat = Resources.Load<Material>("Road");
 
     public static void CreateRoad(City start, City end)
     {
@@ -27,8 +28,6 @@ public class Road : MonoBehaviour
             return;
         }
         Tile[,] tiles = Map.tiles;
-
-        RoadSet = new GameObject("Roads");
 
         foreach (Tile t in tiles)
         {
@@ -53,7 +52,7 @@ public class Road : MonoBehaviour
             //current.Explored = true;
             fringe.RemoveAt(0);
 
-            if (current.GVal > start.City.wealth)
+            if (start.City != null && current.GVal > start.City.wealth)
             {
                 Debug.Log("Too Much Money");
                 return;
@@ -69,9 +68,12 @@ public class Road : MonoBehaviour
                 while (temp != null)
                 {
                     temp.Road = true;
-                    GameObject c = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                    c.transform.SetParent(RoadSet.transform);
-                    c.transform.position = new Vector3(temp.X, 10, temp.Y);
+
+                    temp.cube.GetComponent<MeshRenderer>().material = roadMat;
+                    if (temp.Biome == Biome.Ocean)
+                    {
+                        temp.cube.transform.localScale = new Vector3(temp.cube.transform.localScale.x, temp.cube.transform.localScale.y + 2, temp.cube.transform.localScale.z);
+                    }
                     temp = temp.previous;
                 }
                 return;
