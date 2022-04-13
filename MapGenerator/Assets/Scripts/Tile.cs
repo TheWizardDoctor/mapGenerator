@@ -27,6 +27,8 @@ public class Tile : IComparable<Tile>
     public Tile down = null;
     public Tile left = null;
     public Tile right = null;
+	public float tileValue;
+
 	//public GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 	public GameObject cube = GameObject.Instantiate<GameObject>(cubePrefab);
 	
