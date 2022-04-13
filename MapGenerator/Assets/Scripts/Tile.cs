@@ -125,6 +125,17 @@ public class Tile : IComparable<Tile>
         get { return latitude; }
         set { latitude = value; }
     }
+	public float Border
+	{
+		get { return border; }
+		set { border = value; }
+	}
+	public float NavigationDifficulty
+	{
+		get { return navDifficulty; }
+		set { navDifficulty = value; }
+	}
+
 	//methods
 	public static void CalculateAllValues()
 	{
