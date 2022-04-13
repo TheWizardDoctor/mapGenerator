@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-public enum Biome { Ocean, Mountain, Tundra, BorealForest, Prairie, Shrubland, TemperateForest, Desert, Savannah, Rainforest };
+public enum Biome { Ocean, Mountain, Tundra, BorealForest, Prairie, Shrubland, TemperateForest, Desert, Savanna, Rainforest };
 
 public class Tile : IComparable<Tile>
 {
@@ -13,7 +13,7 @@ public class Tile : IComparable<Tile>
 	private Biome biome;
     private float elevation;
     private float precipitation;
-    private bool city;
+	private City city;
     private bool road;
 	private int x;
 	private int y;
@@ -36,7 +36,6 @@ public class Tile : IComparable<Tile>
         biome = Biome.Ocean;
         elevation = 0;
         precipitation = 0;
-        city = false;
         road = false;
 		explored = false;
     }
@@ -44,7 +43,6 @@ public class Tile : IComparable<Tile>
     {
         elevation = -1;
         precipitation = 0;
-        city = false;
         road = false;
 		biome = Biome.Ocean;
 		explored = false;
@@ -88,7 +86,7 @@ public class Tile : IComparable<Tile>
         get { return biome; }
         set { biome = value; }
     }
-    public bool City
+    public City City
     {
         get { return city; }
         set { city = value; }
@@ -173,7 +171,7 @@ public class Tile : IComparable<Tile>
 				biome = Biome.Desert;
 				cube.GetComponent<Renderer>().material = desertMat;
 			} else if(precipitation < 200){
-				biome = Biome.Savannah;
+				biome = Biome.Savanna;
 				cube.GetComponent<Renderer>().material = savanahMat;
 			} else{
 				biome = Biome.Rainforest;

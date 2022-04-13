@@ -20,9 +20,9 @@ public class City
         x = xVal;
         y = yVal;
         wealth = 10000;
-        water = (float)Random.r.NextDouble();
-        lumber = (float)Random.r.NextDouble();
-        food = (float)Random.r.NextDouble();
+        water = (float)RandomNum.r.NextDouble();
+        lumber = (float)RandomNum.r.NextDouble();
+        food = (float)RandomNum.r.NextDouble();
         cityList.Add(this);
     }
 
@@ -80,17 +80,17 @@ public class City
     {
         Tile[,] tiles = Map.tiles;
 
-        Tile randTile = tiles[Random.r.Next(Map.width), Random.r.Next(Map.height)];
+        Tile randTile = tiles[RandomNum.r.Next(Map.width), RandomNum.r.Next(Map.height)];
         while (randTile.Biome == Biome.Ocean)
         {
-            randTile = tiles[Random.r.Next(Map.width), Random.r.Next(Map.height)];
+            randTile = tiles[RandomNum.r.Next(Map.width), RandomNum.r.Next(Map.height)];
         }
         AddCity(randTile);
         //GameObject city = GameObject.CreatePrimitive(PrimitiveType.Capsule);
 
         GameObject city = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
         city.transform.position = new Vector3(randTile.X, (randTile.Elevation / 10) + 1, randTile.Y);
-        
+
         City newCity = new City(randTile.X, randTile.Y);
         randTile.City = newCity;
     }
@@ -99,7 +99,7 @@ public class City
     {
         float bestGuessVal = 0;
         City bestGuessCity = null;
-        foreach(City c in cityList)
+        foreach (City c in cityList)
         {
             if (c.food > bestGuessVal)
             {
@@ -162,7 +162,7 @@ public class City
                 }
 
                 Tile temp = tiles[tile.X + i, tile.Y + j];
-                temp.tileValue-=50*Map.scanRadius;
+                temp.tileValue -= 50 * Map.scanRadius;
             }
         }
     }
