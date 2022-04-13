@@ -2,14 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public enum Biome { Ocean, Mountain, Tundra, BorealForest, Prairie, Shrubland, TemperateForest, Desert, Savannah, Rainforest };
 
 public class Tile : IComparable<Tile>
 {
-    //attributes
+    static readonly GameObject cubePrefab = Resources.Load<GameObject>("Tile");
+
+	//attributes
 	//elavation is in 100m scale aka 60 = 6000m
-    private Biome biome;
+	private Biome biome;
     private float elevation;
     private float precipitation;
     private bool city;
@@ -26,7 +27,8 @@ public class Tile : IComparable<Tile>
     public Tile down = null;
     public Tile left = null;
     public Tile right = null;
-	public GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+	//public GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+	public GameObject cube = GameObject.Instantiate<GameObject>(cubePrefab);
 	
     //constructor
     public Tile()
