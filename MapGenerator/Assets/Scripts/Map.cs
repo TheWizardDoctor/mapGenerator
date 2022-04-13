@@ -15,6 +15,7 @@ public class Map : MonoBehaviour
     {
 		width = w;
 		height = h;
+		scanRadius = (int)Math.Floor(0.05 * width);
 
 		GameObject tileSet = new GameObject("Tiles");
 
