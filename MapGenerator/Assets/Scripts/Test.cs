@@ -20,16 +20,17 @@ public class Test : MonoBehaviour
 		//used for perspective Camera
 		cam.transform.position = new Vector3(width/2, height, height/2);
 
+		var watch = System.Diagnostics.Stopwatch.StartNew();
 		Map.createMap(width, height);
+		watch.Stop();
+		Debug.Log("Time to create all tiles is:" + watch.ElapsedMilliseconds + "ms");
 
-
-		
 		//very simplistic city creation
 		//(currently only checks 8 nearby tiles to get tile's creation value)
 
-		var watch = System.Diagnostics.Stopwatch.StartNew();
+		//var watch = System.Diagnostics.Stopwatch.StartNew();
 		City.generateCities(Map.tiles, 0);
-		watch.Stop();
+		//watch.Stop();
 		//Debug.Log("Time to create 0 cities is:" + watch.ElapsedMilliseconds + "ms");
 	}
 }
