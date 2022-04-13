@@ -18,7 +18,7 @@ public class Test : MonoBehaviour
 		//cam.orthographicSize = 50;
 
 		//used for perspective Camera
-		cam.transform.position = new Vector3(height/2, height, width/2);
+		cam.transform.position = new Vector3(width/2, height, height/2);
 
 		Map.createMap(width, height);
 
