@@ -17,10 +17,8 @@ public class Map : MonoBehaviour
 
 		GameObject tileSet = new GameObject("Tiles");
 
-		tiles = new Tile[width, height];
-		
-		//this is the code for loading the demo map
-		/*
+		tiles = new Tile[height, width];
+
 		var filePath = @"Elevation.csv";
 		var data = File.ReadLines(filePath);
 		int[,] exampleMapElevation = new int[height, width];
@@ -75,64 +73,39 @@ public class Map : MonoBehaviour
 				tiles[i, j].calculateBiome();
 			}
 		}
-		*/
-		//creating initial tiles
-		for (int i = 0; i < height; i++)
-		{
-			for (int j = 0; j < width; j++)
-			{
-				tiles[j, i] = new Tile(j, i, tileSet.transform);
-				tiles[j, i].calculateBiome();
-			}
-		}
-		//setting lefts and rights and ups and downs
+
 		for (int i = 0; i < height; i++)
 		{
 			for (int j = 0; j < width; j++)
 			{
 				if (j > 0)
 				{
-					tiles[j, i].left = tiles[j - 1, i];
+					tiles[i, j].left = tiles[i, j - 1];
 				}
 				else
 				{
-					tiles[j, i].left = tiles[width - 1, i];
+					//t[i, j].left = t[i, width - 1];
 				}
 
 				if (j < width - 1)
 				{
-					tiles[j, i].right = tiles[j + 1, i];
+					tiles[i, j].right = tiles[i, j + 1];
 				}
 				else
 				{
-					tiles[j, i].right = tiles[0, i];
+					//t[i, j].right = t[i, 0];
 				}
 
 				if (i > 0)
 				{
-					tiles[j, i].up = tiles[j, i - 1];
+					tiles[i, j].up = tiles[i - 1, j];
 				}
 
 				if (i < height - 1)
 				{
-					tiles[j, i].down = tiles[j, i + 1];
+					tiles[i, j].down = tiles[i + 1, j];
 				}
 			}
 		}
-
-		
-		List<Tile> unsetTiles = CreateTerrain.createInitialMountains();
-		while(unsetTiles.Count > 0){
-			CreateTerrain.setElevations(unsetTiles);
-		}
-		
-		
-		for(int j=0; j<height; j++)
-        {
-            for (int i=0; i<width; i++)
-            {
-				tiles[i, j].calculateBiome();
-            }
-        }
 	}
 }

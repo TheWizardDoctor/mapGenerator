@@ -8,12 +8,10 @@ public class MoveCamera : MonoBehaviour
     private Transform camPos;
     private float zoomScale=5;
     private float scrollWheel;
-    private System.Random r;
 
     private void Awake()
     {
         camPos = gameObject.GetComponent<Camera>().transform;
-        r = new System.Random();
     }
 
     // Update is called once per frame
@@ -42,17 +40,6 @@ public class MoveCamera : MonoBehaviour
                 camPos.position = new Vector3(camPos.position.x, camPos.position.y - scrollWheel * zoomScale, camPos.position.z);
             }
             
-        }
-
-        if(Input.GetKeyDown(KeyCode.R))
-        {
-            Tile one, two;
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            one = Map.tiles[r.Next(100), r.Next(100)];
-            two = Map.tiles[r.Next(100), r.Next(100)];
-            Road.createRoad(Map.tiles, one, two);
-            watch.Stop();
-            Debug.Log("Time to create 1 road(s) is:" + watch.ElapsedMilliseconds + "ms");
         }
     }
 }

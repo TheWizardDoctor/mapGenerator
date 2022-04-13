@@ -5,121 +5,86 @@ using UnityEngine;
 public class Road : MonoBehaviour
 {
     private static List<Tile> fringe;
-    static private GameObject roadSet;
-    private static int minCost=3;
     public static void createRoad(Tile[,] tiles, Tile start, Tile end)
     {
-        roadSet = new GameObject("Roads");
-
-        foreach (Tile t in tiles)
+        foreach(Tile t in tiles)
         {
             t.Explored = false;
             t.previous = null;
             t.GVal = float.MaxValue;
-            t.FVal = float.MaxValue;
-            t.HVal = minCost*(Mathf.Abs(end.X - t.X) + Mathf.Abs(end.Y - t.Y));
+            t.HVal = calculateCost(t);
         }
 
         fringe = new List<Tile>();
         fringe.Add(start);
-        fringe[0].Explored = true;
 
         start.Explored = true;
         start.GVal = 0;
-        start.FVal = start.HVal;
+        start.HVal = 0;
 
         while(fringe.Count != 0)
         {
             Tile current = fringe[0];
-            //current.Explored = true;
-            fringe.RemoveAt(0);
+            current.Explored = true;
 
-            //print("cur loc:(" + current.Y + "," + current.X + ")");
-            //print("\tfVal:" + current.FVal);
+            fringe.RemoveAt(0);
 
             if(current.Equals(end))
             {
                 Tile temp = current;
                 while(temp!=null)
                 {
-                    temp.Road = true;
+                    //temp.Road = true break causes a stack overflow for some reason
+                    //temp.Road = true;
                     GameObject c = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
-                    c.transform.SetParent(roadSet.transform);
                     c.transform.position = new Vector3(temp.X, 10, temp.Y);
                     temp = temp.previous;
                 }
                 return;
             }
 
-            if (current.up != null)
+            if (current.up != null && current.up.Explored == false)
             {
-                if(current.up.Explored == false)
-                {
-                    current.up.Explored = true;
-                    fringe.Add(current.up);
-                }
-
-                float neighborCost = calculateCost(current.up);
-                if (current.up.GVal > current.GVal + neighborCost)
-                {
-                    current.up.GVal = current.GVal + neighborCost;
-                    current.up.FVal = current.up.GVal + current.up.HVal;
-                    current.up.previous = current;
-                }
+                fringe.Add(current.up);
+                current.up.Explored = true;
             }
-            
-
-            if (current.left != null)
+            if (current.up != null && current.up.GVal > current.GVal + current.up.HVal)
             {
-                if(current.left.Explored == false)
-                {
-                    current.left.Explored = true;
-                    fringe.Add(current.left);
-                }
-
-                float neighborCost = calculateCost(current.left);
-                if (current.left.GVal > current.GVal + neighborCost)
-                {
-                    current.left.GVal = current.GVal + neighborCost;
-                    current.left.FVal = current.left.GVal + current.left.HVal;
-                    current.left.previous = current;
-                }
+                current.up.GVal = current.GVal + current.up.HVal;
+                current.up.previous = current;
             }
-            
 
-            if (current.right != null)
+            if (current.left != null && current.left.Explored == false)
             {
-                if(current.right.Explored == false)
-                {
-                    current.right.Explored = true;
-                    fringe.Add(current.right);
-                }
-
-                float neighborCost = calculateCost(current.right);
-                if (current.right.GVal > current.GVal + neighborCost)
-                {
-                    current.right.GVal = current.GVal + neighborCost;
-                    current.right.FVal = current.right.GVal + current.right.HVal;
-                    current.right.previous = current;
-                }
+                fringe.Add(current.left);
+                current.left.Explored = true;
             }
-            
-
-            if (current.down != null)
+            if (current.left != null && current.left.GVal > current.GVal + current.left.HVal)
             {
-                if(current.down.Explored == false)
-                {
-                    fringe.Add(current.down);
-                    current.down.Explored = true;
-                }
+                current.left.GVal = current.GVal + current.left.HVal;
+                current.left.previous = current;
+            }
 
-                float neighborCost = calculateCost(current.down);
-                if (current.down.GVal > current.GVal + neighborCost)
-                {
-                    current.down.GVal = current.GVal + neighborCost;
-                    current.down.FVal = current.down.GVal + current.down.HVal;
-                    current.down.previous = current;
-                }
+            if (current.right != null && current.right.Explored == false)
+            {
+                fringe.Add(current.right);
+                current.right.Explored = true;
+            }
+            if (current.right != null && current.right.GVal > current.GVal + current.right.HVal)
+            {
+                current.right.GVal = current.GVal + current.right.HVal;
+                current.right.previous = current;
+            }
+
+            if (current.down != null && current.down.Explored == false)
+            {
+                fringe.Add(current.down);
+                current.down.Explored = true;
+            }
+            if (current.down != null && current.down.GVal > current.GVal + current.down.HVal)
+            {
+                current.down.GVal = current.GVal + current.down.HVal;
+                current.down.previous = current;
             }
 
             fringe.Sort();
@@ -127,11 +92,6 @@ public class Road : MonoBehaviour
     }
     private static float calculateCost(Tile t)
     { 
-        if(t.Road)
-        {
-            return minCost;
-        }
-
         switch(t.Biome)
         {
             case Biome.BorealForest:

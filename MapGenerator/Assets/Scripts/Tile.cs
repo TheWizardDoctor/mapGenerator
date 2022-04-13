@@ -8,7 +8,6 @@ public enum Biome { Ocean, Mountain, Tundra, BorealForest, Prairie, Shrubland, T
 public class Tile : IComparable<Tile>
 {
     //attributes
-	//elavation is in 100m scale aka 60 = 6000m
     private Biome biome;
     private float elevation;
     private float precipitation;
@@ -16,7 +15,6 @@ public class Tile : IComparable<Tile>
     private bool road;
 	private int x;
 	private int y;
-	private float fVal;
 	private float gVal;
 	private float hVal;
 	private float latitude;
@@ -41,28 +39,29 @@ public class Tile : IComparable<Tile>
         road = false;
 		explored = false;
     }
-    public Tile(int xCord, int yCord, Transform tileSet)
+    public Tile(int height, int xCord, int yCord, Transform tileSet)
     {
-        elevation = -1;
+        elevation = 0;
         precipitation = 0;
         city = false;
         road = false;
-		biome = Biome.Ocean;
 		explored = false;
 		x = xCord;
 		y = yCord;
-		latitude = ((yCord + 1) * 90/(Map.height/2)) - 90;
+		latitude = ((xCord + 1) * 90/(height/2)) - 90;
 		cube.transform.SetParent(tileSet);
 		cube.transform.localScale = new Vector3(1, elevation/10 + 1, 1);
 		cube.transform.position = new Vector3(x, (elevation/10 + 1)/2, y);
-		cube.gameObject.GetComponent<MeshRenderer>().receiveShadows = false;
     }
 
     //properties
     public float Elevation
     {
         get { return elevation; }
-        set { elevation = value; }
+        set { elevation = value; 
+			cube.transform.localScale = new Vector3(1, elevation/10 + 1, 1);
+			cube.transform.position = new Vector3(x, (elevation/10 + 1)/2, y);
+		}
     }
     public float Precipitation
     {
@@ -79,11 +78,11 @@ public class Tile : IComparable<Tile>
 		get { return hVal; }
 		set { hVal = value; }
 	}
-	public float FVal
-	{
-		get { return fVal; }
-		set { fVal = value; }
-	}
+	//public float FVal
+	//{
+	//	get { return fVal; }
+	//	set { fVal = value; }
+	//}
 	public Biome Biome
     {
         get { return biome; }
@@ -97,7 +96,7 @@ public class Tile : IComparable<Tile>
     public bool Road
     {
         get { return road; }
-        set { road = value; }
+        set { Road = value; }
     }
 	public bool Explored
 	{
@@ -149,19 +148,17 @@ public class Tile : IComparable<Tile>
 		Material temperateForestMat = Resources.Load("TemperateForest", typeof(Material)) as Material;
 		Material tundraMat = Resources.Load("Tundra", typeof(Material)) as Material;
 		
-		float l = Math.Abs(latitude);
-		double temperature = (((elevation * -0.8 + 40) + (30 - l*1.7 + 0.059*Math.Pow(l, 2) - 0.0007*Math.Pow(l, 3)) * 3) / 4);
-		cube.transform.localScale = new Vector3(1, elevation/10 + 1, 1);
-		cube.transform.position = new Vector3(x, (elevation/10 + 1)/2, y);
-		
-		if (elevation <= 3){
+		double temperature = (((elevation * -0.8 + 40) * 2 + (Math.Abs(latitude) * -.65 + 30) * 3) / 5);
+		//Debug.Log("x: " + (x).ToString() + "    temperature: " + temperature.ToString() + "    latitude: " + latitude.ToString());
+
+		if (elevation <= 0){
 			biome = Biome.Ocean;
 			cube.GetComponent<Renderer>().material = oceanMat;
         } else if(elevation >= 50){
 			biome = Biome.Mountain;
 			cube.GetComponent<Renderer>().material = mountainMat;
             navDifficulty = 9;
-		} else if(temperature <= 0){
+		} else if(temperature <= 5){
 			if(precipitation < 100){
 				biome = Biome.Tundra;
 				cube.GetComponent<Renderer>().material = tundraMat;
@@ -211,7 +208,7 @@ public class Tile : IComparable<Tile>
 	}
 
     public int CompareTo(Tile other)
-	{
-		return fVal.CompareTo(other.fVal);
+    {
+		return GVal.CompareTo(other.GVal);
     }
 }
