@@ -8,12 +8,10 @@ public class MoveCamera : MonoBehaviour
     private Transform camPos;
     private float zoomScale=5;
     private float scrollWheel;
-    private System.Random r;
 
     private void Awake()
     {
         camPos = gameObject.GetComponent<Camera>().transform;
-        r = new System.Random();
     }
 
     // Update is called once per frame
@@ -44,15 +42,48 @@ public class MoveCamera : MonoBehaviour
             
         }
 
+        if(Input.GetKeyDown(KeyCode.T))
+        {
+            City start = City.cityList[0];
+
+            City.TradeRouteFood(start);
+        }
+        
         if(Input.GetKeyDown(KeyCode.R))
         {
             Tile one, two;
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            one = Map.tiles[r.Next(100), r.Next(100)];
-            two = Map.tiles[r.Next(100), r.Next(100)];
-            Road.createRoad(Map.tiles, one, two);
+            one = Map.tiles[Random.r.Next(100), Random.r.Next(100)];
+            two = Map.tiles[Random.r.Next(100), Random.r.Next(100)];
+            Road.CreateRoad(one, two);
             watch.Stop();
             Debug.Log("Time to create 1 road(s) is:" + watch.ElapsedMilliseconds + "ms");
+        }
+        if(Input.GetKeyDown(KeyCode.C))
+        {
+            //very simplistic city creation
+            //(currently only checks 8 nearby tiles to get tile's creation value)
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            City.GenerateCities(1);
+            watch.Stop();
+            Debug.Log("Time to create 1 cities is:" + watch.ElapsedMilliseconds + "ms");
+        }
+        if(Input.GetKeyDown(KeyCode.N))
+        {
+            int random=0, random2=0;
+            while(random==random2 && City.cityList.Count>1)
+            {
+                random = Random.r.Next(City.cityList.Count);
+                random2 = Random.r.Next(City.cityList.Count);
+            }
+
+            Tile one = Map.tiles[City.cityList[random].x, City.cityList[random].y];
+            Tile two = Map.tiles[City.cityList[random2].x, City.cityList[random2].y];
+
+            if (one != null && two != null)
+            {
+                Road.CreateRoad(one, two);
+            }
         }
     }
 }
