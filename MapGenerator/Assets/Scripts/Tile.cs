@@ -64,7 +64,6 @@ public class Tile
         x = xCord;
         y = yCord;
         latitude = ((yCord + 1) * 90 / (Map.height / 2)) - 90;
-
     }
 
     //properties

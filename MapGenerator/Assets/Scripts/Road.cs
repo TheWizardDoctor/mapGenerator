@@ -144,7 +144,6 @@ public class Road
                 }
             }
 
-
             if (current.right != null && !GetClosed(current.right))
             {
                 float neighborCost = CalculateCost(current.right);
@@ -169,7 +168,6 @@ public class Road
                     }
                 }
             }
-
 
             if (current.down != null && !GetClosed(current.down))
             {
