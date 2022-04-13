@@ -27,7 +27,7 @@ public class Test : MonoBehaviour
 
         //watch = System.Diagnostics.Stopwatch.StartNew();
         //Simple Border creation
-        Border.generateBorders(Map.tiles, 10);
+        //Border.generateBorders(Map.tiles, 10);
         //watch.Stop();
         //Debug.Log("Time to create 10 borders is:" + watch.ElapsedMilliseconds + "ms");
 
