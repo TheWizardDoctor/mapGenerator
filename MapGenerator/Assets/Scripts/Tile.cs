@@ -121,8 +121,32 @@ public class Tile : IComparable<Tile>
         get { return latitude; }
         set { latitude = value; }
     }
-    //methods
-	
+	//methods
+	public static void CalculateAllValues()
+	{
+		Tile[,] tiles = Map.tiles;
+
+		foreach (Tile tile in tiles)
+		{
+			tile.tileValue = 0;
+
+			for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
+			{
+				for (int j = -Map.scanRadius; j <= Map.scanRadius; j++)
+				{
+					if (tile.X + i < 0 || tile.Y + j < 0 || tile.X + i > Map.width - 1 || tile.Y + j > Map.height - 1)
+					{
+						continue;
+					}
+
+					Tile temp = tiles[tile.X + i, tile.Y + j];
+					tile.tileValue += City.BiomeValue(temp);
+					tile.tileValue += City.HasCity(temp);
+				}
+			}
+		}
+	}
+
 	public int calculateBiome()
 	{
 		Material borealMat = Resources.Load("BorealForest", typeof(Material)) as Material;
