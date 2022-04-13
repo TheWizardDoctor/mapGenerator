@@ -27,6 +27,8 @@ public class Tile : IComparable<Tile>
     public Tile down = null;
     public Tile left = null;
     public Tile right = null;
+	private float border = 0;
+	private float navDifficulty = 0;
 	public float tileValue;
 
 	//public GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
