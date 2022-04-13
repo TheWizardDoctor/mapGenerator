@@ -6,11 +6,12 @@ using UnityEngine;
 
 public class Map : MonoBehaviour
 {
-    public static int width;
-    public static int height;
-    public static Tile[,] tiles;
+	public static int width;
+	public static int height;
+	public static int scanRadius;
+	public static Tile[,] tiles;
 
-    public static void createMap(int w, int h)
+	public static void createMap(int w, int h)
     {
 		width = w;
 		height = h;
