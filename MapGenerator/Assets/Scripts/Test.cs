@@ -8,8 +8,8 @@ public class Test : MonoBehaviour
 {
     public GameObject tilePrefab;
 	public Camera cam;
-    int width = 100;
-    int height = 100;
+    int width = 300;	//x
+    int height = 200;	//y
 
     // Start is called before the first frame update
     void Start()
@@ -20,46 +20,22 @@ public class Test : MonoBehaviour
 		//used for perspective Camera
 		cam.transform.position = new Vector3(height/2, height, width/2);
 
-		Map.createMap(width, height);
+        var watch = System.Diagnostics.Stopwatch.StartNew();
+        Map.createMap(width, height);
+        watch.Stop();
+        Debug.Log("Time to create Map is:" + watch.ElapsedMilliseconds + "ms");
 
+        //watch = System.Diagnostics.Stopwatch.StartNew();
         //Simple Border creation
-        Border.generateBorders(Map.tiles, 4);
+        //Border.generateBorders(Map.tiles, 10);
+        //watch.Stop();
+        //Debug.Log("Time to create 10 borders is:" + watch.ElapsedMilliseconds + "ms");
 
-		//very simplistic city creation
-		//(currently only checks 8 nearby tiles to get tile's creation value)
-		var watch = System.Diagnostics.Stopwatch.StartNew();
+        //very simplistic city creation
+        //(currently only checks 8 nearby tiles to get tile's creation value)
+        watch = System.Diagnostics.Stopwatch.StartNew();
 		City.generateCities(Map.tiles, 0);
 		watch.Stop();
-		Debug.Log("Time to create 0 cities is:" + watch.ElapsedMilliseconds + "ms");
-
-        System.Random r = new System.Random();
-
-		Tile one, two;
-
-		/*while(true)
-        {
-			one = t[r.Next(100), r.Next(100)];
-			if(one.Biome!=Biome.Ocean)
-            {
-				break;
-            }
-		}
-		while (true)
-		{
-			two = t[r.Next(100), r.Next(100)];
-			if (two.Biome != Biome.Ocean)
-			{
-				break;
-			}
-		}*/
-
-		one = Map.tiles[r.Next(100), r.Next(100)];
-		two = Map.tiles[r.Next(100), r.Next(100)];
-
-		watch = System.Diagnostics.Stopwatch.StartNew();
-		Road.createRoad(Map.tiles, one, two);
-		watch.Stop();
-		Debug.Log("Time to create 1 road(s) is:" + watch.ElapsedMilliseconds + "ms");
-
+		//Debug.Log("Time to create 0 cities is:" + watch.ElapsedMilliseconds + "ms");
 	}
 }

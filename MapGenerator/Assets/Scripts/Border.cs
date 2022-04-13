@@ -6,7 +6,7 @@ public class Border : MonoBehaviour
 {
     public static void generateBorders(Tile[,] map, int countryNum)
     {
-        while (countryNum > 0)
+        while (countryNum > 1)
         {
             if (genBorder(map))
             {
@@ -29,7 +29,7 @@ public class Border : MonoBehaviour
             if(awayTile == null)
             {
                 eraseBorder(map, startTile);
-                Debug.Log("Border erased");
+//                Debug.Log("Border erased");
                 return false;
             }
 
@@ -141,7 +141,7 @@ public class Border : MonoBehaviour
     public static Tile genWeightedBorder(Tile[,] tiles, Tile awayTile)
     {
         Tile finishTile = awayTile;
-        int burstLength = Map.height / 20;
+        int burstLength = Map.height/100+1;
 
         while(detectBorder(tiles, finishTile) == false && detectOcean(tiles, finishTile) <= 0)
         {
@@ -149,33 +149,63 @@ public class Border : MonoBehaviour
             int xCord = prevTile.X - finishTile.X;
             int yCord = prevTile.Y - finishTile.Y;
 
+            if (xCord > 0) // N, NE, NW
+            {
+                if (yCord < 0) // NE
+                {
+                    finishTile = judgeNE(tiles, finishTile, burstLength);
+                }
+                if (yCord == 0) // N
+                {
+                    finishTile = judgeN(tiles, finishTile, burstLength);
+                }
+                if (yCord > 0) // NW
+                {
+                    finishTile = judgeNW(tiles, finishTile, burstLength);
+                }
+            }
             if (xCord < 0) // S, SE, SW
             {
                 if (yCord < 0) // SE
                 {
-                    finishTile = burstSE(tiles, finishTile, burstLength);
+                    finishTile = judgeSE(tiles, finishTile, burstLength);
                 }
                 if(yCord == 0) // S
                 {
-                    finishTile = burstS(tiles, finishTile, burstLength);
+                    finishTile = judgeS(tiles, finishTile, burstLength);
                 }
                 if (yCord > 0) // SW
                 {
-                    finishTile = burstSW(tiles, finishTile, burstLength);
+                    finishTile = judgeSW(tiles, finishTile, burstLength);
                 }
             }
             if(xCord == 0) // E, W
             {
                 if (yCord < 0) // E
                 {
-                    finishTile = burstE(tiles, finishTile, burstLength);
+                    finishTile = judgeE(tiles, finishTile, burstLength);
                 }
                 if (yCord > 0) // W
                 {
-                    finishTile = burstW(tiles, finishTile, burstLength);
+                    finishTile = judgeW(tiles, finishTile, burstLength);
                 }
             }
-            if(xCord > 0) // N, NE, NW
+        }
+
+        return finishTile;
+    }
+    public static Tile genNonWeightedBorder(Tile[,] tiles, Tile awayTile)
+    {
+        Tile finishTile = awayTile;
+        int burstLength = 1;
+
+        while (detectBorder(tiles, finishTile) == false && detectOcean(tiles, finishTile) <= 0)
+        {
+            Tile prevTile = findPrev(tiles, finishTile);
+            int xCord = prevTile.X - finishTile.X;
+            int yCord = prevTile.Y - finishTile.Y;
+
+            if (xCord > 0) // N, NE, NW
             {
                 if (yCord < 0) // NE
                 {
@@ -187,15 +217,427 @@ public class Border : MonoBehaviour
                 }
                 if (yCord > 0) // NW
                 {
-                    finishTile = burstN(tiles, finishTile, burstLength);
+                    finishTile = burstNW(tiles, finishTile, burstLength);
                 }
+            }
+            if (xCord < 0) // S, SE, SW
+            {
+                if (yCord < 0) // SE
+                {
+                    finishTile = burstSE(tiles, finishTile, burstLength);
+                }
+                if (yCord == 0) // S
+                {
+                    finishTile = burstS(tiles, finishTile, burstLength);
+                }
+                if (yCord > 0) // SW
+                {
+                    finishTile = burstSW(tiles, finishTile, burstLength);
+                }
+            }
+            if (xCord == 0) // E, W
+            {
+                if (yCord < 0) // E
+                {
+                    finishTile = burstE(tiles, finishTile, burstLength);
+                }
+                if (yCord > 0) // W
+                {
+                    finishTile = burstW(tiles, finishTile, burstLength);
+                }
+            }
+        }
+        return finishTile;
+    }
+
+    // Judges the 3 furtherest tiles from the previous border tile for the heaviest weighted tile,
+    // The bursts in that direction. Returns burst endpoint tile.
+    public static Tile judgeN(Tile[,] map, Tile selected, int burstLength)
+    {
+        Tile finishTile = selected;
+        float left = map[selected.X - 1, selected.Y - 1].NavigationDifficulty;
+        float right = map[selected.X - 1, selected.Y + 1].NavigationDifficulty;
+        float middle = map[selected.X - 1, selected.Y].NavigationDifficulty;
+        //Debug.Log("Weights are"+left+" "+middle+" "+right);
+
+        if (middle == left && middle == right)
+        {
+            finishTile = burstN(map, finishTile, burstLength);
+        }
+        if (middle > left && middle > right)
+        {
+            finishTile = burstN(map, finishTile, burstLength);
+        }
+        if (middle == left && middle > right)
+        {
+            finishTile = burstN(map, finishTile, burstLength);
+        }
+        if (middle > left && middle == right)
+        {
+            finishTile = burstN(map, finishTile, burstLength);
+        }
+        if (middle < left && right < left)
+        {
+            finishTile = burstNW(map, finishTile, burstLength);
+        }
+        if (middle < right && left < right)
+        {
+            finishTile = burstNE(map, finishTile, burstLength);
+        }
+        if (middle < right && left == right)
+        {
+            int rand = Random.Range(0, 2);
+            switch (rand)
+            {
+                case 0:
+                    finishTile = burstNE(map, finishTile, burstLength);
+                    break;
+                default:
+                    finishTile = burstNW(map, finishTile, burstLength);
+                    break;
+            }
+        }
+
+        return finishTile;
+    }
+    public static Tile judgeNE(Tile[,] map, Tile selected, int burstLength)
+    {
+        Tile finishTile = selected;
+        float left = map[selected.X - 1, selected.Y].NavigationDifficulty;
+        float right = map[selected.X, selected.Y + 1].NavigationDifficulty;
+        float middle = map[selected.X - 1, selected.Y + 1].NavigationDifficulty;
+        //Debug.Log("Weights are" + left + " " + middle + " " + right);
+
+        if (middle == left && middle == right)
+        {
+            finishTile = burstNE(map, finishTile, burstLength);
+        }
+        if (middle > left && middle > right)
+        {
+            finishTile = burstNE(map, finishTile, burstLength);
+        }
+        if (middle == left && middle > right)
+        {
+            finishTile = burstNE(map, finishTile, burstLength);
+        }
+        if (middle > left && middle == right)
+        {
+            finishTile = burstNE(map, finishTile, burstLength);
+        }
+        if (middle < left && right < left)
+        {
+            finishTile = burstN(map, finishTile, burstLength);
+        }
+        if (middle < right && left < right)
+        {
+            finishTile = burstE(map, finishTile, burstLength);
+        }
+        if (middle < right && left == right)
+        {
+            int rand = Random.Range(0, 2);
+            switch (rand)
+            {
+                case 0:
+                    finishTile = burstE(map, finishTile, burstLength);
+                    break;
+                default:
+                    finishTile = burstN(map, finishTile, burstLength);
+                    break;
+            }
+        }
+
+        return finishTile;
+    }
+    public static Tile judgeE(Tile[,] map, Tile selected, int burstLength)
+    {
+        Tile finishTile = selected;
+        float left = map[selected.X - 1, selected.Y + 1].NavigationDifficulty;
+        float right = map[selected.X + 1, selected.Y + 1].NavigationDifficulty;
+        float middle = map[selected.X, selected.Y+1].NavigationDifficulty;
+        //Debug.Log("Weights are" + left + " " + middle + " " + right);
+
+        if (middle == left && middle == right)
+        {
+            finishTile = burstE(map, finishTile, burstLength);
+        }
+        if (middle > left && middle > right)
+        {
+            finishTile = burstE(map, finishTile, burstLength);
+        }
+        if (middle == left && middle > right)
+        {
+            finishTile = burstE(map, finishTile, burstLength);
+        }
+        if (middle > left && middle == right)
+        {
+            finishTile = burstE(map, finishTile, burstLength);
+        }
+        if (middle < left && right < left)
+        {
+            finishTile = burstNE(map, finishTile, burstLength);
+        }
+        if (middle < right && left < right)
+        {
+            finishTile = burstSE(map, finishTile, burstLength);
+        }
+        if (middle < right && left == right)
+        {
+            int rand = Random.Range(0, 2);
+            switch (rand)
+            {
+                case 0:
+                    finishTile = burstNE(map, finishTile, burstLength);
+                    break;
+                default:
+                    finishTile = burstSE(map, finishTile, burstLength);
+                    break;
+            }
+        }
+
+        return finishTile;
+    }
+    public static Tile judgeSE(Tile[,] map, Tile selected, int burstLength)
+    {
+        Tile finishTile = selected;
+        float left = map[selected.X, selected.Y + 1].NavigationDifficulty;
+        float right = map[selected.X + 1, selected.Y].NavigationDifficulty;
+        float middle = map[selected.X + 1, selected.Y+1].NavigationDifficulty;
+        //Debug.Log("Weights are" + left + " " + middle + " " + right);
+
+        if (middle == left && middle == right)
+        {
+            finishTile = burstSE(map, finishTile, burstLength);
+        }
+        if (middle > left && middle > right)
+        {
+            finishTile = burstSE(map, finishTile, burstLength);
+        }
+        if (middle == left && middle > right)
+        {
+            finishTile = burstSE(map, finishTile, burstLength);
+        }
+        if (middle > left && middle == right)
+        {
+            finishTile = burstSE(map, finishTile, burstLength);
+        }
+        if (middle < left && right < left)
+        {
+            finishTile = burstE(map, finishTile, burstLength);
+        }
+        if (middle < right && left < right)
+        {
+            finishTile = burstS(map, finishTile, burstLength);
+        }
+        if (middle < right && left == right)
+        {
+            int rand = Random.Range(0, 2);
+            switch (rand)
+            {
+                case 0:
+                    finishTile = burstS(map, finishTile, burstLength);
+                    break;
+                default:
+                    finishTile = burstE(map, finishTile, burstLength);
+                    break;
+            }
+        }
+
+        return finishTile;
+    }
+    public static Tile judgeS(Tile[,]map, Tile selected, int burstLength)
+    {
+        Tile finishTile = selected;
+        float left = map[selected.X + 1, selected.Y - 1].NavigationDifficulty;
+        float right = map[selected.X + 1, selected.Y + 1].NavigationDifficulty;
+        float middle = map[selected.X + 1, selected.Y].NavigationDifficulty;
+        //Debug.Log("Weights are" + left + " " + middle + " " + right);
+
+        if (middle == left && middle == right)
+        {
+            finishTile = burstS(map, finishTile, burstLength);
+        }
+        if (middle > left && middle > right)
+        {
+            finishTile = burstS(map, finishTile, burstLength);
+        }
+        if (middle == left && middle > right)
+        {
+            finishTile = burstS(map, finishTile, burstLength);
+        }
+        if (middle > left && middle == right)
+        {
+            finishTile = burstS(map, finishTile, burstLength);
+        }
+        if (middle < left && right < left)
+        {
+            finishTile = burstSW(map, finishTile, burstLength);
+        }
+        if (middle < right && left < right)
+        {
+            finishTile = burstSE(map, finishTile, burstLength);
+        }
+        if (middle < right && left == right)
+        {
+            int rand = Random.Range(0, 2);
+            switch(rand)
+            {
+                case 0:
+                    finishTile = burstSE(map, finishTile, burstLength);
+                    break;
+                default:
+                    finishTile = burstSW(map, finishTile, burstLength);
+                    break;
+            }
+        }
+
+        return finishTile;
+    }
+    public static Tile judgeSW(Tile[,] map, Tile selected, int burstLength)
+    {
+        Tile finishTile = selected;
+        float left = map[selected.X+1, selected.Y].NavigationDifficulty;
+        float right = map[selected.X, selected.Y - 1].NavigationDifficulty;
+        float middle = map[selected.X + 1, selected.Y - 1].NavigationDifficulty;
+        //Debug.Log("Weights are" + left + " " + middle + " " + right);
+
+        if (middle == left && middle == right)
+        {
+            finishTile = burstSW(map, finishTile, burstLength);
+        }
+        if (middle > left && middle > right)
+        {
+            finishTile = burstSW(map, finishTile, burstLength);
+        }
+        if (middle == left && middle > right)
+        {
+            finishTile = burstSW(map, finishTile, burstLength);
+        }
+        if (middle > left && middle == right)
+        {
+            finishTile = burstSW(map, finishTile, burstLength);
+        }
+        if (middle < left && right < left)
+        {
+            finishTile = burstS(map, finishTile, burstLength);
+        }
+        if (middle < right && left < right)
+        {
+            finishTile = burstW(map, finishTile, burstLength);
+        }
+        if (middle < right && left == right)
+        {
+            int rand = Random.Range(0, 2);
+            switch (rand)
+            {
+                case 0:
+                    finishTile = burstS(map, finishTile, burstLength);
+                    break;
+                default:
+                    finishTile = burstW(map, finishTile, burstLength);
+                    break;
+            }
+        }
+
+        return finishTile;
+    }
+    public static Tile judgeW(Tile[,] map, Tile selected, int burstLength)
+    {
+        Tile finishTile = selected;
+        float left = map[selected.X + 1, selected.Y - 1].NavigationDifficulty;
+        float right = map[selected.X - 1, selected.Y - 1].NavigationDifficulty;
+        float middle = map[selected.X, selected.Y - 1].NavigationDifficulty;
+        //Debug.Log("Weights are" + left + " " + middle + " " + right);
+
+        if (middle == left && middle == right)
+        {
+            finishTile = burstW(map, finishTile, burstLength);
+        }
+        if (middle > left && middle > right)
+        {
+            finishTile = burstW(map, finishTile, burstLength);
+        }
+        if (middle == left && middle > right)
+        {
+            finishTile = burstW(map, finishTile, burstLength);
+        }
+        if (middle > left && middle == right)
+        {
+            finishTile = burstW(map, finishTile, burstLength);
+        }
+        if (middle < left && right < left)
+        {
+            finishTile = burstSW(map, finishTile, burstLength);
+        }
+        if (middle < right && left < right)
+        {
+            finishTile = burstNW(map, finishTile, burstLength);
+        }
+        if (middle < right && left == right)
+        {
+            int rand = Random.Range(0, 2);
+            switch (rand)
+            {
+                case 0:
+                    finishTile = burstNW(map, finishTile, burstLength);
+                    break;
+                default:
+                    finishTile = burstSW(map, finishTile, burstLength);
+                    break;
+            }
+        }
+
+        return finishTile;
+    }
+    public static Tile judgeNW(Tile[,] map, Tile selected, int burstLength)
+    {
+        Tile finishTile = selected;
+        float left = map[selected.X, selected.Y - 1].NavigationDifficulty;
+        float right = map[selected.X - 1, selected.Y].NavigationDifficulty;
+        float middle = map[selected.X - 1, selected.Y -1].NavigationDifficulty;
+        //Debug.Log("Weights are" + left + " " + middle + " " + right);
+
+        if (middle == left && middle == right)
+        {
+            finishTile = burstNW(map, finishTile, burstLength);
+        }
+        if (middle > left && middle > right)
+        {
+            finishTile = burstNW(map, finishTile, burstLength);
+        }
+        if (middle == left && middle > right)
+        {
+            finishTile = burstNW(map, finishTile, burstLength);
+        }
+        if (middle > left && middle == right)
+        {
+            finishTile = burstNW(map, finishTile, burstLength);
+        }
+        if (middle < left && right < left)
+        {
+            finishTile = burstW(map, finishTile, burstLength);
+        }
+        if (middle < right && left < right)
+        {
+            finishTile = burstN(map, finishTile, burstLength);
+        }
+        if (middle < right && left == right)
+        {
+            int rand = Random.Range(0, 2);
+            switch (rand)
+            {
+                case 0:
+                    finishTile = burstN(map, finishTile, burstLength);
+                    break;
+                default:
+                    finishTile = burstW(map, finishTile, burstLength);
+                    break;
             }
         }
 
         return finishTile;
     }
 
-    // Extends the border in a given general direction for a given length
+    // Extends the border in a given general direction for a given length. Returns ending tile of burst
     public static Tile burstN(Tile[,] map, Tile selected, int burst)
     {
         if (burst == 0 || detectBorder(map, selected) == true || detectOcean(map, selected) > 0)
@@ -453,7 +895,7 @@ public class Border : MonoBehaviour
         return endPoint;
     }
 
-    // Finds the previous border tile
+    // Finds the previous border tile and returns it.
     public static Tile findPrev(Tile[,] tiles, Tile awayTile)
     {
         Tile prevTile = awayTile;
@@ -498,27 +940,27 @@ public class Border : MonoBehaviour
     // Moves the start point away from the coastline to guarentee some space. Returns the last prospective tile
     public static Tile coastEscape(Tile[,] tiles, Tile startTile)
     {
-        int escapeVal = Map.height / 20;
+        int escapeVal = Map.height/50;
 //        Debug.Log("Escape val = "+escapeVal);
 
         if (tiles[startTile.X + 1, startTile.Y].Biome == Biome.Ocean)
         {
-            Debug.Log("Escape North");
+            //Debug.Log("Escape North");
             return escapeNorth(tiles, tiles[startTile.X - 1, startTile.Y], escapeVal);
         }
         if (tiles[startTile.X - 1, startTile.Y].Biome == Biome.Ocean)
         {
-            Debug.Log("Escape South");
+            //Debug.Log("Escape South");
             return escapeSouth(tiles, tiles[startTile.X + 1, startTile.Y], escapeVal);
         }
         if (tiles[startTile.X, startTile.Y - 1].Biome == Biome.Ocean)
         {
-            Debug.Log("Escape East");
+            //Debug.Log("Escape East");
             return escapeEast(tiles, tiles[startTile.X, startTile.Y + 1], escapeVal);
         }
         if (tiles[startTile.X, startTile.Y + 1].Biome == Biome.Ocean)
         {
-            Debug.Log("Escape West");
+            //Debug.Log("Escape West");
             return escapeWest(tiles, tiles[startTile.X, startTile.Y - 1], escapeVal);
         }
 
@@ -738,11 +1180,11 @@ public class Border : MonoBehaviour
         int oceans = detectOcean(tiles, startTile);
         if(startTile.Border == 2 || oceans>1 || detectBorder(tiles, startTile) == true)
         {
-            Debug.Log("Start point invalid");
+            //Debug.Log("Start point invalid");
             return null;
         }
 
-        Debug.Log("Start point found at "+startTile.X+", "+startTile.Y);
+        //Debug.Log("Start point found at "+startTile.X+", "+startTile.Y);
         startTile.Border = 1;
 
         return startTile;
@@ -816,8 +1258,12 @@ public class Border : MonoBehaviour
     // Creates a marker at Tile's location
     private static void genBorderSphere(Tile selected)
     {
+        if(selected.Biome == Biome.Ocean)
+        {
+            return;
+        }
         GameObject s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         s.transform.position = new Vector3(selected.X, (selected.Elevation/10)+1, selected.Y);
-        s.GetComponent<Renderer>().material.color = new Color(1, 0, 0, 1);
+        s.GetComponent<Renderer>().material.color = new Color(1, 1, 0, 1);
     }
 }
