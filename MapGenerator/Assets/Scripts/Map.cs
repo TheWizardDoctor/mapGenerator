@@ -136,5 +136,7 @@ public class Map : MonoBehaviour
 				tiles[i, j].calculateBiome();
             }
         }
+
+		Tile.CalculateAllValues();
 	}
 }
