@@ -24,7 +24,7 @@ public class MoveCamera : MonoBehaviour
             if (Input.GetKey(KeyCode.LeftControl))
             {
 
-                camPos.position = new Vector3(camPos.position.x, camPos.position.y, camPos.position.z - scrollWheel * zoomScale);
+                camPos.position = new Vector3(camPos.position.x, camPos.position.y, camPos.position.z + scrollWheel * zoomScale);
 
             }
             else if (Input.GetKey(KeyCode.LeftShift))
@@ -82,7 +82,10 @@ public class MoveCamera : MonoBehaviour
 
             if (one != null && two != null)
             {
+                var watch = System.Diagnostics.Stopwatch.StartNew();
                 Road.CreateRoad(one, two);
+                watch.Stop();
+                Debug.Log("Time to create 1 road is:" + watch.ElapsedMilliseconds + "ms");
             }
         }
     }
