@@ -21,6 +21,7 @@ public class Test : MonoBehaviour
 		cam.transform.position = new Vector3(width/2, height, height/2);
 
 		var watch = System.Diagnostics.Stopwatch.StartNew();
+
 		Map.createMap(width, height);
 		watch.Stop();
 		Debug.Log("Time to create all tiles is:" + watch.ElapsedMilliseconds + "ms");

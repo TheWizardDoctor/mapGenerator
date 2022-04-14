@@ -276,11 +276,11 @@ public class CreateTerrain : MonoBehaviour
             for(int i = 0; i < Map.width; i++){
 				//Debug.Log("biome: " + Map.tiles[i, j].Biome.ToString());
 				int oceanCount = 0;
-				if(Map.tiles[i, j].Biome != Biome.Ocean){
+				if(Map.tiles[i, j].Elevation >= 5){
 					for(int x = -3; x <= 3; x++){
 						for(int y = -3; y <= 3; y++){
 							try {
-								if(Map.tiles[i + x, j + y].Biome == Biome.Ocean){
+								if(Map.tiles[i + x, j + y].Elevation < 5){
 									oceanCount++;
 								}
 							}
@@ -293,9 +293,7 @@ public class CreateTerrain : MonoBehaviour
 					if(oceanCount >= 39){
 						//Debug.Log("x: " + i.ToString() + "	y: " + j.ToString());
 						Map.tiles[i, j].Elevation = 4;
-						Map.tiles[i, j].calculateBiome();
 					}
-					
 				}
             }
         }

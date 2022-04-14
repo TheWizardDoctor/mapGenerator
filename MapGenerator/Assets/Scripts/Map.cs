@@ -18,7 +18,6 @@ public class Map : MonoBehaviour
 		scanRadius = (int)Math.Floor(0.05 * width);
 
 		GameObject tileSet = new GameObject("Tiles");
-
 		tiles = new Tile[width, height];
 		
 		//this is the code for loading the demo map
@@ -128,20 +127,32 @@ public class Map : MonoBehaviour
 			CreateTerrain.setElevations(unsetTiles);
 		}
 		
+		for(int i=0; i < 5; i++){
+			CreateTerrain.unclutterOcean();
+		}
 		
-		
+		float[,] heights = new float[height, width];
 		for(int j=0; j<height; j++)
         {
             for (int i=0; i<width; i++)
             {
+				//Debug.Log(j.ToString() + ", " + i.ToString());
 				tiles[i, j].calculateBiome();
+				heights[j, i] = (tiles[i, j].Elevation)/80;
             }
         }
-		
-		for(int i=0; i < 3; i++){
-			CreateTerrain.unclutterOcean();
+		/*
+		GameObject g = GameObject.Find("Terrain");
+		Terrain t = g.GetComponent<Terrain>();
+		t.terrainData.size = new Vector3(width, 5, height);
+		Debug.Log("size: " + t.terrainData.size);
+		t.terrainData.heightmapResolution = 2048;
+		t.terrainData.SetDetailResolution(2048, 16);
+		t.terrainData.SetHeights((int)t.terrainData.size[0]/2, (int)t.terrainData.size[2]/2, heights);
+		Material oceanMat = Resources.Load("Ocean", typeof(Material)) as Material;
+		t.terrainData.heightmapTexture = oceanMat.mainTexture;
+		Debug.Log("reso: " + t.terrainData.baseMapResolution);*/
 		}
-
 		Tile.CalculateAllValues();
 	}
 }

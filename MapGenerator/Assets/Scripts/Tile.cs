@@ -22,6 +22,7 @@ public class Tile : IComparable<Tile>
 	private float hVal;
 	private float latitude;
 	private bool explored;
+	private Transform tileSet;
 	public Tile previous = null;
     public Tile up = null;
     public Tile down = null;
@@ -29,8 +30,6 @@ public class Tile : IComparable<Tile>
     public Tile right = null;
 	public float tileValue;
 
-	//public GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-	public GameObject cube = GameObject.Instantiate<GameObject>(cubePrefab);
 	
     //constructor
     public Tile()
@@ -41,9 +40,10 @@ public class Tile : IComparable<Tile>
         road = false;
 		explored = false;
     }
-    public Tile(int xCord, int yCord, Transform tileSet)
+    public Tile(int xCord, int yCord, Transform ts)
     {
-        elevation = -1;
+        tileSet = ts;
+		elevation = -1;
         precipitation = 0;
         road = false;
 		biome = Biome.Ocean;
@@ -51,10 +51,7 @@ public class Tile : IComparable<Tile>
 		x = xCord;
 		y = yCord;
 		latitude = ((yCord + 1) * 90/(Map.height/2)) - 90;
-		cube.transform.SetParent(tileSet);
-		cube.transform.localScale = new Vector3(1, elevation/10 + 1, 1);
-		cube.transform.position = new Vector3(x, (elevation/10 + 1)/2, y);
-		cube.gameObject.GetComponent<MeshRenderer>().receiveShadows = false;
+		
     }
 
     //properties
@@ -108,14 +105,14 @@ public class Tile : IComparable<Tile>
     {
         get { return x; }
         set { x = value; 
-			cube.transform.position = new Vector3(x, 0, y);
+			//cube.transform.position = new Vector3(x, 0, y);
 		}
     }
 	public int Y
     {
         get { return y; }
         set { y = value; 
-			cube.transform.position = new Vector3(x, 0, y);
+			//cube.transform.position = new Vector3(x, 0, y);
 		}
     }
 	public float Latitude
@@ -164,9 +161,13 @@ public class Tile : IComparable<Tile>
 		
 		float l = Math.Abs(latitude);
 		double temperature = (((elevation * -0.8 + 40) + (30 - l*1.7 + 0.059*Math.Pow(l, 2) - 0.0007*Math.Pow(l, 3)) * 3) / 4);
+		
+		GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		cube.transform.SetParent(tileSet);
 		cube.transform.localScale = new Vector3(1, elevation/10 + 1, 1);
 		cube.transform.position = new Vector3(x, (elevation/10 + 1)/2, y);
-		
+		cube.gameObject.GetComponent<MeshRenderer>().receiveShadows = false;
+
 		if (elevation < 5){
 			biome = Biome.Ocean;
 			cube.GetComponent<Renderer>().material = oceanMat;
