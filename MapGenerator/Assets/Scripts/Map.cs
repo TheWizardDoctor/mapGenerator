@@ -155,6 +155,6 @@ public class Map : MonoBehaviour
 		t.terrainData.heightmapTexture = oceanMat.mainTexture;
 		Debug.Log("reso: " + t.terrainData.baseMapResolution);*/
 
-        Tile.CalculateAllValues();
+        //Tile.CalculateAllValues();
     }
 }
