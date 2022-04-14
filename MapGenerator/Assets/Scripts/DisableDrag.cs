@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class DisableDrag : ScrollRect
 {
-    public override void OnBeginDrag(PointerEventData eventData){}
+    public override void OnBeginDrag(PointerEventData eventData) { }
     public override void OnDrag(PointerEventData eventData) { }
     public override void OnEndDrag(PointerEventData eventData) { }
 }

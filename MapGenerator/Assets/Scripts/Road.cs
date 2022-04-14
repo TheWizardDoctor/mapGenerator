@@ -22,7 +22,7 @@ public class Road : MonoBehaviour
     }
     public static void CreateRoad(Tile start, Tile end)
     {
-        if (start == null || end == null || Map.tiles==null)
+        if (start == null || end == null || Map.tiles == null)
         {
             Debug.Log("NULL ERROR");
             return;
@@ -38,15 +38,14 @@ public class Road : MonoBehaviour
             t.HVal = minCost * (Mathf.Abs(end.X - t.X) + Mathf.Abs(end.Y - t.Y));
         }
 
-        fringe = new List<Tile>();
-        fringe.Add(start);
+        fringe = new List<Tile> { start };
         fringe[0].Explored = true;
 
         start.Explored = true;
         start.GVal = 0;
         start.FVal = start.HVal;
 
-        while(fringe.Count != 0)
+        while (fringe.Count != 0)
         {
             Tile current = fringe[0];
             //current.Explored = true;
@@ -61,7 +60,7 @@ public class Road : MonoBehaviour
             //print("cur loc:(" + current.Y + "," + current.X + ")");
             //print("\tfVal:" + current.FVal);
 
-            if(current.Equals(end))
+            if (current.Equals(end))
             {
                 Debug.Log("cost:" + current.GVal);
                 Tile temp = current;
@@ -81,7 +80,7 @@ public class Road : MonoBehaviour
 
             if (current.up != null)
             {
-                if(current.up.Explored == false)
+                if (current.up.Explored == false)
                 {
                     current.up.Explored = true;
                     fringe.Add(current.up);
@@ -95,7 +94,7 @@ public class Road : MonoBehaviour
                     current.up.previous = current;
                 }
             }
-            
+
 
             if (current.left != null)
             {
@@ -113,11 +112,11 @@ public class Road : MonoBehaviour
                     current.left.previous = current;
                 }
             }
-            
+
 
             if (current.right != null)
             {
-                if(current.right.Explored == false)
+                if (current.right.Explored == false)
                 {
                     current.right.Explored = true;
                     fringe.Add(current.right);
@@ -131,7 +130,7 @@ public class Road : MonoBehaviour
                     current.right.previous = current;
                 }
             }
-            
+
 
             if (current.down != null)
             {
@@ -150,17 +149,31 @@ public class Road : MonoBehaviour
                 }
             }
 
-            fringe.Sort();
+            if (fringe.Count > 1)
+            {
+                int lowestIndex = 0;
+                for (int i = 1; i < fringe.Count; i++)
+                {
+                    if (fringe[i].FVal < fringe[lowestIndex].FVal)
+                    {
+                        lowestIndex = i;
+                    }
+                }
+                Tile swap = fringe[0];
+                fringe[0] = fringe[lowestIndex];
+                fringe[lowestIndex] = swap;
+            }
+
         }
     }
     private static float CalculateCost(Tile t)
-    { 
-        if(t.Road)
+    {
+        if (t.Road)
         {
             return minCost;
         }
 
-        switch(t.Biome)
+        switch (t.Biome)
         {
             case Biome.BorealForest:
                 return 25;
@@ -187,5 +200,5 @@ public class Road : MonoBehaviour
         }
     }
 
-    public static GameObject RoadSet { get; set; }
+    //public static GameObject RoadSet { get; set; }
 }

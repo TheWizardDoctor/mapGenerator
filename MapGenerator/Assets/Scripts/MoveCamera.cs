@@ -6,7 +6,7 @@ public class MoveCamera : MonoBehaviour
 {
     //private Transform cam;
     private Transform camPos;
-    private float zoomScale=5;
+    private float zoomScale = 5;
     private float scrollWheel;
 
     private void Awake()
@@ -39,27 +39,27 @@ public class MoveCamera : MonoBehaviour
                 //used for perspective camera
                 camPos.position = new Vector3(camPos.position.x, camPos.position.y - scrollWheel * zoomScale, camPos.position.z);
             }
-            
+
         }
 
-        if(Input.GetKeyDown(KeyCode.T))
+        if (Input.GetKeyDown(KeyCode.T))
         {
             City start = City.cityList[0];
 
             City.TradeRouteFood(start);
         }
-        
-        if(Input.GetKeyDown(KeyCode.R))
+
+        if (Input.GetKeyDown(KeyCode.R))
         {
             Tile one, two;
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            one = Map.tiles[RandomNum.r.Next(100), RandomNum.r.Next(100)];
-            two = Map.tiles[RandomNum.r.Next(100), RandomNum.r.Next(100)];
+            one = Map.tiles[1, 1];
+            two = Map.tiles[278, 189];
             Road.CreateRoad(one, two);
             watch.Stop();
             Debug.Log("Time to create 1 road(s) is:" + watch.ElapsedMilliseconds + "ms");
         }
-        if(Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.C))
         {
             //very simplistic city creation
             //(currently only checks 8 nearby tiles to get tile's creation value)
@@ -68,10 +68,10 @@ public class MoveCamera : MonoBehaviour
             watch.Stop();
             Debug.Log("Time to create 1 cities is:" + watch.ElapsedMilliseconds + "ms");
         }
-        if(Input.GetKeyDown(KeyCode.N))
+        if (Input.GetKeyDown(KeyCode.N))
         {
-            int random=0, random2=0;
-            while(random==random2 && City.cityList.Count>1)
+            int random = 0, random2 = 0;
+            while (random == random2 && City.cityList.Count > 1)
             {
                 random = RandomNum.r.Next(City.cityList.Count);
                 random2 = RandomNum.r.Next(City.cityList.Count);
