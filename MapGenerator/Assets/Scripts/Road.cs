@@ -47,7 +47,6 @@ public class Road : MonoBehaviour
         while (fringe.Count != 0)
         {
             Tile current = fringe.First.Value;
-            //current.Explored = true;
             fringe.RemoveFirst();
 
             if (start.City != null && current.GVal > start.City.wealth)
@@ -83,7 +82,6 @@ public class Road : MonoBehaviour
                 {
                     current.up.Explored = true;
                     FringeSortedAdd(fringe, current.up);
-                    //fringe.Add(current.up);
                 }
 
                 float neighborCost = CalculateCost(current.up);
@@ -102,7 +100,6 @@ public class Road : MonoBehaviour
                 {
                     current.left.Explored = true;
                     FringeSortedAdd(fringe, current.left);
-                    //fringe.Add(current.left);
                 }
 
                 float neighborCost = CalculateCost(current.left);
@@ -121,7 +118,6 @@ public class Road : MonoBehaviour
                 {
                     current.right.Explored = true;
                     FringeSortedAdd(fringe, current.right);
-                    //fringe.Add(current.right);
                 }
 
                 float neighborCost = CalculateCost(current.right);
@@ -140,7 +136,6 @@ public class Road : MonoBehaviour
                 {
                     current.down.Explored = true;
                     FringeSortedAdd(fringe, current.down);
-                    //fringe.Add(current.down);
 
                 }
 
