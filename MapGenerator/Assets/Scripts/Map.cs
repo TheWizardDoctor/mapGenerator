@@ -6,14 +6,16 @@ using UnityEngine;
 
 public class Map : MonoBehaviour
 {
-    public static int width;
-    public static int height;
-    public static Tile[,] tiles;
+	public static int width;
+	public static int height;
+	public static int scanRadius;
+	public static Tile[,] tiles;
 
-    public static void createMap(int w, int h)
+	public static void createMap(int w, int h)
     {
 		width = w;
 		height = h;
+		scanRadius = (int)Math.Floor(0.05 * width);
 
 		GameObject tileSet = new GameObject("Tiles");
 
@@ -139,5 +141,7 @@ public class Map : MonoBehaviour
 		for(int i=0; i < 3; i++){
 			CreateTerrain.unclutterOcean();
 		}
+
+		Tile.CalculateAllValues();
 	}
 }

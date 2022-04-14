@@ -2,17 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public enum Biome { Ocean, Mountain, Tundra, BorealForest, Prairie, Shrubland, TemperateForest, Desert, Savannah, Rainforest };
+public enum Biome { Ocean, Mountain, Tundra, BorealForest, Prairie, Shrubland, TemperateForest, Desert, Savanna, Rainforest };
 
 public class Tile : IComparable<Tile>
 {
-    //attributes
+    static readonly GameObject cubePrefab = Resources.Load<GameObject>("Tile");
+
+	//attributes
 	//elavation is in 100m scale aka 60 = 6000m
-    private Biome biome;
+	private Biome biome;
     private float elevation;
     private float precipitation;
-    private bool city;
+	private City city;
     private bool road;
 	private int x;
 	private int y;
@@ -26,7 +27,10 @@ public class Tile : IComparable<Tile>
     public Tile down = null;
     public Tile left = null;
     public Tile right = null;
-	public GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+	public float tileValue;
+
+	//public GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+	public GameObject cube = GameObject.Instantiate<GameObject>(cubePrefab);
 	
     //constructor
     public Tile()
@@ -34,7 +38,6 @@ public class Tile : IComparable<Tile>
         biome = Biome.Ocean;
         elevation = 0;
         precipitation = 0;
-        city = false;
         road = false;
 		explored = false;
     }
@@ -42,7 +45,6 @@ public class Tile : IComparable<Tile>
     {
         elevation = -1;
         precipitation = 0;
-        city = false;
         road = false;
 		biome = Biome.Ocean;
 		explored = false;
@@ -86,7 +88,7 @@ public class Tile : IComparable<Tile>
         get { return biome; }
         set { biome = value; }
     }
-    public bool City
+    public City City
     {
         get { return city; }
         set { city = value; }
@@ -121,8 +123,32 @@ public class Tile : IComparable<Tile>
         get { return latitude; }
         set { latitude = value; }
     }
-    //methods
-	
+	//methods
+	public static void CalculateAllValues()
+	{
+		Tile[,] tiles = Map.tiles;
+
+		foreach (Tile tile in tiles)
+		{
+			tile.tileValue = 0;
+
+			for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
+			{
+				for (int j = -Map.scanRadius; j <= Map.scanRadius; j++)
+				{
+					if (tile.X + i < 0 || tile.Y + j < 0 || tile.X + i > Map.width - 1 || tile.Y + j > Map.height - 1)
+					{
+						continue;
+					}
+
+					Tile temp = tiles[tile.X + i, tile.Y + j];
+					tile.tileValue += City.BiomeValue(temp);
+					tile.tileValue += City.HasCity(temp);
+				}
+			}
+		}
+	}
+
 	public int calculateBiome()
 	{
 		Material borealMat = Resources.Load("BorealForest", typeof(Material)) as Material;
@@ -171,7 +197,7 @@ public class Tile : IComparable<Tile>
 				biome = Biome.Desert;
 				cube.GetComponent<Renderer>().material = desertMat;
 			} else if(precipitation < 200){
-				biome = Biome.Savannah;
+				biome = Biome.Savanna;
 				cube.GetComponent<Renderer>().material = savanahMat;
 			} else{
 				biome = Biome.Rainforest;
