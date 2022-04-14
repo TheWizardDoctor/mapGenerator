@@ -152,7 +152,7 @@ public class Map : MonoBehaviour
 		Material oceanMat = Resources.Load("Ocean", typeof(Material)) as Material;
 		t.terrainData.heightmapTexture = oceanMat.mainTexture;
 		Debug.Log("reso: " + t.terrainData.baseMapResolution);*/
-		}
+		
 		Tile.CalculateAllValues();
 	}
 }
