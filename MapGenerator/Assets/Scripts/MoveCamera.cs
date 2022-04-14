@@ -53,11 +53,14 @@ public class MoveCamera : MonoBehaviour
         {
             Tile one, two;
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            one = Map.tiles[RandomNum.r.Next(Map.width), RandomNum.r.Next(Map.height)];
-            two = Map.tiles[RandomNum.r.Next(Map.width), RandomNum.r.Next(Map.height)];
-            Road.CreateRoad(one, two);
+            for (int i = 0; i < 10; i++)
+            {
+                one = Map.tiles[RandomNum.r.Next(Map.width), RandomNum.r.Next(Map.height)];
+                two = Map.tiles[RandomNum.r.Next(Map.width), RandomNum.r.Next(Map.height)];
+                Road.CreateRoad(one, two);
+            }
             watch.Stop();
-            Debug.Log("Time to create 1 road(s) is:" + watch.ElapsedMilliseconds + "ms");
+            Debug.Log("Time to create 10 road(s) is:" + watch.ElapsedMilliseconds + "ms");
         }
         if (Input.GetKeyDown(KeyCode.C))
         {

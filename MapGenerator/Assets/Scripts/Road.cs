@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Road : MonoBehaviour
 {
-    private static LinkedList<Tile> fringe;
+    private static List<Tile> fringe;
     private static readonly int minCost = 3;
     private static readonly Material roadMat = Resources.Load<Material>("Road");
 
@@ -38,16 +38,16 @@ public class Road : MonoBehaviour
             t.HVal = minCost * (Mathf.Abs(end.X - t.X) + Mathf.Abs(end.Y - t.Y));
         }
 
-        fringe = new LinkedList<Tile>();
-        fringe.AddFirst(start);
+        fringe = new List<Tile>();
+        fringe.Add(start);
         start.Explored = true;
         start.GVal = 0;
         start.FVal = start.HVal;
 
         while (fringe.Count != 0)
         {
-            Tile current = fringe.First.Value;
-            fringe.RemoveFirst();
+            Tile current = (Tile)fringe[0];
+            fringe.RemoveAt(0);
 
             if (start.City != null && current.GVal > start.City.wealth)
             {
@@ -82,6 +82,7 @@ public class Road : MonoBehaviour
                 {
                     current.up.Explored = true;
                     FringeSortedAdd(fringe, current.up);
+                    //fringe.Add(current.up);
                 }
 
                 float neighborCost = CalculateCost(current.up);
@@ -100,6 +101,7 @@ public class Road : MonoBehaviour
                 {
                     current.left.Explored = true;
                     FringeSortedAdd(fringe, current.left);
+                    //fringe.Add(current.left);
                 }
 
                 float neighborCost = CalculateCost(current.left);
@@ -118,6 +120,7 @@ public class Road : MonoBehaviour
                 {
                     current.right.Explored = true;
                     FringeSortedAdd(fringe, current.right);
+                    //fringe.Add(current.right);
                 }
 
                 float neighborCost = CalculateCost(current.right);
@@ -136,6 +139,7 @@ public class Road : MonoBehaviour
                 {
                     current.down.Explored = true;
                     FringeSortedAdd(fringe, current.down);
+                    //fringe.Add(current.down);
 
                 }
 
@@ -147,7 +151,6 @@ public class Road : MonoBehaviour
                     current.down.previous = current;
                 }
             }
-
         }
     }
     private static float CalculateCost(Tile t)
@@ -184,7 +187,42 @@ public class Road : MonoBehaviour
         }
     }
 
-    private static void FringeSortedAdd(LinkedList<Tile> fringe, Tile tileToAdd)
+    private static void FringeSortedAdd(List<Tile> fringe, Tile tileToAdd)
+    {
+        if (fringe.Count == 0 || tileToAdd.FVal >= fringe[fringe.Count - 1].FVal)
+        {
+            fringe.Add(tileToAdd);
+            return;
+        }
+
+        int low = 0;
+        int high = fringe.Count - 1;
+
+        while (low <= high)
+        {
+            int mid = (low + high) / 2;
+
+            if (tileToAdd.FVal == fringe[mid].FVal)
+            {
+                fringe.Insert(mid, tileToAdd);
+                return;
+            }
+            else if (mid != 0 && fringe[mid - 1].FVal <= tileToAdd.FVal && fringe[mid].FVal > tileToAdd.FVal)
+            {
+                fringe.Insert(mid, tileToAdd);
+                return;
+            }
+            else if (fringe[mid].FVal < tileToAdd.FVal)
+            {
+                low = mid + 1;
+            }
+            else
+            {
+                high = mid - 1;
+            }
+        }
+    }
+    /*private static void FringeSortedAdd(LinkedList<Tile> fringe, Tile tileToAdd)
     {
         float val = tileToAdd.FVal;
         LinkedListNode<Tile> current = fringe.First;
@@ -202,7 +240,7 @@ public class Road : MonoBehaviour
         {
             fringe.AddBefore(current, tileToAdd);
         }
-    }
+    }*/
 
     //public static GameObject RoadSet { get; set; }
 }

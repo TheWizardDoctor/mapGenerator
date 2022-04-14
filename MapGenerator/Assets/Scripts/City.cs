@@ -86,7 +86,6 @@ public class City
             randTile = tiles[RandomNum.r.Next(Map.width), RandomNum.r.Next(Map.height)];
         }
         AddCity(randTile);
-        //GameObject city = GameObject.CreatePrimitive(PrimitiveType.Capsule);
 
         GameObject city = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
         city.transform.position = new Vector3(randTile.X, (randTile.Elevation / 10) + 1, randTile.Y);
