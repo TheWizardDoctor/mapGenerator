@@ -44,9 +44,25 @@ public class MoveCamera : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.T))
         {
-            City start = City.cityList[0];
+            City.GenerateCities(Map.scanRadius * 5);
 
-            City.TradeRouteFood(start);
+            for (int i = 0; i < City.cityList.Count; i++)
+            {
+                double rand = RandomNum.r.NextDouble();
+
+                if(rand < 0.333)
+                {
+                    City.TradeRouteFood(City.cityList[i]);
+                }
+                else if(rand < 0.666)
+                {
+                    City.TradeRouteLumber(City.cityList[i]);
+                }
+                else
+                {
+                    City.TradeRouteWater(City.cityList[i]);
+                }
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.R))

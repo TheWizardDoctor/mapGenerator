@@ -14,16 +14,14 @@ public class City
     public float water;
     public float lumber;
     public float food;
+    public int roads;
 
     private City(int xVal, int yVal)
     {
         x = xVal;
         y = yVal;
-        wealth = 10000;
-        water = (float)RandomNum.r.NextDouble();
-        lumber = (float)RandomNum.r.NextDouble();
-        food = (float)RandomNum.r.NextDouble();
         cityList.Add(this);
+        SetResources(this);
     }
 
     //create num number of cities
@@ -85,7 +83,6 @@ public class City
         {
             randTile = tiles[RandomNum.r.Next(Map.width), RandomNum.r.Next(Map.height)];
         }
-        AddCity(randTile);
 
         GameObject city = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
         city.transform.position = new Vector3(randTile.X, (randTile.Elevation / 10) + 1, randTile.Y);
@@ -142,26 +139,95 @@ public class City
         Road.CreateRoad(start, bestGuessCity);
     }
 
-    public static float GetValue(Tile tile)
+    /*public static float GetValue(Tile tile)
     {
         return tile.tileValue;
-    }
+    }*/
 
-    private static void AddCity(Tile tile)
+    /* private static void AddCity(Tile tile)
+     {
+         Tile[,] tiles = Map.tiles;
+
+         for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
+         {
+             for (int j = -Map.scanRadius; j <= Map.scanRadius; j++)
+             {
+                 if (tile.X + i < 0 || tile.Y + j < 0 || tile.X + i > Map.width - 1 || tile.Y + j > Map.height - 1)
+                 {
+                     continue;
+                 }
+
+                 Tile temp = tiles[tile.X + i, tile.Y + j];
+                 temp.tileValue -= 50 * Map.scanRadius;
+             }
+         }
+     }*/
+
+    private static void SetResources(City city)
     {
+        city.wealth += 1000000;
+
         Tile[,] tiles = Map.tiles;
 
         for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
         {
             for (int j = -Map.scanRadius; j <= Map.scanRadius; j++)
             {
-                if (tile.X + i < 0 || tile.Y + j < 0 || tile.X + i > Map.width - 1 || tile.Y + j > Map.height - 1)
+                if (city.x + i < 0 || city.y + j < 0 || city.x + i > Map.width - 1 || city.y + j > Map.height - 1)
                 {
                     continue;
                 }
 
-                Tile temp = tiles[tile.X + i, tile.Y + j];
-                temp.tileValue -= 50 * Map.scanRadius;
+                Tile temp = tiles[city.x + i, city.y + j];
+
+                switch (temp.Biome)
+                {
+                    case Biome.Ocean:
+                        city.water += 50;
+                        city.food += 20;
+                        break;
+                    case Biome.Mountain:
+                        city.food += 5;
+                        city.lumber += 10;
+                        break;
+                    case Biome.Tundra:
+                        city.lumber += 10;
+                        city.water += 10;
+                        city.food += 5;
+                        break;
+                    case Biome.BorealForest:
+                        city.water += 15;
+                        city.food += 15;
+                        city.lumber += 15;
+                        break;
+                    case Biome.Prairie:
+                        city.food += 15;
+                        city.water += 10;
+                        break;
+                    case Biome.Shrubland:
+                        city.food += 15;
+                        city.water += 10;
+                        city.lumber += 5;
+                        break;
+                    case Biome.TemperateForest:
+                        city.food += 15;
+                        city.lumber += 25;
+                        city.water += 10;
+                        break;
+                    case Biome.Desert:
+                        city.food += 5;
+                        break;
+                    case Biome.Savanna:
+                        city.water += 10;
+                        city.lumber += 20;
+                        city.food += 20;
+                        break;
+                    case Biome.Rainforest:
+                        city.water += 30;
+                        city.lumber += 20;
+                        city.food += 15;
+                        break;
+                }
             }
         }
     }

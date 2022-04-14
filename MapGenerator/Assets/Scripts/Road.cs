@@ -67,10 +67,6 @@ public class Road : MonoBehaviour
                     temp.Road = true;
 
                     temp.cube.GetComponent<MeshRenderer>().material = roadMat;
-                    if (temp.Biome == Biome.Ocean)
-                    {
-                        temp.cube.transform.localScale = new Vector3(temp.cube.transform.localScale.x, temp.cube.transform.localScale.y + 2, temp.cube.transform.localScale.z);
-                    }
                     temp = temp.previous;
                 }
                 return;
