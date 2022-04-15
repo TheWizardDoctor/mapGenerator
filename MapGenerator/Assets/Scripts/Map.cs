@@ -6,22 +6,22 @@ using UnityEngine;
 
 public class Map : MonoBehaviour
 {
-	public static int width;
-	public static int height;
-	public static int scanRadius;
-	public static Tile[,] tiles;
+    public static int width;
+    public static int height;
+    public static int scanRadius;
+    public static Tile[,] tiles;
 
-	public static void createMap(int w, int h)
+    public static void createMap(int w, int h)
     {
-		width = w;
-		height = h;
-		scanRadius = (int)Math.Floor(0.05 * width);
+        width = w;
+        height = h;
+        scanRadius = (int)Math.Floor(0.05 * width);
 
-		GameObject tileSet = new GameObject("Tiles");
-		tiles = new Tile[width, height];
-		
-		//this is the code for loading the demo map
-		/*
+        GameObject tileSet = new GameObject("Tiles");
+        tiles = new Tile[width, height];
+
+        //this is the code for loading the demo map
+        /*
 		var filePath = @"Elevation.csv";
 		var data = File.ReadLines(filePath);
 		int[,] exampleMapElevation = new int[height, width];
@@ -77,49 +77,49 @@ public class Map : MonoBehaviour
 			}
 		}
 		*/
-		//creating initial tiles
-		for (int i = 0; i < height; i++)
-		{
-			for (int j = 0; j < width; j++)
-			{
-				tiles[j, i] = new Tile(j, i, tileSet.transform);
-				tiles[j, i].calculateBiome();
-			}
-		}
-		//setting lefts and rights and ups and downs
-		for (int i = 0; i < height; i++)
-		{
-			for (int j = 0; j < width; j++)
-			{
-				if (j > 0)
-				{
-					tiles[j, i].left = tiles[j - 1, i];
-				}
-				else
-				{
-					tiles[j, i].left = tiles[width - 1, i];
-				}
+        //creating initial tiles
+        for (int i = 0; i < height; i++)
+        {
+            for (int j = 0; j < width; j++)
+            {
+                tiles[j, i] = new Tile(j, i, tileSet.transform);
+                tiles[j, i].calculateBiome();
+            }
+        }
+        //setting lefts and rights and ups and downs
+        for (int i = 0; i < height; i++)
+        {
+            for (int j = 0; j < width; j++)
+            {
+                if (j > 0)
+                {
+                    tiles[j, i].left = tiles[j - 1, i];
+                }
+                else
+                {
+                    tiles[j, i].left = tiles[width - 1, i];
+                }
 
-				if (j < width - 1)
-				{
-					tiles[j, i].right = tiles[j + 1, i];
-				}
-				else
-				{
-					tiles[j, i].right = tiles[0, i];
-				}
+                if (j < width - 1)
+                {
+                    tiles[j, i].right = tiles[j + 1, i];
+                }
+                else
+                {
+                    tiles[j, i].right = tiles[0, i];
+                }
 
-				if (i > 0)
-				{
-					tiles[j, i].up = tiles[j, i - 1];
-				}
+                if (i > 0)
+                {
+                    tiles[j, i].up = tiles[j, i - 1];
+                }
 
-				if (i < height - 1)
-				{
-					tiles[j, i].down = tiles[j, i + 1];
-				}
-			}
-		}
+                if (i < height - 1)
+                {
+                    tiles[j, i].down = tiles[j, i + 1];
+                }
+            }
+        }
 
 		List<Tile> unsetTiles = CreateTerrain.createInitialMountains();
 		while(unsetTiles.Count > 0){
@@ -135,9 +135,10 @@ public class Map : MonoBehaviour
 			CreateBiomes.setPrecipitations(unsetPrecepitations);
 		}
 		
-		for(int j=0; j<height; j++)
+
+        for (int j = 0; j < height; j++)
         {
-            for (int i=0; i<width; i++)
+            for (int i = 0; i < width; i++)
             {
 				tiles[i, j].calculateBiome();
             }

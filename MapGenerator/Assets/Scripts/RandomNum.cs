@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class RandomNum : MonoBehaviour
 {
-    public static System.Random r =new System.Random();
+    public static System.Random r = new System.Random();
 }
