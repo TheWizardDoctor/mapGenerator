@@ -121,7 +121,6 @@ public class Map : MonoBehaviour
 			}
 		}
 
-		
 		List<Tile> unsetTiles = CreateTerrain.createInitialMountains();
 		while(unsetTiles.Count > 0){
 			CreateTerrain.setElevations(unsetTiles);
@@ -131,27 +130,18 @@ public class Map : MonoBehaviour
 			CreateTerrain.unclutterOcean();
 		}
 		
-		float[,] heights = new float[height, width];
+		List<Tile> unsetPrecepitations = CreateBiomes.createInitialWetZones();
+		while(unsetPrecepitations.Count > 0){
+			CreateBiomes.setPrecipitations(unsetPrecepitations);
+		}
+		
 		for(int j=0; j<height; j++)
         {
             for (int i=0; i<width; i++)
             {
-				//Debug.Log(j.ToString() + ", " + i.ToString());
 				tiles[i, j].calculateBiome();
-				heights[j, i] = (tiles[i, j].Elevation)/80;
             }
         }
-		/*
-		GameObject g = GameObject.Find("Terrain");
-		Terrain t = g.GetComponent<Terrain>();
-		t.terrainData.size = new Vector3(width, 5, height);
-		Debug.Log("size: " + t.terrainData.size);
-		t.terrainData.heightmapResolution = 2048;
-		t.terrainData.SetDetailResolution(2048, 16);
-		t.terrainData.SetHeights((int)t.terrainData.size[0]/2, (int)t.terrainData.size[2]/2, heights);
-		Material oceanMat = Resources.Load("Ocean", typeof(Material)) as Material;
-		t.terrainData.heightmapTexture = oceanMat.mainTexture;
-		Debug.Log("reso: " + t.terrainData.baseMapResolution);*/
 		
 		Tile.CalculateAllValues();
 	}

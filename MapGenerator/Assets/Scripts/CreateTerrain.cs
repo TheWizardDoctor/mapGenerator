@@ -11,8 +11,8 @@ public class CreateTerrain : MonoBehaviour
 		Tile thisTile;
 		int initialX; 
 		int initialY; 
-		//Debug.Log("x: " + initialX.ToString() + "    y: " + initialY.ToString());
-		for(int i = 0; i < 7; i++) {
+		int r = Random.Range(7, 10);
+		for(int i = 0; i < r; i++) {
 			initialX = Random.Range((int)(Map.width*.25), (int)(Map.width*.75)); 
 			initialY = Random.Range((int)(Map.height*.25), (int)(Map.height*.75));
 			thisTile = Map.tiles[initialX, initialY];
@@ -123,14 +123,6 @@ public class CreateTerrain : MonoBehaviour
 		if(b1.Elevation > 0){
 			slopes.Add(pointSlope(0, c.Elevation, 2, b1.Elevation));
 		}
-		/*
-		if(a2.Elevation > 0){
-			slopes.Add(pointSlope(0, c.Elevation, 1, a2.Elevation));
-		}
-		if(b2.Elevation > 0){
-			slopes.Add(pointSlope(0, c.Elevation, 2, b2.Elevation));
-		}
-		*/
 		return averageSlopes(slopes, slopes.Count);
 	}
 
@@ -149,14 +141,6 @@ public class CreateTerrain : MonoBehaviour
 		if(b1.Elevation > 0){
 			slopes.Add(pointSlope(0, c.Elevation, 2, b1.Elevation));
 		}
-		/*
-		if(a2.Elevation > 0){
-			slopes.Add(pointSlope(0, c.Elevation, -1, a2.Elevation));
-		}
-		if(b2.Elevation > 0){
-			slopes.Add(pointSlope(0, c.Elevation, -2, b2.Elevation));
-		}
-		*/
 		return averageSlopes(slopes, slopes.Count);
 	}
 	
@@ -177,20 +161,6 @@ public class CreateTerrain : MonoBehaviour
 				}
 			}
 		}
-		/*
-		if(c.down != null){
-			Tile a2 = c.down;
-			if(a2.Elevation > 0){
-				slopes.Add(pointSlope(0, c.Elevation, -1, a2.Elevation));
-			}
-			if(a2.down != null){
-				Tile b2 = a2.down;
-				if(b2.Elevation > 0){
-					slopes.Add(pointSlope(0, c.Elevation, -2, b2.Elevation));
-				}
-			}
-		}
-		*/
 		return averageSlopes(slopes, slopes.Count);
 	}
 	
@@ -199,20 +169,6 @@ public class CreateTerrain : MonoBehaviour
 		//tile arangement looks like this
 		// b1 <-> a1 <-> c <-> a2 <-> b2
 		List<float> slopes = new List<float>();
-		/*
-		if(c.up != null){
-			Tile a2 = c.up;
-			if(a2.Elevation > 0){
-				slopes.Add(pointSlope(0, c.Elevation, 1, a2.Elevation));
-			}
-			if(a2.up != null){
-				Tile b2 = a2.up;
-				if(b2.Elevation > 0){
-					slopes.Add(pointSlope(0, c.Elevation, 2, b2.Elevation));
-				}
-			}
-		}
-		*/
 		if(c.down != null){
 			Tile a1 = c.down;
 			if(a1.Elevation > 0){
