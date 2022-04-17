@@ -10,15 +10,6 @@ public class MoveCamera : MonoBehaviour
     private float zoomScale = 5;
     private float scrollWheel;
 
-    [SerializeField]
-    private GameObject menu;
-    [SerializeField]
-    private TextMeshProUGUI biomeText;
-    [SerializeField]
-    private TextMeshProUGUI ElevationText;
-    [SerializeField]
-    private TextMeshProUGUI PrecipitationText;
-
     private void Awake()
     {
         camPos = gameObject.GetComponent<Camera>().transform;
@@ -125,18 +116,12 @@ public class MoveCamera : MonoBehaviour
 
             if (Physics.Raycast(ray, out hit, 1000))
             {
-                menu.SetActive(true);
-
                 Vector2 tilePos = new Vector2(hit.collider.gameObject.transform.position.x, hit.collider.gameObject.transform.position.z);
-                Tile tile = Map.tiles[Mathf.RoundToInt(tilePos.x), Mathf.RoundToInt(tilePos.y)];
-
-                biomeText.text = "Biome: " + tile.Biome;
-                ElevationText.text = "Elevation: " + tile.Elevation;
-                PrecipitationText.text = "Precipitation: " + tile.Precipitation;
+                TileUI.S.SetTileMenu(tilePos);
             }
             else
             {
-                menu.SetActive(false);
+                TileUI.S.Disable();
             }
         }
     }

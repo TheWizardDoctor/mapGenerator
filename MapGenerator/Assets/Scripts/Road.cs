@@ -60,7 +60,7 @@ public class Road : MonoBehaviour
 
             if (current.Equals(end))
             {
-                Debug.Log("cost:" + current.GVal);
+                //Debug.Log("cost:" + current.GVal);
                 Tile temp = current;
                 while (temp != null)
                 {

@@ -9,6 +9,8 @@ public class City
     public static List<City> cityList = new List<City>();
 
     //instance fields
+    public string name;
+    public int population;
     public int x, y;
     public int wealth;
     public float water;
@@ -18,6 +20,8 @@ public class City
 
     private City(int xVal, int yVal)
     {
+        name = "Temp City name";
+        population = RandomNum.r.Next(100, 10000);
         x = xVal;
         y = yVal;
         cityList.Add(this);
