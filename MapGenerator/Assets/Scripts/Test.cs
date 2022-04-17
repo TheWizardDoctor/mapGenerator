@@ -29,9 +29,9 @@ public class Test : MonoBehaviour
         //very simplistic city creation
         //(currently only checks 8 nearby tiles to get tile's creation value)
 
-        //var watch = System.Diagnostics.Stopwatch.StartNew();
-        City.GenerateCities(0);
-        //watch.Stop();
-        //Debug.Log("Time to create 0 cities is:" + watch.ElapsedMilliseconds + "ms");
-    }
+		//var watch = System.Diagnostics.Stopwatch.StartNew();
+		City.GenerateCities(50);
+		//watch.Stop();
+		//Debug.Log("Time to create 0 cities is:" + watch.ElapsedMilliseconds + "ms");
+	}
 }
