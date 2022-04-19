@@ -8544,7 +8544,7 @@ GameObject:
   - component: {fileID: 2027871841}
   - component: {fileID: 2027871842}
   m_Layer: 5
-  m_Name: SavannahSlider
+  m_Name: SavannaSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
