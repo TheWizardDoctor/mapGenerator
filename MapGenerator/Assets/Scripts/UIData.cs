@@ -7,61 +7,61 @@ public class UIData : MonoBehaviour
 {
     [SerializeField]
     private Slider citySlider;
-    public static float cityMultiplier;
+    public static float cityMultiplier=0.5f;
 
     [SerializeField]
     private Slider riverSlider;
-    public static float riverMultiplier;
+    public static float riverMultiplier = 0.5f;
 
     [SerializeField]
     private Slider countrySlider;
-    public static float countryMultiplier;
+    public static float countryMultiplier = 0.5f;
 
     [SerializeField]
     private Slider wealthSlider;
-    public static float wealthMultiplier;
+    public static float wealthMultiplier = 0.5f;
 
 
     //Scroll View Content
     [SerializeField]
     private Slider oceanSlider;
-    public static float oceanMultiplier;
+    public static float oceanMultiplier = 0.5f;
 
     [SerializeField]
     private Slider mountainSlider;
-    public static float mountainMultiplier;
+    public static float mountainMultiplier = 0.5f;
 
     [SerializeField]
     private Slider tundraSlider;
-    public static float tundraMultiplier;
+    public static float tundraMultiplier = 0.5f;
 
     [SerializeField]
     private Slider borealForestSlider;
-    public static float borealForestMultiplier;
+    public static float borealForestMultiplier = 0.5f;
 
     [SerializeField]
     private Slider prairieSlider;
-    public static float prairieMultiplier;
+    public static float prairieMultiplier = 0.5f;
 
     [SerializeField]
     private Slider shrublandSlider;
-    public static float shrublandMultiplier;
+    public static float shrublandMultiplier = 0.5f;
 
     [SerializeField]
     private Slider temperateForestSlider;
-    public static float temperateForestMultiplier;
+    public static float temperateForestMultiplier = 0.5f;
 
     [SerializeField]
     private Slider desertSlider;
-    public static float desertMultiplier;
+    public static float desertMultiplier = 0.5f;
 
     [SerializeField]
     private Slider savannahSlider;
-    public static float savannahMultiplier;
+    public static float savannahMultiplier = 0.5f;
 
     [SerializeField]
     private Slider rainForestSlider;
-    public static float rainForestMultiplier;
+    public static float rainForestMultiplier = 0.5f;
 
 
     // Start is called before the first frame update

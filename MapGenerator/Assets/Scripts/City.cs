@@ -231,7 +231,7 @@ public class City
                 }
             }
         }
-        city.wealth = Mathf.RoundToInt(RandomNum.r.Next(100, 500) * (city.food + city.water + city.lumber));
+        city.wealth = Mathf.RoundToInt(RandomNum.r.Next(10, 100) * UIData.wealthMultiplier * (city.food + city.water + city.lumber));
     }
 
     public static int BiomeValue(Tile tile)
