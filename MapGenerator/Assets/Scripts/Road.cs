@@ -1,12 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Priority_Queue;
 
-public class Road : MonoBehaviour
+public class Road
 {
-    private static List<Tile> fringe;
-    private static readonly int minCost = 3;
+    private static SimplePriorityQueue<Tile> fringe;
+    private static readonly int minCost = 5;
     private static readonly Material roadMat = Resources.Load<Material>("Road");
+    private static readonly Material OceanPathMat = Resources.Load<Material>("OceanPath");
 
     public static void CreateRoad(City start, City end)
     {
@@ -33,27 +33,27 @@ public class Road : MonoBehaviour
         {
             t.Explored = false;
             t.previous = null;
+            t.closed = false;
             t.GVal = float.MaxValue;
             t.FVal = float.MaxValue;
             t.HVal = minCost * (Mathf.Abs(end.X - t.X) + Mathf.Abs(end.Y - t.Y));
         }
 
-        fringe = new List<Tile>();
-        fringe.Add(start);
+        fringe = new SimplePriorityQueue<Tile>();
         start.Explored = true;
         start.GVal = 0;
         start.FVal = start.HVal;
+        fringe.Enqueue(start, start.FVal);
 
         while (fringe.Count != 0)
         {
-            Tile current = (Tile)fringe[0];
-            fringe.RemoveAt(0);
+            Tile current = (Tile)fringe.Dequeue();
 
-            if (start.City != null && current.GVal > start.City.wealth)
-            {
-                Debug.Log("Too Much Money");
-                return;
-            }
+            //if (start.City != null && current.GVal > start.City.wealth)
+            //{
+            //    Debug.Log("Too Much Money");
+            //    return;
+            //}
 
             //print("cur loc:(" + current.Y + "," + current.X + ")");
             //print("\tfVal:" + current.FVal);
@@ -66,87 +66,132 @@ public class Road : MonoBehaviour
                 {
                     temp.Road = true;
 
-                    temp.cube.GetComponent<MeshRenderer>().material = roadMat;
+                    if(temp.Biome!=Biome.Ocean)
+                    {
+                        temp.cube.GetComponent<MeshRenderer>().material = roadMat;
+                    }
+                    else
+                    {
+                        temp.cube.GetComponent<MeshRenderer>().material = OceanPathMat;
+                    }
+                    
                     temp = temp.previous;
                 }
                 return;
             }
 
-            if (current.up != null)
+            if (current.up != null && !current.up.closed)
             {
+                float neighborCost = CalculateCost(current.up);
+
                 if (current.up.Explored == false)
                 {
                     current.up.Explored = true;
-                    FringeSortedAdd(fringe, current.up);
-                    //fringe.Add(current.up);
-                }
-
-                float neighborCost = CalculateCost(current.up);
-                if (current.up.GVal > current.GVal + neighborCost)
-                {
                     current.up.GVal = current.GVal + neighborCost;
                     current.up.FVal = current.up.GVal + current.up.HVal;
                     current.up.previous = current;
+                    fringe.Enqueue(current.up, current.up.FVal);
+
                 }
+                else
+                {
+                    if (current.up.GVal > current.GVal + neighborCost)
+                    {
+                        current.up.GVal = current.GVal + neighborCost;
+                        current.up.FVal = current.up.GVal + current.up.HVal;
+                        current.up.previous = current;
+                        fringe.UpdatePriority(current.up, current.up.FVal);
+                    }
+                }
+
+
             }
 
 
-            if (current.left != null)
+            if (current.left != null && !current.left.closed)
             {
+                float neighborCost = CalculateCost(current.left);
+
                 if (current.left.Explored == false)
                 {
                     current.left.Explored = true;
-                    FringeSortedAdd(fringe, current.left);
-                    //fringe.Add(current.left);
-                }
-
-                float neighborCost = CalculateCost(current.left);
-                if (current.left.GVal > current.GVal + neighborCost)
-                {
                     current.left.GVal = current.GVal + neighborCost;
                     current.left.FVal = current.left.GVal + current.left.HVal;
                     current.left.previous = current;
+                    fringe.Enqueue(current.left, current.left.FVal);
+
                 }
+                else
+                {
+                    if (current.left.GVal > current.GVal + neighborCost)
+                    {
+                        current.left.GVal = current.GVal + neighborCost;
+                        current.left.FVal = current.left.GVal + current.left.HVal;
+                        current.left.previous = current;
+                        fringe.UpdatePriority(current.left, current.left.FVal);
+                    }
+                }
+
+
             }
 
 
-            if (current.right != null)
+            if (current.right != null && !current.right.closed)
             {
+                float neighborCost = CalculateCost(current.right);
+
                 if (current.right.Explored == false)
                 {
                     current.right.Explored = true;
-                    FringeSortedAdd(fringe, current.right);
-                    //fringe.Add(current.right);
-                }
-
-                float neighborCost = CalculateCost(current.right);
-                if (current.right.GVal > current.GVal + neighborCost)
-                {
                     current.right.GVal = current.GVal + neighborCost;
                     current.right.FVal = current.right.GVal + current.right.HVal;
                     current.right.previous = current;
+                    fringe.Enqueue(current.right, current.right.FVal);
+
                 }
+                else
+                {
+                    if (current.right.GVal > current.GVal + neighborCost)
+                    {
+                        current.right.GVal = current.GVal + neighborCost;
+                        current.right.FVal = current.right.GVal + current.right.HVal;
+                        current.right.previous = current;
+                        fringe.UpdatePriority(current.right, current.right.FVal);
+                    }
+                }
+
+
             }
 
 
-            if (current.down != null)
+            if (current.down != null && !current.down.closed)
             {
+                float neighborCost = CalculateCost(current.down);
+
                 if (current.down.Explored == false)
                 {
                     current.down.Explored = true;
-                    FringeSortedAdd(fringe, current.down);
-                    //fringe.Add(current.down);
-
-                }
-
-                float neighborCost = CalculateCost(current.down);
-                if (current.down.GVal > current.GVal + neighborCost)
-                {
                     current.down.GVal = current.GVal + neighborCost;
                     current.down.FVal = current.down.GVal + current.down.HVal;
                     current.down.previous = current;
+                    fringe.Enqueue(current.down, current.down.FVal);
+
                 }
+                else
+                {
+                    if (current.down.GVal > current.GVal + neighborCost)
+                    {
+                        current.down.GVal = current.GVal + neighborCost;
+                        current.down.FVal = current.down.GVal + current.down.HVal;
+                        current.down.previous = current;
+                        fringe.UpdatePriority(current.down, current.down.FVal);
+                    }
+                }
+
+                
             }
+
+            current.closed = true;
         }
     }
     private static float CalculateCost(Tile t)
@@ -161,63 +206,63 @@ public class Road : MonoBehaviour
             case Biome.BorealForest:
                 return 25;
             case Biome.Desert:
-                return 5;
+                return 10;
             case Biome.Mountain:
                 return 30;
             case Biome.Ocean:
                 return 40;
             case Biome.Prairie:
-                return 5;
+                return 10;
             case Biome.Rainforest:
                 return 30;
             case Biome.Savanna:
-                return 5;
+                return 10;
             case Biome.Shrubland:
-                return 5;
+                return 10;
             case Biome.TemperateForest:
                 return 20;
             case Biome.Tundra:
                 return 10;
             default:
-                return 0;
+                return 10;
         }
     }
 
-    private static void FringeSortedAdd(List<Tile> fringe, Tile tileToAdd)
-    {
-        if (fringe.Count == 0 || tileToAdd.FVal >= fringe[fringe.Count - 1].FVal)
-        {
-            fringe.Add(tileToAdd);
-            return;
-        }
+    //private static void FringeSortedAdd(List<Tile> fringe, Tile tileToAdd)
+    //{
+    //    if (fringe.Count == 0) //|| tileToAdd.FVal >= fringe[fringe.Count - 1].FVal)
+    //    {
+    //        fringe.Add(tileToAdd);
+    //        return;
+    //    }
 
-        int low = 0;
-        int high = fringe.Count - 1;
+    //    int low = 0;
+    //    int high = fringe.Count - 1;
 
-        while (low <= high)
-        {
-            int mid = (low + high) / 2;
+    //    while (low <= high)
+    //    {
+    //        int mid = (low + high) / 2;
 
-            if (tileToAdd.FVal == fringe[mid].FVal)
-            {
-                fringe.Insert(mid, tileToAdd);
-                return;
-            }
-            else if (mid != 0 && fringe[mid - 1].FVal <= tileToAdd.FVal && fringe[mid].FVal > tileToAdd.FVal)
-            {
-                fringe.Insert(mid, tileToAdd);
-                return;
-            }
-            else if (fringe[mid].FVal < tileToAdd.FVal)
-            {
-                low = mid + 1;
-            }
-            else
-            {
-                high = mid - 1;
-            }
-        }
-    }
+    //        if (tileToAdd.FVal == fringe[mid].FVal)
+    //        {
+    //            fringe.Insert(mid, tileToAdd);
+    //            return;
+    //        }
+    //        else if (mid != 0 && fringe[mid - 1].FVal <= tileToAdd.FVal && fringe[mid].FVal > tileToAdd.FVal)
+    //        {
+    //            fringe.Insert(mid, tileToAdd);
+    //            return;
+    //        }
+    //        else if (fringe[mid].FVal < tileToAdd.FVal)
+    //        {
+    //            low = mid + 1;
+    //        }
+    //        else
+    //        {
+    //            high = mid - 1;
+    //        }
+    //    }
+    //}
     /*private static void FringeSortedAdd(LinkedList<Tile> fringe, Tile tileToAdd)
     {
         float val = tileToAdd.FVal;

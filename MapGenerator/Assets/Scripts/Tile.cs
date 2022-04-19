@@ -21,7 +21,8 @@ public class Tile
     private float gVal;
     private float hVal;
     private float latitude;
-    private bool explored;
+    private bool added;
+    public bool closed;
     private Transform tileSet;
     public Tile previous = null;
     public Tile up = null;
@@ -39,7 +40,7 @@ public class Tile
         elevation = 0;
         precipitation = 0;
         road = false;
-        explored = false;
+        added = false;
     }
     public Tile(int xCord, int yCord, Transform ts)
     {
@@ -49,7 +50,7 @@ public class Tile
         precipitation = 0;
         road = false;
         biome = Biome.Ocean;
-        explored = false;
+        added = false;
         x = xCord;
         y = yCord;
         latitude = ((yCord + 1) * 90 / (Map.height / 2)) - 90;
@@ -99,8 +100,8 @@ public class Tile
     }
     public bool Explored
     {
-        get => explored;
-        set => explored = value;
+        get => added;
+        set => added = value;
     }
 
     public int X
@@ -138,7 +139,6 @@ public class Tile
 
                     Tile temp = tiles[tile.X + i, tile.Y + j];
                     tile.tileValue += City.BiomeValue(temp);
-                    tile.tileValue += City.HasCity(temp);
                 }
             }
         }

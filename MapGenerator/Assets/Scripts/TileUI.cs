@@ -37,8 +37,8 @@ public class TileUI : MonoBehaviour
         Tile tile = Map.tiles[Mathf.RoundToInt(tilePos.x), Mathf.RoundToInt(tilePos.y)];
 
         biomeText.text = "Biome: " + tile.Biome;
-        ElevationText.text = "Elevation: " + tile.Elevation;
-        PrecipitationText.text = "Precipitation: " + tile.Precipitation;
+        ElevationText.text = "Elevation: " + tile.Elevation.ToString("0.00");
+        PrecipitationText.text = "Precipitation: " + tile.Precipitation.ToString("0.00"); ;
 
         if (tile.City != null)
         {

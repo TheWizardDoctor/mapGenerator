@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class Map : MonoBehaviour
+public class Map
 {
     public static int width;
     public static int height;
@@ -15,7 +15,7 @@ public class Map : MonoBehaviour
     {
         width = w;
         height = h;
-        scanRadius = (int)Math.Floor(0.05 * width);
+        scanRadius = (int)Math.Floor(0.02 * width);
 
         GameObject tileSet = new GameObject("Tiles");
         tiles = new Tile[width, height];

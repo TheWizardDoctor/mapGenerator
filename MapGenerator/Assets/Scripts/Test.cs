@@ -29,9 +29,30 @@ public class Test : MonoBehaviour
         //very simplistic city creation
         //(currently only checks 8 nearby tiles to get tile's creation value)
 
-		//var watch = System.Diagnostics.Stopwatch.StartNew();
-		City.GenerateCities(50);
-		//watch.Stop();
-		//Debug.Log("Time to create 0 cities is:" + watch.ElapsedMilliseconds + "ms");
-	}
+		watch = System.Diagnostics.Stopwatch.StartNew();
+		City.GenerateCities(20 * Map.scanRadius);
+		watch.Stop();
+		Debug.Log("Time to create cities is:" + watch.ElapsedMilliseconds + "ms");
+
+        //watch = System.Diagnostics.Stopwatch.StartNew();
+        //for (int i = 0; i < City.cityList.Count; i++)
+        //{
+        //    double rand = RandomNum.r.NextDouble();
+
+        //    if (rand < 0.333)
+        //    {
+        //        City.TradeRouteFood(City.cityList[i]);
+        //    }
+        //    else if (rand < 0.666)
+        //    {
+        //        City.TradeRouteLumber(City.cityList[i]);
+        //    }
+        //    else
+        //    {
+        //        City.TradeRouteWater(City.cityList[i]);
+        //    }
+        //}
+        //watch.Stop();
+        //Debug.Log("Time to create roads is:" + watch.ElapsedMilliseconds + "ms");
+    }
 }

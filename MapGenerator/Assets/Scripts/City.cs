@@ -39,7 +39,7 @@ public class City
     }
 
     //create a single city
-    /*
+
     private static void GenerateCity()
     {
         Tile[,] tiles = Map.tiles;
@@ -53,7 +53,7 @@ public class City
                 continue;
             }
 
-            float currentVal = GetValue(tile);
+            float currentVal = tile.tileValue;
             if (currentVal > bestVal)
             {
                 bestVal = currentVal;
@@ -61,7 +61,7 @@ public class City
             }
             else if (currentVal == bestVal)
             {
-                if (Random.r.NextDouble() > 0.5)
+                if (RandomNum.r.NextDouble() > 0.5)
                 {
                     bestTile = tile;
                 }
@@ -70,15 +70,15 @@ public class City
 
         //Debug.Log("Best City Location (X:" + bestTile.X + " Y:" + bestTile.Y + ")");
         AddCity(bestTile);
-        GameObject city = GameObject.CreatePrimitive(PrimitiveType.Capsule);
-        city.gameObject.GetComponent<MeshRenderer>().material = cityMat;
-        city.transform.position = new Vector3(bestTile.X, 6, bestTile.Y);
+        GameObject city = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
+        city.transform.position = new Vector3(bestTile.X, (bestTile.Elevation / 10) + 1, bestTile.Y);
+
         City newCity = new City(bestTile.X, bestTile.Y);
         bestTile.City = newCity;
-        Debug.Log("best val:" + bestVal);
+        //Debug.Log("best val:" + bestVal);
     }
-    */
-    private static void GenerateCity()
+
+    /*private static void GenerateCity()
     {
         Tile[,] tiles = Map.tiles;
 
@@ -93,7 +93,7 @@ public class City
 
         City newCity = new City(randTile.X, randTile.Y);
         randTile.City = newCity;
-    }
+    }*/
 
     public static void TradeRouteFood(City start)
     {
@@ -103,12 +103,12 @@ public class City
         {
             if (c.food > bestGuessVal)
             {
-                Debug.Log("food:" + c.food);
+                //Debug.Log("food:" + c.food);
                 bestGuessVal = c.food;
                 bestGuessCity = c;
             }
         }
-        Debug.Log("Best:" + bestGuessVal);
+        //Debug.Log("Best:" + bestGuessVal);
 
         Road.CreateRoad(start, bestGuessCity);
     }
@@ -148,29 +148,26 @@ public class City
         return tile.tileValue;
     }*/
 
-    /* private static void AddCity(Tile tile)
-     {
-         Tile[,] tiles = Map.tiles;
+    private static void AddCity(Tile tile)
+    {
+        Tile[,] tiles = Map.tiles;
 
-         for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
-         {
-             for (int j = -Map.scanRadius; j <= Map.scanRadius; j++)
-             {
-                 if (tile.X + i < 0 || tile.Y + j < 0 || tile.X + i > Map.width - 1 || tile.Y + j > Map.height - 1)
-                 {
-                     continue;
-                 }
+        for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
+        {
+            for (int j = -Map.scanRadius; j <= Map.scanRadius; j++)
+            {
+                if (tile.X + i < 0 || tile.Y + j < 0 || tile.X + i > Map.width - 1 || tile.Y + j > Map.height - 1)
+                {
+                    continue;
+                }
 
-                 Tile temp = tiles[tile.X + i, tile.Y + j];
-                 temp.tileValue -= 50 * Map.scanRadius;
-             }
-         }
-     }*/
+                tiles[tile.X + i, tile.Y + j].tileValue = -1000 * Map.scanRadius;
+            }
+        }
+    }
 
     private static void SetResources(City city)
     {
-        city.wealth += 1000000;
-
         Tile[,] tiles = Map.tiles;
 
         for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
@@ -234,32 +231,34 @@ public class City
                 }
             }
         }
+        city.wealth = Mathf.RoundToInt(RandomNum.r.Next(100, 500) * (city.food + city.water + city.lumber));
     }
 
     public static int BiomeValue(Tile tile)
     {
+        float randomness = (float)RandomNum.r.NextDouble();
         switch (tile.Biome)
         {
             case Biome.BorealForest:
-                return 20;
+                return Mathf.RoundToInt(1.2f * randomness);
             case Biome.Desert:
-                return -20;
+                return Mathf.RoundToInt(1 * randomness);
             case Biome.Mountain:
-                return -10;
+                return Mathf.RoundToInt(1.1f * randomness);
             case Biome.Ocean:
-                return 25;
+                return Mathf.RoundToInt(1.2f * randomness);
             case Biome.Prairie:
-                return 20;
+                return Mathf.RoundToInt(1.15f * randomness);
             case Biome.Rainforest:
-                return 25;
+                return Mathf.RoundToInt(1.2f * randomness);
             case Biome.Savanna:
-                return 20;
+                return Mathf.RoundToInt(1.2f * randomness);
             case Biome.Shrubland:
-                return 10;
+                return Mathf.RoundToInt(1.15f * randomness);
             case Biome.TemperateForest:
-                return 25;
+                return Mathf.RoundToInt(1.2f * randomness);
             case Biome.Tundra:
-                return 5;
+                return Mathf.RoundToInt(1.15f * randomness);
             default:
                 return 0;
         }
