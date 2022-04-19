@@ -43,41 +43,27 @@ public class MoveCamera : MonoBehaviour
 
         }
 
-        //if (Input.GetKeyDown(KeyCode.T))
-        //{
-        //    City.GenerateCities(Map.scanRadius * 5);
-
-        //    for (int i = 0; i < City.cityList.Count; i++)
-        //    {
-        //        double rand = RandomNum.r.NextDouble();
-
-        //        if(rand < 0.333)
-        //        {
-        //            City.TradeRouteFood(City.cityList[i]);
-        //        }
-        //        else if(rand < 0.666)
-        //        {
-        //            City.TradeRouteLumber(City.cityList[i]);
-        //        }
-        //        else
-        //        {
-        //            City.TradeRouteWater(City.cityList[i]);
-        //        }
-        //    }
-        //}
-
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.T))
         {
-            Tile one, two;
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            for (int i = 0; i < 10; i++)
+            City.GenerateCities(Map.scanRadius * 5);
+
+            for (int i = 0; i < City.cityList.Count; i++)
             {
-                one = Map.tiles[RandomNum.r.Next(Map.width), RandomNum.r.Next(Map.height)];
-                two = Map.tiles[RandomNum.r.Next(Map.width), RandomNum.r.Next(Map.height)];
-                Road.CreateRoad(one, two);
+                double rand = RandomNum.r.NextDouble();
+
+                if (rand < 0.333)
+                {
+                    City.TradeRouteFood(City.cityList[i]);
+                }
+                else if (rand < 0.666)
+                {
+                    City.TradeRouteLumber(City.cityList[i]);
+                }
+                else
+                {
+                    City.TradeRouteWater(City.cityList[i]);
+                }
             }
-            watch.Stop();
-            Debug.Log("Time to create 10 road(s) is:" + watch.ElapsedMilliseconds + "ms");
         }
         if (Input.GetKeyDown(KeyCode.C))
         {
@@ -109,7 +95,7 @@ public class MoveCamera : MonoBehaviour
             }
         }
 
-        if(Input.GetKeyDown(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
