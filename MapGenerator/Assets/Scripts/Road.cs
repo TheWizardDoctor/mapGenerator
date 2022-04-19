@@ -47,13 +47,13 @@ public class Road
 
         while (fringe.Count != 0)
         {
-            Tile current = (Tile)fringe.Dequeue();
+            Tile current = fringe.Dequeue();
 
-            //if (start.City != null && current.GVal > start.City.wealth)
-            //{
-            //    Debug.Log("Too Much Money");
-            //    return;
-            //}
+            if (start.City != null && current.GVal > start.City.wealth)
+            {
+                Debug.Log("Too Much Money");
+                return;
+            }
 
             //print("cur loc:(" + current.Y + "," + current.X + ")");
             //print("\tfVal:" + current.FVal);

@@ -30,29 +30,29 @@ public class Test : MonoBehaviour
         //(currently only checks 8 nearby tiles to get tile's creation value)
 
 		watch = System.Diagnostics.Stopwatch.StartNew();
-		City.GenerateCities(20 * Map.scanRadius);
+		City.GenerateCities(Mathf.RoundToInt(10 * Map.scanRadius * UIData.cityMultiplier));
 		watch.Stop();
 		Debug.Log("Time to create cities is:" + watch.ElapsedMilliseconds + "ms");
 
-        //watch = System.Diagnostics.Stopwatch.StartNew();
-        //for (int i = 0; i < City.cityList.Count; i++)
-        //{
-        //    double rand = RandomNum.r.NextDouble();
+        watch = System.Diagnostics.Stopwatch.StartNew();
+        for (int i = 0; i < City.cityList.Count; i+=2)
+        {
+            double rand = RandomNum.r.NextDouble();
 
-        //    if (rand < 0.333)
-        //    {
-        //        City.TradeRouteFood(City.cityList[i]);
-        //    }
-        //    else if (rand < 0.666)
-        //    {
-        //        City.TradeRouteLumber(City.cityList[i]);
-        //    }
-        //    else
-        //    {
-        //        City.TradeRouteWater(City.cityList[i]);
-        //    }
-        //}
-        //watch.Stop();
-        //Debug.Log("Time to create roads is:" + watch.ElapsedMilliseconds + "ms");
+            if (rand < 0.333)
+            {
+                City.TradeRouteFood(City.cityList[i]);
+            }
+            else if (rand < 0.666)
+            {
+                City.TradeRouteLumber(City.cityList[i]);
+            }
+            else
+            {
+                City.TradeRouteWater(City.cityList[i]);
+            }
+        }
+        watch.Stop();
+        Debug.Log("Time to create roads is:" + watch.ElapsedMilliseconds + "ms");
     }
 }

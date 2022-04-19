@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -47,7 +48,7 @@ public class TileUI : MonoBehaviour
             CitySubMenu.SetActive(true);
             CityText.text = "City: " + tile.City.name;
             CityPopulationText.text = "Population: " + tile.City.population;
-            CityWealthText.text = "Money: $" + tile.City.wealth;
+            CityWealthText.text = "Money: " + String.Format("{0:C0}", tile.City.wealth);
         }
         else
         {
