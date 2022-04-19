@@ -35,7 +35,7 @@ public class Test : MonoBehaviour
 		Debug.Log("Time to create cities is:" + watch.ElapsedMilliseconds + "ms");
 
         watch = System.Diagnostics.Stopwatch.StartNew();
-        for (int i = 0; i < City.cityList.Count; i+=2)
+        for (int i = 0; i < City.cityList.Count; i++)
         {
             double rand = RandomNum.r.NextDouble();
 

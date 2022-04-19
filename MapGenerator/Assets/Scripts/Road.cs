@@ -36,7 +36,8 @@ public class Road
             t.closed = false;
             t.GVal = float.MaxValue;
             t.FVal = float.MaxValue;
-            t.HVal = minCost * (Mathf.Abs(end.X - t.X) + Mathf.Abs(end.Y - t.Y));
+            //t.HVal = minCost * (Mathf.Abs(end.X - t.X) + Mathf.Abs(end.Y - t.Y));
+            t.HVal = minCost * Mathf.Sqrt(Mathf.Pow(end.X - t.X, 2) + Mathf.Pow(end.Y - t.Y, 2));
         }
 
         fringe = new SimplePriorityQueue<Tile>();
