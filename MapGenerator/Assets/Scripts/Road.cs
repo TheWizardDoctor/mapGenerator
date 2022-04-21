@@ -7,6 +7,11 @@ public class Road
     private static readonly int minCost = 5;
     private static readonly Material roadMat = Resources.Load<Material>("Road");
     private static readonly Material OceanPathMat = Resources.Load<Material>("OceanPath");
+    private static float[,] gVals;
+    private static float[,] hVals;
+    private static float[,] fVals;
+    private static bool[,] added;
+    private static bool[,] closed;
 
     public static void CreateRoad(City start, City end)
     {
@@ -29,28 +34,35 @@ public class Road
         }
         Tile[,] tiles = Map.tiles;
 
+        gVals = new float[Map.width, Map.height];
+        hVals = new float[Map.width, Map.height];
+        fVals = new float[Map.width, Map.height];
+        added = new bool[Map.width, Map.height];
+        closed = new bool[Map.width, Map.height];
+
         foreach (Tile t in tiles)
         {
-            t.Explored = false;
+            SetAdded(t, false);
             t.previous = null;
-            t.closed = false;
-            t.GVal = float.MaxValue;
-            t.FVal = float.MaxValue;
+            SetClosed(t, false);
+            SetGVal(t, float.MaxValue);
+            SetFVal(t, float.MaxValue);
+            SetHVal(t, minCost * Mathf.Sqrt(Mathf.Pow(end.X - t.X, 2) + Mathf.Pow(end.Y - t.Y, 2)));
             //t.HVal = minCost * (Mathf.Abs(end.X - t.X) + Mathf.Abs(end.Y - t.Y));
-            t.HVal = minCost * Mathf.Sqrt(Mathf.Pow(end.X - t.X, 2) + Mathf.Pow(end.Y - t.Y, 2));
+            //t.HVal = minCost * Mathf.Sqrt(Mathf.Pow(end.X - t.X, 2) + Mathf.Pow(end.Y - t.Y, 2));
         }
 
         fringe = new SimplePriorityQueue<Tile>();
-        start.Explored = true;
-        start.GVal = 0;
-        start.FVal = start.HVal;
-        fringe.Enqueue(start, start.FVal);
+        SetAdded(start, true);
+        SetGVal(start, 0);
+        SetFVal(start, GetHVal(start));
+        fringe.Enqueue(start, GetFVal(start));
 
         while (fringe.Count != 0)
         {
             Tile current = fringe.Dequeue();
 
-            if (start.City != null && current.GVal > start.City.wealth)
+            if (start.City != null && GetGVal(current) > start.City.wealth)
             {
                 Debug.Log("Too Much Money");
                 return;
@@ -81,118 +93,109 @@ public class Road
                 return;
             }
 
-            if (current.up != null && !current.up.closed)
+            if (current.up != null && !GetClosed(current.up))
             {
                 float neighborCost = CalculateCost(current.up);
 
-                if (current.up.Explored == false)
+                if (!GetAdded(current.up))
                 {
-                    current.up.Explored = true;
-                    current.up.GVal = current.GVal + neighborCost;
-                    current.up.FVal = current.up.GVal + current.up.HVal;
+                    SetAdded(current.up, true);
+                    SetGVal(current.up, GetGVal(current) + neighborCost);
+                    SetFVal(current.up, GetGVal(current.up) + GetHVal(current.up));
                     current.up.previous = current;
-                    fringe.Enqueue(current.up, current.up.FVal);
+                    fringe.Enqueue(current.up, GetFVal(current.up));
 
                 }
                 else
                 {
-                    if (current.up.GVal > current.GVal + neighborCost)
+                    if (GetGVal(current.up) > GetGVal(current) + neighborCost)
                     {
-                        current.up.GVal = current.GVal + neighborCost;
-                        current.up.FVal = current.up.GVal + current.up.HVal;
+                        SetGVal(current.up, GetGVal(current) + neighborCost);
+                        SetFVal(current.up, GetGVal(current.up) + GetHVal(current.up));
                         current.up.previous = current;
-                        fringe.UpdatePriority(current.up, current.up.FVal);
+                        fringe.UpdatePriority(current.up, GetFVal(current.up));
                     }
                 }
-
-
             }
 
 
-            if (current.left != null && !current.left.closed)
+            if (current.left != null && !GetClosed(current.left))
             {
                 float neighborCost = CalculateCost(current.left);
 
-                if (current.left.Explored == false)
+                if (!GetAdded(current.left))
                 {
-                    current.left.Explored = true;
-                    current.left.GVal = current.GVal + neighborCost;
-                    current.left.FVal = current.left.GVal + current.left.HVal;
+                    SetAdded(current.left, true);
+                    SetGVal(current.left, GetGVal(current) + neighborCost);
+                    SetFVal(current.left, GetGVal(current.left) + GetHVal(current.left));
                     current.left.previous = current;
-                    fringe.Enqueue(current.left, current.left.FVal);
+                    fringe.Enqueue(current.left, GetFVal(current.left));
 
                 }
                 else
                 {
-                    if (current.left.GVal > current.GVal + neighborCost)
+                    if (GetGVal(current.left) > GetGVal(current) + neighborCost)
                     {
-                        current.left.GVal = current.GVal + neighborCost;
-                        current.left.FVal = current.left.GVal + current.left.HVal;
+                        SetGVal(current.left, GetGVal(current) + neighborCost);
+                        SetFVal(current.left, GetGVal(current.left) + GetHVal(current.left));
                         current.left.previous = current;
-                        fringe.UpdatePriority(current.left, current.left.FVal);
+                        fringe.UpdatePriority(current.left, GetFVal(current.left));
                     }
                 }
-
-
             }
 
 
-            if (current.right != null && !current.right.closed)
+            if (current.right != null && !GetClosed(current.right))
             {
                 float neighborCost = CalculateCost(current.right);
 
-                if (current.right.Explored == false)
+                if (!GetAdded(current.right))
                 {
-                    current.right.Explored = true;
-                    current.right.GVal = current.GVal + neighborCost;
-                    current.right.FVal = current.right.GVal + current.right.HVal;
+                    SetAdded(current.right, true);
+                    SetGVal(current.right, GetGVal(current) + neighborCost);
+                    SetFVal(current.right, GetGVal(current.right) + GetHVal(current.right));
                     current.right.previous = current;
-                    fringe.Enqueue(current.right, current.right.FVal);
+                    fringe.Enqueue(current.right, GetFVal(current.right));
 
                 }
                 else
                 {
-                    if (current.right.GVal > current.GVal + neighborCost)
+                    if (GetGVal(current.right) > GetGVal(current) + neighborCost)
                     {
-                        current.right.GVal = current.GVal + neighborCost;
-                        current.right.FVal = current.right.GVal + current.right.HVal;
+                        SetGVal(current.right, GetGVal(current) + neighborCost);
+                        SetFVal(current.right, GetGVal(current.right) + GetHVal(current.right));
                         current.right.previous = current;
-                        fringe.UpdatePriority(current.right, current.right.FVal);
+                        fringe.UpdatePriority(current.right, GetFVal(current.right));
                     }
                 }
-
-
             }
 
 
-            if (current.down != null && !current.down.closed)
+            if (current.down != null && !GetClosed(current.down))
             {
                 float neighborCost = CalculateCost(current.down);
 
-                if (current.down.Explored == false)
+                if (!GetAdded(current.down))
                 {
-                    current.down.Explored = true;
-                    current.down.GVal = current.GVal + neighborCost;
-                    current.down.FVal = current.down.GVal + current.down.HVal;
+                    SetAdded(current.down, true);
+                    SetGVal(current.down, GetGVal(current) + neighborCost);
+                    SetFVal(current.down, GetGVal(current.down) + GetHVal(current.down));
                     current.down.previous = current;
-                    fringe.Enqueue(current.down, current.down.FVal);
+                    fringe.Enqueue(current.down, GetFVal(current.down));
 
                 }
                 else
                 {
-                    if (current.down.GVal > current.GVal + neighborCost)
+                    if (GetGVal(current.down) > GetGVal(current) + neighborCost)
                     {
-                        current.down.GVal = current.GVal + neighborCost;
-                        current.down.FVal = current.down.GVal + current.down.HVal;
+                        SetGVal(current.down, GetGVal(current) + neighborCost);
+                        SetFVal(current.down, GetGVal(current.down) + GetHVal(current.down));
                         current.down.previous = current;
-                        fringe.UpdatePriority(current.down, current.down.FVal);
+                        fringe.UpdatePriority(current.down, GetFVal(current.down));
                     }
                 }
-
-                
             }
-
-            current.closed = true;
+            SetClosed(current, true);
         }
     }
     private static float CalculateCost(Tile t)
@@ -205,25 +208,25 @@ public class Road
         switch (t.Biome)
         {
             case Biome.BorealForest:
-                return 25;
+                return 24;
             case Biome.Desert:
                 return 10;
             case Biome.Mountain:
-                return 30;
+                return 31;
             case Biome.Ocean:
-                return 40;
+                return 41;
             case Biome.Prairie:
-                return 10;
+                return 11;
             case Biome.Rainforest:
-                return 30;
+                return 31;
             case Biome.Savanna:
-                return 10;
+                return 9;
             case Biome.Shrubland:
-                return 10;
+                return 12;
             case Biome.TemperateForest:
-                return 20;
+                return 21;
             case Biome.Tundra:
-                return 10;
+                return 8;
             default:
                 return 10;
         }
@@ -285,4 +288,47 @@ public class Road
     }*/
 
     //public static GameObject RoadSet { get; set; }
+
+    private static void SetAdded(Tile t, bool b)
+    {
+        added[t.X, t.Y] = b;
+    }
+    private static bool GetAdded(Tile t)
+    {
+        return added[t.X, t.Y];
+    }
+    private static void SetClosed(Tile t, bool b)
+    {
+        closed[t.X, t.Y] = b;
+    }
+    private static bool GetClosed(Tile t)
+    {
+        return closed[t.X, t.Y];
+    }
+    private static void SetGVal(Tile t, float val)
+    {
+        gVals[t.X, t.Y] = val;
+    }
+    private static float GetGVal(Tile t)
+    {
+        return gVals[t.X, t.Y];
+    }
+
+    private static void SetHVal(Tile t, float val)
+    {
+        hVals[t.X, t.Y] = val;
+    }
+    private static float GetHVal(Tile t)
+    {
+        return hVals[t.X, t.Y];
+    }
+
+    private static void SetFVal(Tile t, float val)
+    {
+        fVals[t.X, t.Y] = val;
+    }
+    private static float GetFVal(Tile t)
+    {
+        return fVals[t.X, t.Y];
+    }
 }

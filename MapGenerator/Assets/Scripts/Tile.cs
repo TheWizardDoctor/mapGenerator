@@ -6,31 +6,32 @@ public enum Biome { Ocean, Mountain, Tundra, BorealForest, Prairie, Shrubland, T
 
 public class Tile
 {
-    static readonly GameObject cubePrefab = Resources.Load<GameObject>("Tile");
+    private static readonly GameObject cubePrefab = Resources.Load<GameObject>("Tile");
 
     //attributes
     //elavation is in 100m scale aka 60 = 6000m
+
+    //Tile Attributes
     private Biome biome;
     private float elevation;
+    private float latitude;
     private float precipitation;
     private City city;
     private bool road;
     private int x;
     private int y;
-    private float fVal;
-    private float gVal;
-    private float hVal;
-    private float latitude;
-    private bool added;
-    public bool closed;
-    private Transform tileSet;
-    public Tile previous = null;
     public Tile up = null;
     public Tile down = null;
     public Tile left = null;
     public Tile right = null;
+    private Transform tileSet;
+    public GameObject cube = UnityEngine.Object.Instantiate(cubePrefab);
+
+    public Tile previous = null;
+
+    //City Stuff
     public float tileValue;
-    public GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+    
 
 
     //constructor
@@ -39,8 +40,6 @@ public class Tile
         biome = Biome.Ocean;
         elevation = 0;
         precipitation = 0;
-        road = false;
-        added = false;
     }
     public Tile(int xCord, int yCord, Transform ts)
     {
@@ -48,9 +47,7 @@ public class Tile
         cube.transform.SetParent(tileSet);
         elevation = -1;
         precipitation = 0;
-        road = false;
         biome = Biome.Ocean;
-        added = false;
         x = xCord;
         y = yCord;
         latitude = ((yCord + 1) * 90 / (Map.height / 2)) - 90;
@@ -68,21 +65,7 @@ public class Tile
         get => precipitation;
         set => precipitation = value;
     }
-    public float GVal
-    {
-        get => gVal;
-        set => gVal = value;
-    }
-    public float HVal
-    {
-        get => hVal;
-        set => hVal = value;
-    }
-    public float FVal
-    {
-        get => fVal;
-        set => fVal = value;
-    }
+    
     public Biome Biome
     {
         get => biome;
@@ -97,11 +80,6 @@ public class Tile
     {
         get => road;
         set => road = value;
-    }
-    public bool Explored
-    {
-        get => added;
-        set => added = value;
     }
 
     public int X
