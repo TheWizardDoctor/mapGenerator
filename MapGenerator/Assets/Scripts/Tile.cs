@@ -44,7 +44,7 @@ public class Tile
     public float tileValue;
 
     //Border stuff
-    public bool border = false;
+    public float border = 0;
     private float navDifficulty = 0;
 
     //constructor
