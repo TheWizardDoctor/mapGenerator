@@ -6,8 +6,11 @@ public class Border : MonoBehaviour
 {
     public static void generateBorders(Tile[,] map, int countryNum)
     {
-        while (countryNum > 0)
+//        Debug.Log(Map.height);
+//        Debug.Log(Map.width);
+        while (countryNum > 1)
         {
+//            Debug.Log("Create Border Start");
             if (genBorder(map))
             {
                 countryNum--;
@@ -19,14 +22,17 @@ public class Border : MonoBehaviour
     {
         if(map != null)
         {
+//            Debug.Log("Get Startpoint");
             Tile startTile = genStartTile(map);
             if (startTile == null)
             {
                 return false;
             }
 
+//            Debug.Log("Generate Border");
             decideDirection(map, startTile);
 
+//            Debug.Log("Establish Border");
             establishBorder(map, startTile);
 
             return true;
@@ -40,8 +46,8 @@ public class Border : MonoBehaviour
         startTile.Border = 2;
         genBorderSphere(startTile);
         Tile current = startTile;
-        if (current.X == 0 || current.X == Map.height-1 
-            || current.Y == 0 || current.Y == Map.width-1)
+        if (current.X == 0 || current.X == Map.width-1 
+            || current.Y == 0 || current.Y == Map.height-1)
         {
             return;
         }
@@ -181,18 +187,20 @@ public class Border : MonoBehaviour
     public static Tile genWeightedBorder(Tile[,] tiles, Tile awayTile)
     {
         Tile finishTile = awayTile;
-        int burstLength = Map.height/25;
-        Debug.Log(burstLength);
+        int burstLength = Map.height/20;
+//        Debug.Log(burstLength);
 
-        while(detectBorder(tiles, finishTile) == false 
-            && finishTile.X < Map.height-1
-            && finishTile.X > 0
-            && finishTile.Y < Map.width-1
-            && finishTile.Y > 0)
+        while(detectBorder(tiles, finishTile) == false
+            || finishTile.X < 0
+            || finishTile.X > Map.width - 1
+            || finishTile.Y > Map.height - 1
+            || finishTile.Y < 0)
         {
             Tile prevTile = findPrev(tiles, finishTile);
             int xCord = prevTile.X - finishTile.X;
             int yCord = prevTile.Y - finishTile.Y;
+//            Debug.Log("xCord: "+xCord);
+//            Debug.Log("yCord: " + yCord);
 
             if (xCord < 0) // S, SE, SW
             {
@@ -631,10 +639,10 @@ public class Border : MonoBehaviour
     // Extends the border in a given general direction for a given length
     public static Tile burstN(Tile[,] map, Tile selected, int burst)
     {
-        if (burst == 0 || detectBorder(map, selected) == true 
-            || selected.X >= Map.height
+        if (burst == 0 || detectBorder(map, selected) == true
             || selected.X <= 0
-            || selected.Y >= Map.width
+            || selected.X >= Map.width - 1
+            || selected.Y >= Map.height - 1
             || selected.Y <= 0)
         {
             //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
@@ -657,9 +665,10 @@ public class Border : MonoBehaviour
     }
     public static Tile burstNE(Tile[,] map, Tile selected, int burst)
     {
-        if (burst == 0 || detectBorder(map, selected) == true || selected.X >= Map.height
+        if (burst == 0 || detectBorder(map, selected) == true
             || selected.X <= 0
-            || selected.Y >= Map.width
+            || selected.X >= Map.width - 1
+            || selected.Y >= Map.height - 1
             || selected.Y <= 0)
         {
             //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
@@ -695,9 +704,10 @@ public class Border : MonoBehaviour
     }
     public static Tile burstE(Tile[,] map, Tile selected, int burst)
     {
-        if (burst == 0 || detectBorder(map, selected) == true 
+        if (burst == 0 || detectBorder(map, selected) == true
             || selected.X <= 0
-            || selected.Y >= Map.width
+            || selected.X >= Map.width - 1
+            || selected.Y >= Map.height - 1
             || selected.Y <= 0)
         {
             //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
@@ -721,9 +731,10 @@ public class Border : MonoBehaviour
     }
     public static Tile burstSE(Tile[,] map, Tile selected, int burst)
     {
-        if (burst == 0 || detectBorder(map, selected) == true 
+        if (burst == 0 || detectBorder(map, selected) == true
             || selected.X <= 0
-            || selected.Y >= Map.width
+            || selected.X >= Map.width - 1
+            || selected.Y >= Map.height - 1
             || selected.Y <= 0)
         {
             //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
@@ -758,9 +769,10 @@ public class Border : MonoBehaviour
     }
     public static Tile burstS(Tile[,] map, Tile selected, int burst)
     {
-        if (burst == 0 || detectBorder(map, selected) == true 
+        if (burst == 0 || detectBorder(map, selected) == true
             || selected.X <= 0
-            || selected.Y >= Map.width
+            || selected.X >= Map.width - 1
+            || selected.Y >= Map.height - 1
             || selected.Y <= 0)
         {
             //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
@@ -783,9 +795,10 @@ public class Border : MonoBehaviour
     }
     public static Tile burstSW(Tile[,] map, Tile selected, int burst)
     {
-        if (burst == 0 || detectBorder(map, selected) == true 
+        if (burst == 0 || detectBorder(map, selected) == true
             || selected.X <= 0
-            || selected.Y >= Map.width
+            || selected.X >= Map.width - 1
+            || selected.Y >= Map.height - 1
             || selected.Y <= 0)
         {
             //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
@@ -820,9 +833,10 @@ public class Border : MonoBehaviour
     }
     public static Tile burstW(Tile[,] map, Tile selected, int burst)
     {
-        if (burst == 0 || detectBorder(map, selected) == true 
+        if (burst == 0 || detectBorder(map, selected) == true
             || selected.X <= 0
-            || selected.Y >= Map.width
+            || selected.X >= Map.width - 1
+            || selected.Y >= Map.height - 1
             || selected.Y <= 0)
         {
             //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
@@ -845,9 +859,10 @@ public class Border : MonoBehaviour
     }
     public static Tile burstNW(Tile[,] map, Tile selected, int burst)
     {
-        if (burst == 0 || detectBorder(map, selected) == true 
+        if (burst == 0 || detectBorder(map, selected) == true
             || selected.X <= 0
-            || selected.Y >= Map.width
+            || selected.X >= Map.width - 1
+            || selected.Y >= Map.height - 1
             || selected.Y <= 0)
         {
             //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
@@ -1085,114 +1100,26 @@ public class Border : MonoBehaviour
         return endPoint;
     }
 
-    // Locates a valid starting tile. Returns the starting tile.
-    /*
     public static Tile genStartTile(Tile[,] tiles)
     {
-        int startX = 0;
-        int startY = 0;
-        int side = Random.Range(0, 4);
-        ref Tile startTile = ref tiles[startX, startY];
-        //Debug.Log(side);
+//        Debug.Log(Map.height);
+//        Debug.Log(Map.width);
 
-        switch (side)
-        {
-            case 0: //North
-                //Debug.Log("from top");
-                startX = 0;
-                startY = Random.Range(0, Map.width - 1);
-                startTile = tiles[startX, startY];
+        int startX = Random.Range(Map.width / 20, (Map.width - Map.width / 20));
+        int startY = Random.Range(Map.height / 20, (Map.height - Map.height / 20));
 
-                while (startTile.Biome == Biome.Ocean)
-                {
-                    int x = startTile.X + 1;
-                    if(x >= Map.height)
-                    {
-                        return null;
-                    }
-                    startTile = tiles[x, startTile.Y];
-                }
-                break;
-            case 1: //East
-                //Debug.Log("from right");
-                startX = Random.Range(0, Map.height - 1);
-                startY = Map.width-1;
-                startTile = tiles[startX, startY];
+//        Debug.Log(startX);
+//        Debug.Log(startY);
 
-                while (startTile.Biome == Biome.Ocean)
-                {
-                    int y = startTile.Y - 1;
-                    if (y < 0)
-                    {
-                        return null;
-                    }
-                    startTile = tiles[startTile.X, y];
-                }
-                break;
-            case 2: //South
-                //Debug.Log("from bottom");
-                startX = Map.height-1;
-                startY = Random.Range(0, Map.width - 1);
-                startTile = tiles[startX, startY];
-
-                while (startTile.Biome == Biome.Ocean)
-                {
-                    int x = startTile.X-1;
-                    if (x < 0)
-                    {
-                        return null;
-                    }
-                    startTile = tiles[x, startTile.Y];
-                }
-                break;
-            default: //West
-                //Debug.Log("from left");
-                startX = Random.Range(0, Map.height - 1);
-                startY = 0;
-                startTile = tiles[startX, startY];
-
-                while (startTile.Biome == Biome.Ocean)
-                {
-                    int y = startTile.Y + 1;
-                    if (y >= Map.width)
-                    {
-                        return null;
-                    }
-                    startTile = tiles[startTile.X, y];
-                }
-                break;
-        }
-
-        //Debug.Log("Start tile X:"+startTile.X);
-        int oceans = detectOcean(tiles, startTile);
-        if(startTile.Border == 2 || oceans>1 || detectBorder(tiles, startTile) == true)
-        {
-            Debug.Log("Start point invalid");
-            return null;
-        }
-
-        Debug.Log("Start point found at "+startTile.X+", "+startTile.Y);
-        startTile.Border = 1;
-
-        return startTile;
-    }*/
-    public static Tile genStartTile(Tile[,] tiles)
-    {
-        int startX = Random.Range(Map.height / 20, (Map.height - Map.height / 20));
-        int startY = Random.Range(Map.width / 20, (Map.width - Map.width / 20));
         ref Tile startTile = ref tiles[startX, startY];
         //Debug.Log(side);
 
         if(startTile.Biome != Biome.Ocean)
         {
-            if(escapeEast(tiles, startTile, startX) != null 
-                || escapeWest(tiles, startTile, startX) != null 
-                || escapeNorth(tiles, startTile, startY) != null 
-                || escapeSouth(tiles, startTile, startY) != null)
-            {
-
-            }
-            else
+            if( escapeEast(tiles, startTile, startX) == null 
+                && escapeWest(tiles, startTile, startX) == null 
+                && escapeNorth(tiles, startTile, startY) == null 
+                && escapeSouth(tiles, startTile, startY) != null)
             {
                 return null;
             }
@@ -1202,11 +1129,11 @@ public class Border : MonoBehaviour
         int oceans = detectOcean(tiles, startTile);
         if (startTile.Border == 2 || oceans > 0 || detectBorder(tiles, startTile) == true)
         {
-            Debug.Log("Start point invalid");
+//            Debug.Log("Start point invalid");
             return null;
         }
 
-        Debug.Log("Start point found at " + startTile.X + ", " + startTile.Y);
+//        Debug.Log("Start point found at " + startTile.X + ", " + startTile.Y);
         startTile.Border = 1;
 
         GameObject s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -1244,8 +1171,10 @@ public class Border : MonoBehaviour
     // Checks a tile's neighbors for an established border tile. Returns true if one is found.
     private static bool detectBorder(Tile[,] tiles, Tile selected)
     {
-        if(selected.X == 0 || selected.X == Map.height-1 
-            || selected.Y == 0 || selected.Y == Map.width-1)
+        if( selected.X <= 0
+            || selected.X >= Map.width - 1
+            || selected.Y >= Map.height - 1
+            || selected.Y <= 0)
         {
             return true;
         }

@@ -27,7 +27,10 @@ public class Test : MonoBehaviour
         Debug.Log("Time to create all tiles is:" + watch.ElapsedMilliseconds + "ms");
 
         //Simple Border creation
-        Border.generateBorders(Map.tiles, 3);
+        watch = System.Diagnostics.Stopwatch.StartNew();
+        Border.generateBorders(Map.tiles, 10);
+        watch.Stop();
+        //Debug.Log("Time to create all tiles is:" + watch.ElapsedMilliseconds + "ms");
 
         //very simplistic city creation
         //(currently only checks 8 nearby tiles to get tile's creation value)
