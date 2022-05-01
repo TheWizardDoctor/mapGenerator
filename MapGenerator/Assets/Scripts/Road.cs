@@ -85,6 +85,7 @@ public class Road
                     }
                     else
                     {
+                        temp.cube.transform.SetParent(Map.RoadTiles.transform);
                         temp.cube.GetComponent<MeshRenderer>().material = OceanPathMat;
                     }
                     

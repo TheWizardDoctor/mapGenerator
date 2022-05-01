@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Border : MonoBehaviour
 {
+    private static readonly GameObject BorderSphere = Resources.Load<GameObject>("BorderWall");
     public static void generateBorders(Tile[,] map, int countryNum)
     {
 //        Debug.Log(Map.height);
@@ -1223,8 +1224,10 @@ public class Border : MonoBehaviour
         {
             return;
         }
-        GameObject s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        //GameObject s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        GameObject s = GameObject.Instantiate(BorderSphere);
         s.transform.position = new Vector3(selected.X, (selected.Elevation/10)+1, selected.Y);
         s.GetComponent<Renderer>().material.color = new Color(1, 0, 0, 1);
+        s.transform.SetParent(Map.BorderTiles.transform);
     }
 }

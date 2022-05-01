@@ -7,16 +7,6 @@ public enum Biome { Ocean, Mountain, Tundra, BorealForest, Prairie, Shrubland, T
 public class Tile
 {
     private static readonly GameObject cubePrefab = Resources.Load<GameObject>("Tile");
-    private static readonly Material borealMat = Resources.Load("BorealForest", typeof(Material)) as Material;
-    private static readonly Material desertMat = Resources.Load("Desert", typeof(Material)) as Material;
-    private static readonly Material mountainMat = Resources.Load("Mountain", typeof(Material)) as Material;
-    private static readonly Material oceanMat = Resources.Load("Ocean", typeof(Material)) as Material;
-    private static readonly Material prairieMat = Resources.Load("Prairie", typeof(Material)) as Material;
-    private static readonly Material rainforestMat = Resources.Load("Rainforest", typeof(Material)) as Material;
-    private static readonly Material savanahMat = Resources.Load("Savannah", typeof(Material)) as Material;
-    private static readonly Material shrublandMat = Resources.Load("Shrubland", typeof(Material)) as Material;
-    private static readonly Material temperateForestMat = Resources.Load("TemperateForest", typeof(Material)) as Material;
-    private static readonly Material tundraMat = Resources.Load("Tundra", typeof(Material)) as Material;
 
     //attributes
     //elavation is in 100m scale aka 60 = 6000m
@@ -37,7 +27,6 @@ public class Tile
     private Transform tileSet;
     public GameObject cube = UnityEngine.Object.Instantiate(cubePrefab);
 
-    //Road stuff
     public Tile previous = null;
 
     //City Stuff
@@ -57,7 +46,6 @@ public class Tile
     public Tile(int xCord, int yCord, Transform ts)
     {
         tileSet = ts;
-        cube.transform.SetParent(tileSet);
         elevation = -1;
         precipitation = 0;
         biome = Biome.Ocean;
@@ -147,21 +135,35 @@ public class Tile
 
     public int calculateBiome()
     {
+        Material borealMat = Resources.Load("BorealForest", typeof(Material)) as Material;
+        Material desertMat = Resources.Load("Desert", typeof(Material)) as Material;
+        Material mountainMat = Resources.Load("Mountain", typeof(Material)) as Material;
+        Material oceanMat = Resources.Load("Ocean", typeof(Material)) as Material;
+        Material prairieMat = Resources.Load("Prairie", typeof(Material)) as Material;
+        Material rainforestMat = Resources.Load("Rainforest", typeof(Material)) as Material;
+        Material savanahMat = Resources.Load("Savannah", typeof(Material)) as Material;
+        Material shrublandMat = Resources.Load("Shrubland", typeof(Material)) as Material;
+        Material temperateForestMat = Resources.Load("TemperateForest", typeof(Material)) as Material;
+        Material tundraMat = Resources.Load("Tundra", typeof(Material)) as Material;
+
         float l = Math.Abs(latitude);
         double temperature = (((elevation * -0.8 + 40) + (30 - l * 1.7 + 0.059 * Math.Pow(l, 2) - 0.0007 * Math.Pow(l, 3)) * 3) / 4);
 
         cube.transform.localScale = new Vector3(1, elevation / 10 + 1, 1);
         cube.transform.position = new Vector3(x, (elevation / 10 + 1) / 2, y);
-        cube.gameObject.GetComponent<MeshRenderer>().receiveShadows = false;
 
         if (elevation < 5)
         {
+            cube.transform.SetParent(Map.OceanTiles.transform);
+            cube.transform.localScale = new Vector3(1, 5 / 10 + 1, 1);
+            cube.transform.position = new Vector3(x, 5 / 10 + 1, y);
             biome = Biome.Ocean;
             cube.GetComponent<Renderer>().material = oceanMat;
             navDifficulty = 12;
         }
         else if (elevation >= 50)
         {
+            cube.transform.SetParent(Map.MountainTiles.transform);
             biome = Biome.Mountain;
             cube.GetComponent<Renderer>().material = mountainMat;
             navDifficulty = 9;
@@ -170,12 +172,14 @@ public class Tile
         {
             if (precipitation < 100)
             {
+                cube.transform.SetParent(Map.TundraTiles.transform);
                 biome = Biome.Tundra;
                 cube.GetComponent<Renderer>().material = tundraMat;
                 navDifficulty = 7;
             }
             else
             {
+                cube.transform.SetParent(Map.BorealForestTiles.transform);
                 biome = Biome.BorealForest;
                 cube.GetComponent<Renderer>().material = borealMat;
                 navDifficulty = 5;
@@ -185,18 +189,21 @@ public class Tile
         {
             if (precipitation < 100)
             {
+                cube.transform.SetParent(Map.PrairieTiles.transform);
                 biome = Biome.Prairie;
                 cube.GetComponent<Renderer>().material = prairieMat;
                 navDifficulty = 1;
             }
             else if (precipitation < 200)
             {
+                cube.transform.SetParent(Map.ShrublandTiles.transform);
                 biome = Biome.Shrubland;
                 cube.GetComponent<Renderer>().material = shrublandMat;
                 navDifficulty = 2;
             }
             else
             {
+                cube.transform.SetParent(Map.TemperateForestTiles.transform);
                 biome = Biome.TemperateForest;
                 cube.GetComponent<Renderer>().material = temperateForestMat;
                 navDifficulty = 3;
@@ -206,18 +213,21 @@ public class Tile
         {
             if (precipitation < 100)
             {
+                cube.transform.SetParent(Map.DesertTiles.transform);
                 biome = Biome.Desert;
                 cube.GetComponent<Renderer>().material = desertMat;
                 navDifficulty = 6;
             }
             else if (precipitation < 200)
             {
+                cube.transform.SetParent(Map.SavannaTiles.transform);
                 biome = Biome.Savanna;
                 cube.GetComponent<Renderer>().material = savanahMat;
                 navDifficulty = 4;
             }
             else
             {
+                cube.transform.SetParent(Map.RainforestTiles.transform);
                 biome = Biome.Rainforest;
                 cube.GetComponent<Renderer>().material = rainforestMat;
                 navDifficulty = 8;

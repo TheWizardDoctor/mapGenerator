@@ -100,13 +100,17 @@ public class MoveCamera : MonoBehaviour
             RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit, 1000))
+            Debug.Log(ray);
+
+            if (Physics.Raycast(ray, out hit))
             {
+                Debug.Log("HIT");
                 Vector2 tilePos = new Vector2(hit.collider.gameObject.transform.position.x, hit.collider.gameObject.transform.position.z);
                 TileUI.S.SetTileMenu(tilePos);
             }
             else
             {
+                Debug.Log("MISS");
                 TileUI.S.Disable();
             }
         }

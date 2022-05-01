@@ -11,7 +11,21 @@ public class Map
     public static int scanRadius;
     public static Tile[,] tiles;
 
-    public static void createMap(int w, int h)
+	public static GameObject OceanTiles;
+	public static GameObject DesertTiles;
+	public static GameObject BorealForestTiles;
+	public static GameObject MountainTiles;
+	public static GameObject PrairieTiles;
+	public static GameObject RainforestTiles;
+	public static GameObject SavannaTiles;
+	public static GameObject ShrublandTiles;
+	public static GameObject TemperateForestTiles;
+	public static GameObject TundraTiles;
+	public static GameObject RoadTiles;
+	public static GameObject BorderTiles;
+	public static GameObject Houses;
+
+	public static void createMap(int w, int h)
     {
         width = w;
         height = h;
@@ -20,8 +34,47 @@ public class Map
         GameObject tileSet = new GameObject("Tiles");
         tiles = new Tile[width, height];
 
-        //this is the code for loading the demo map
-        /*
+		//test
+		OceanTiles = GameObject.Find("Ocean Tiles");
+		OceanTiles.transform.SetParent(tileSet.transform);
+
+		DesertTiles = GameObject.Find("Desert Tiles");
+		DesertTiles.transform.SetParent(tileSet.transform);
+
+		BorealForestTiles = GameObject.Find("Boreal Forest Tiles");
+		BorealForestTiles.transform.SetParent(tileSet.transform);
+
+		MountainTiles = GameObject.Find("Mountain Tiles");
+		MountainTiles.transform.SetParent(tileSet.transform);
+
+		PrairieTiles = GameObject.Find("Prairie Tiles");
+		PrairieTiles.transform.SetParent(tileSet.transform);
+
+		RainforestTiles = GameObject.Find("Rainforest Tiles");
+		RainforestTiles.transform.SetParent(tileSet.transform);
+
+		SavannaTiles = GameObject.Find("Savanna Tiles");
+		SavannaTiles.transform.SetParent(tileSet.transform);
+
+		ShrublandTiles = GameObject.Find("Shrubland Tiles");
+		ShrublandTiles.transform.SetParent(tileSet.transform);
+
+		TemperateForestTiles = GameObject.Find("Temperate Forest Tiles");
+		TemperateForestTiles.transform.SetParent(tileSet.transform);
+
+		TundraTiles = GameObject.Find("Tundra Tiles");
+		TundraTiles.transform.SetParent(tileSet.transform);
+
+		RoadTiles = GameObject.Find("Road Tiles");
+		RoadTiles.transform.SetParent(tileSet.transform);
+
+		BorderTiles = GameObject.Find("Border Tiles");
+		BorderTiles.transform.SetParent(tileSet.transform);
+
+		Houses = GameObject.Find("Houses");
+
+		//this is the code for loading the demo map
+		/*
 		var filePath = @"Elevation.csv";
 		var data = File.ReadLines(filePath);
 		int[,] exampleMapElevation = new int[height, width];
@@ -77,8 +130,8 @@ public class Map
 			}
 		}
 		*/
-        //creating initial tiles
-        for (int i = 0; i < height; i++)
+		//creating initial tiles
+		for (int i = 0; i < height; i++)
         {
             for (int j = 0; j < width; j++)
             {

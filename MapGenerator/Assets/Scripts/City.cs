@@ -71,6 +71,7 @@ public class City
         //Debug.Log("Best City Location (X:" + bestTile.X + " Y:" + bestTile.Y + ")");
         AddCity(bestTile);
         GameObject city = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
+        city.transform.SetParent(Map.Houses.transform);
         city.transform.position = new Vector3(bestTile.X, (bestTile.Elevation / 10) + 1, bestTile.Y);
 
         City newCity = new City(bestTile.X, bestTile.Y);

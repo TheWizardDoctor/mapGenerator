@@ -6,7 +6,6 @@ using UnityEngine;
 
 public class Test : MonoBehaviour
 {
-    public GameObject tilePrefab;
     public Camera cam;
     int width = 300;	//x
     int height = 200;	//y
@@ -60,5 +59,9 @@ public class Test : MonoBehaviour
         }
         watch.Stop();
         Debug.Log("Time to create roads is:" + watch.ElapsedMilliseconds + "ms");
+
+        //HUGE FPS savers
+        Map.OceanTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.BorderTiles.GetComponent<MeshCombiner>().CombineMeshes();
     }
 }
