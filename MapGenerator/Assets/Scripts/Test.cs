@@ -61,7 +61,7 @@ public class Test : MonoBehaviour
         Debug.Log("Time to create roads is:" + watch.ElapsedMilliseconds + "ms");
 
         //HUGE FPS savers
-        Map.OceanTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        //Map.OceanTiles.GetComponent<MeshCombiner>().CombineMeshes();
         Map.BorderTiles.GetComponent<MeshCombiner>().CombineMeshes();
     }
 }

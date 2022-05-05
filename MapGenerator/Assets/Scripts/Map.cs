@@ -6,8 +6,10 @@ using UnityEngine;
 
 public class Map
 {
+	[SerializeField]
     public static int width;
-    public static int height;
+	[SerializeField]
+	public static int height;
     public static int scanRadius;
     public static Tile[,] tiles;
 
@@ -135,7 +137,7 @@ public class Map
         {
             for (int j = 0; j < width; j++)
             {
-                tiles[j, i] = new Tile(j, i, tileSet.transform);
+                tiles[j, i] = new Tile(j, i);
                 tiles[j, i].calculateBiome();
             }
         }

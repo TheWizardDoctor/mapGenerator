@@ -95,6 +95,19 @@ public class City
         City newCity = new City(randTile.X, randTile.Y);
         randTile.City = newCity;
     }*/
+    public static void PlaceNewCity(Tile tile)
+    {
+        if(tile.City==null)
+        {
+            AddCity(tile);
+            GameObject city = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
+            city.transform.SetParent(Map.Houses.transform);
+            city.transform.position = new Vector3(tile.X, (tile.Elevation / 10) + 1, tile.Y);
+
+            City newCity = new City(tile.X, tile.Y);
+            tile.City = newCity;
+        }
+    }
 
     public static void TradeRouteFood(City start)
     {

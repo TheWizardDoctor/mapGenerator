@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 public enum Biome { Ocean, Mountain, Tundra, BorealForest, Prairie, Shrubland, TemperateForest, Desert, Savanna, Rainforest };
 
+[Serializable]
 public class Tile
 {
     private static readonly GameObject cubePrefab = Resources.Load<GameObject>("Tile");
@@ -13,20 +14,32 @@ public class Tile
 
     //Tile Attributes
     private Biome biome;
+    [SerializeField]
     private float elevation;
+    [SerializeField]
     private float latitude;
+    [SerializeField]
     private float precipitation;
     private City city;
+    [SerializeField]
     private bool road;
+    [SerializeField]
     private int x;
+    [SerializeField]
     private int y;
+    [SerializeField]
     public Tile up = null;
+    [SerializeField]
     public Tile down = null;
+    [SerializeField]
     public Tile left = null;
+    [SerializeField]
     public Tile right = null;
     private Transform tileSet;
+    [NonSerialized]
     public GameObject cube = UnityEngine.Object.Instantiate(cubePrefab);
 
+    [NonSerialized]
     public Tile previous = null;
 
     //City Stuff
@@ -43,15 +56,20 @@ public class Tile
         elevation = 0;
         precipitation = 0;
     }
-    public Tile(int xCord, int yCord, Transform ts)
+    public Tile(int xCord, int yCord)
     {
-        tileSet = ts;
         elevation = -1;
         precipitation = 0;
         biome = Biome.Ocean;
         x = xCord;
         y = yCord;
         latitude = ((yCord + 1) * 90 / (Map.height / 2)) - 90;
+    }
+
+    //Serialize
+    public String SerializeTile()
+    {
+        return JsonUtility.ToJson(this);
     }
 
     //properties

@@ -10,6 +10,12 @@ public class MoveCamera : MonoBehaviour
     private float zoomScale = 5;
     private float scrollWheel;
 
+    private bool createCity;
+    private bool createRoad;
+    private bool displayTileInfo;
+
+    private Tile startTile;
+
     private void Awake()
     {
         camPos = gameObject.GetComponent<Camera>().transform;
@@ -34,84 +40,133 @@ public class MoveCamera : MonoBehaviour
             }
             else
             {
-                //used for orthographic Camera
-                //cam.orthographicSize -= scrollWheel*zoomScale;
-
-                //used for perspective camera
                 camPos.position = new Vector3(camPos.position.x, camPos.position.y - scrollWheel * zoomScale, camPos.position.z);
             }
 
         }
 
-        if (Input.GetKeyDown(KeyCode.T))
+        if(Input.GetKeyDown(KeyCode.C))
         {
-            City.GenerateCities(Map.scanRadius * 5);
-
-            for (int i = 0; i < City.cityList.Count; i++)
-            {
-                double rand = RandomNum.r.NextDouble();
-
-                if (rand < 0.333)
-                {
-                    City.TradeRouteFood(City.cityList[i]);
-                }
-                else if (rand < 0.666)
-                {
-                    City.TradeRouteLumber(City.cityList[i]);
-                }
-                else
-                {
-                    City.TradeRouteWater(City.cityList[i]);
-                }
-            }
+            createCity = true;
+            createRoad = false;
+            displayTileInfo = false;
         }
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            //very simplistic city creation
-            //(currently only checks 8 nearby tiles to get tile's creation value)
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            City.GenerateCities(1);
-            watch.Stop();
-            Debug.Log("Time to create 1 cities is:" + watch.ElapsedMilliseconds + "ms");
+            startTile = null;
+            createRoad = true;
+            createCity = false;
+            displayTileInfo = false;
         }
-        if (Input.GetKeyDown(KeyCode.N))
-        {
-            int random = 0, random2 = 0;
-            while (random == random2 && City.cityList.Count > 1)
-            {
-                random = RandomNum.r.Next(City.cityList.Count);
-                random2 = RandomNum.r.Next(City.cityList.Count);
-            }
 
-            Tile one = Map.tiles[City.cityList[random].x, City.cityList[random].y];
-            Tile two = Map.tiles[City.cityList[random2].x, City.cityList[random2].y];
+        //if (Input.GetKeyDown(KeyCode.T))
+        //{
+        //    City.GenerateCities(Map.scanRadius * 5);
 
-            if (one != null && two != null)
-            {
-                var watch = System.Diagnostics.Stopwatch.StartNew();
-                Road.CreateRoad(one, two);
-                watch.Stop();
-                Debug.Log("Time to create 1 road is:" + watch.ElapsedMilliseconds + "ms");
-            }
-        }
+        //    for (int i = 0; i < City.cityList.Count; i++)
+        //    {
+        //        double rand = RandomNum.r.NextDouble();
+
+        //        if (rand < 0.333)
+        //        {
+        //            City.TradeRouteFood(City.cityList[i]);
+        //        }
+        //        else if (rand < 0.666)
+        //        {
+        //            City.TradeRouteLumber(City.cityList[i]);
+        //        }
+        //        else
+        //        {
+        //            City.TradeRouteWater(City.cityList[i]);
+        //        }
+        //    }
+        //}
+        //if (Input.GetKeyDown(KeyCode.C))
+        //{
+        //    //very simplistic city creation
+        //    //(currently only checks 8 nearby tiles to get tile's creation value)
+        //    var watch = System.Diagnostics.Stopwatch.StartNew();
+        //    City.GenerateCities(1);
+        //    watch.Stop();
+        //    Debug.Log("Time to create 1 cities is:" + watch.ElapsedMilliseconds + "ms");
+        //}
+        //if (Input.GetKeyDown(KeyCode.N))
+        //{
+        //    int random = 0, random2 = 0;
+        //    while (random == random2 && City.cityList.Count > 1)
+        //    {
+        //        random = RandomNum.r.Next(City.cityList.Count);
+        //        random2 = RandomNum.r.Next(City.cityList.Count);
+        //    }
+
+        //    Tile one = Map.tiles[City.cityList[random].x, City.cityList[random].y];
+        //    Tile two = Map.tiles[City.cityList[random2].x, City.cityList[random2].y];
+
+        //    if (one != null && two != null)
+        //    {
+        //        var watch = System.Diagnostics.Stopwatch.StartNew();
+        //        Road.CreateRoad(one, two);
+        //        watch.Stop();
+        //        Debug.Log("Time to create 1 road is:" + watch.ElapsedMilliseconds + "ms");
+        //    }
+        //}
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            TileUI.S.Disable();
 
-            Debug.Log(ray);
-
-            if (Physics.Raycast(ray, out hit))
+            if (createCity)
             {
-                Debug.Log("HIT");
-                Vector2 tilePos = new Vector2(hit.collider.gameObject.transform.position.x, hit.collider.gameObject.transform.position.z);
-                TileUI.S.SetTileMenu(tilePos);
+                RaycastHit hit;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+                if (Physics.Raycast(ray, out hit))
+                {
+                    Vector2 tilePos = new Vector2(hit.collider.gameObject.transform.position.x, hit.collider.gameObject.transform.position.z);
+                    City.PlaceNewCity(Map.tiles[Mathf.RoundToInt(tilePos.x), Mathf.RoundToInt(tilePos.y)]);
+                }
+
+                createCity = false;
+                createRoad = false;
+                displayTileInfo = true;
+            }
+            else if (createRoad)
+            {
+
+
+                RaycastHit hit;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+                if (Physics.Raycast(ray, out hit))
+                {
+                    Vector2 tilePos = new Vector2(hit.collider.gameObject.transform.position.x, hit.collider.gameObject.transform.position.z);
+
+                    if (startTile == null)
+                    {
+                        startTile = Map.tiles[Mathf.RoundToInt(tilePos.x), Mathf.RoundToInt(tilePos.y)];
+                    }
+                    else
+                    {
+                        Tile endTile = Map.tiles[Mathf.RoundToInt(tilePos.x), Mathf.RoundToInt(tilePos.y)];
+                        Road.CreateRoad(startTile, endTile);
+                        startTile = null;
+
+                        createCity = false;
+                        createRoad = false;
+                        displayTileInfo = true;
+                    }
+                }
             }
             else
             {
-                Debug.Log("MISS");
-                TileUI.S.Disable();
+                RaycastHit hit;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+                if (Physics.Raycast(ray, out hit))
+                {
+                    Vector2 tilePos = new Vector2(hit.collider.gameObject.transform.position.x, hit.collider.gameObject.transform.position.z);
+                    TileUI.S.SetTileMenu(tilePos);
+                }
             }
         }
     }
