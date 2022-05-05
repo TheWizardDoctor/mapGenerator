@@ -7,7 +7,7 @@ public class UIData : MonoBehaviour
 {
     [SerializeField]
     private Slider citySlider;
-    public static float cityMultiplier=0.5f;
+    public static float cityMultiplier = 0.5f;
 
     [SerializeField]
     private Slider riverSlider;
@@ -60,8 +60,8 @@ public class UIData : MonoBehaviour
     public static float desertMultiplier = 0.5f;
 
     [SerializeField]
-    private Slider savannahSlider;
-    public static float savannahMultiplier = 0.5f;
+    private Slider savannaSlider;
+    public static float savannaMultiplier = 0.5f;
 
     [SerializeField]
     private Slider rainForestSlider;
@@ -86,7 +86,7 @@ public class UIData : MonoBehaviour
         shrublandSlider.onValueChanged.AddListener(delegate { ShrublandValueChanged(); });
         temperateForestSlider.onValueChanged.AddListener(delegate { TemperateForestValueChanged(); });
         desertSlider.onValueChanged.AddListener(delegate { DesertValueChanged(); });
-        savannahSlider.onValueChanged.AddListener(delegate { SavannahValueChanged(); });
+        savannaSlider.onValueChanged.AddListener(delegate { SavannahValueChanged(); });
         rainForestSlider.onValueChanged.AddListener(delegate { RainForestValueChanged(); });
     }
 
@@ -146,7 +146,7 @@ public class UIData : MonoBehaviour
     }
     private void SavannahValueChanged()
     {
-        savannahMultiplier = savannahSlider.value;
+        savannaMultiplier = savannaSlider.value;
     }
     private void RainForestValueChanged()
     {

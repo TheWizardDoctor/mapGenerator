@@ -22,7 +22,9 @@ public class City
 
     private City(int xVal, int yVal)
     {
-        name = cityNames[RandomNum.r.Next(0, cityNames.Count)];
+        int num = RandomNum.r.Next(0, cityNames.Count);
+        name = cityNames[num];
+        cityNames.RemoveAt(num);
         population = Mathf.RoundToInt(UIData.populationMultiplier * RandomNum.r.Next(100, 10000));
         x = xVal;
         y = yVal;

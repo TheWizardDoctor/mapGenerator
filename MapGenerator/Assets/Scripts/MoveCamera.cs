@@ -12,7 +12,6 @@ public class MoveCamera : MonoBehaviour
 
     private bool createCity;
     private bool createRoad;
-    private bool displayTileInfo;
 
     private Tile startTile;
 
@@ -49,14 +48,12 @@ public class MoveCamera : MonoBehaviour
         {
             createCity = true;
             createRoad = false;
-            displayTileInfo = false;
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
             startTile = null;
             createRoad = true;
             createCity = false;
-            displayTileInfo = false;
         }
 
         //if (Input.GetKeyDown(KeyCode.T))
@@ -128,7 +125,6 @@ public class MoveCamera : MonoBehaviour
 
                 createCity = false;
                 createRoad = false;
-                displayTileInfo = true;
             }
             else if (createRoad)
             {
@@ -153,7 +149,6 @@ public class MoveCamera : MonoBehaviour
 
                         createCity = false;
                         createRoad = false;
-                        displayTileInfo = true;
                     }
                 }
             }

@@ -236,7 +236,7 @@ public class Tile
                 cube.GetComponent<Renderer>().material = desertMat;
                 navDifficulty = 6;
             }
-            else if (precipitation-UIData.savannahMultiplier*3 < 200)
+            else if (precipitation-UIData.savannaMultiplier*3 < 200)
             {
                 cube.transform.SetParent(Map.SavannaTiles.transform);
                 biome = Biome.Savanna;
