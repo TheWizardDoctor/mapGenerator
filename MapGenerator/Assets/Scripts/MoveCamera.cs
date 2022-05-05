@@ -55,6 +55,10 @@ public class MoveCamera : MonoBehaviour
             createRoad = true;
             createCity = false;
         }
+        if(Input.GetKeyDown(KeyCode.S))
+        {
+            TakePicture();
+        }
 
         //if (Input.GetKeyDown(KeyCode.T))
         //{
@@ -164,5 +168,11 @@ public class MoveCamera : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void TakePicture()
+    {
+        ScreenCapture.CaptureScreenshot("Screenshot.png", 4);
+        Debug.Log("Took Screenshot");
     }
 }
