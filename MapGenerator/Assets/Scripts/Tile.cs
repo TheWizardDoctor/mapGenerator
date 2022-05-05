@@ -170,7 +170,7 @@ public class Tile
         cube.transform.localScale = new Vector3(1, elevation / 10 + 1, 1);
         cube.transform.position = new Vector3(x, (elevation / 10 + 1) / 2, y);
 
-        if (elevation < 5)
+        if (elevation < 4.5+UIData.oceanMultiplier)
         {
             cube.transform.SetParent(Map.OceanTiles.transform);
             cube.transform.localScale = new Vector3(1, 5 / 10 + 1, 1);
@@ -179,7 +179,7 @@ public class Tile
             cube.GetComponent<Renderer>().material = oceanMat;
             navDifficulty = 12;
         }
-        else if (elevation >= 50)
+        else if (elevation >= 50 - UIData.mountainMultiplier*3)
         {
             cube.transform.SetParent(Map.MountainTiles.transform);
             biome = Biome.Mountain;
@@ -188,7 +188,7 @@ public class Tile
         }
         else if (temperature <= 0)
         {
-            if (precipitation < 100)
+            if (precipitation-UIData.tundraMultiplier*3+UIData.borealForestMultiplier*3 < 100)
             {
                 cube.transform.SetParent(Map.TundraTiles.transform);
                 biome = Biome.Tundra;
@@ -205,14 +205,14 @@ public class Tile
         }
         else if (temperature <= 20)
         {
-            if (precipitation < 100)
+            if (precipitation-UIData.prairieMultiplier*3 < 100)
             {
                 cube.transform.SetParent(Map.PrairieTiles.transform);
                 biome = Biome.Prairie;
                 cube.GetComponent<Renderer>().material = prairieMat;
                 navDifficulty = 1;
             }
-            else if (precipitation < 200)
+            else if (precipitation-UIData.shrublandMultiplier*3 < 200)
             {
                 cube.transform.SetParent(Map.ShrublandTiles.transform);
                 biome = Biome.Shrubland;
@@ -229,14 +229,14 @@ public class Tile
         }
         else
         {
-            if (precipitation < 100)
+            if (precipitation-UIData.desertMultiplier*3 < 100)
             {
                 cube.transform.SetParent(Map.DesertTiles.transform);
                 biome = Biome.Desert;
                 cube.GetComponent<Renderer>().material = desertMat;
                 navDifficulty = 6;
             }
-            else if (precipitation < 200)
+            else if (precipitation-UIData.savannahMultiplier*3 < 200)
             {
                 cube.transform.SetParent(Map.SavannaTiles.transform);
                 biome = Biome.Savanna;

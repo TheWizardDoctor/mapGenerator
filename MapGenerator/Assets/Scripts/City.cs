@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class City
 {
     //static fields
     public static List<City> cityList = new List<City>();
+    public static List<String> cityNames;
 
     //instance fields
     public string name;
@@ -20,8 +22,8 @@ public class City
 
     private City(int xVal, int yVal)
     {
-        name = "Temp City name";
-        population = RandomNum.r.Next(100, 10000);
+        name = cityNames[RandomNum.r.Next(0, cityNames.Count)];
+        population = Mathf.RoundToInt(UIData.populationMultiplier * RandomNum.r.Next(100, 10000));
         x = xVal;
         y = yVal;
         cityList.Add(this);
@@ -288,5 +290,12 @@ public class City
         {
             return 0;
         }
+    }
+
+    public static void LoadCityNames()
+    {
+        var cityNameFile = File.ReadAllLines("CityNames.txt");
+        cityNames = new List<string>(cityNameFile);
+
     }
 }

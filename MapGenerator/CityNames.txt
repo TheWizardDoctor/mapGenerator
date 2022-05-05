@@ -43,6 +43,18 @@ Middlestead
 Farmville
 Mansby
 Julness
+New Hardview
+Clamland
+Frostby
+Sagestead
+Aelworth
+Mansview
+Ashcester
+Goldhampton
+Middleport
+Bellfield
+Chatville
+Holtspool
 Augrad
 Goldley
 Appleburgh
@@ -193,6 +205,18 @@ Saltdale
 Passburg
 Hosham Beach
 Lunawich
+Oakcaster
+Hogport
+Cruxford
+Great Waltbury
+Great Passwich
+Highbrough
+North Freeport
+Southton
+Medfield Beach
+Wingport Falls
+Princegrad
+Waterburg
 Frostside
 Lunakarta
 Springville

@@ -207,23 +207,23 @@ public class Road
         switch (t.Biome)
         {
             case Biome.BorealForest:
-                return 24;
+                return 25;
             case Biome.Desert:
                 return 10;
             case Biome.Mountain:
-                return 31;
+                return 33;
             case Biome.Ocean:
-                return 41;
+                return 50;
             case Biome.Prairie:
-                return 11;
+                return 17;
             case Biome.Rainforest:
                 return 31;
             case Biome.Savanna:
                 return 9;
             case Biome.Shrubland:
-                return 12;
+                return 15;
             case Biome.TemperateForest:
-                return 21;
+                return 27;
             case Biome.Tundra:
                 return 8;
             default:

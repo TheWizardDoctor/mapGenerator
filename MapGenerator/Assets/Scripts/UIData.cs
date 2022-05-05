@@ -21,6 +21,10 @@ public class UIData : MonoBehaviour
     private Slider wealthSlider;
     public static float wealthMultiplier = 0.5f;
 
+    [SerializeField]
+    private Slider populationSlider;
+    public static float populationMultiplier = 0.5f;
+
 
     //Scroll View Content
     [SerializeField]
@@ -71,6 +75,7 @@ public class UIData : MonoBehaviour
         wealthSlider.onValueChanged.AddListener(delegate { WealthValueChanged(); });
         countrySlider.onValueChanged.AddListener(delegate { CountryValueChanged(); });
         riverSlider.onValueChanged.AddListener(delegate { RiverValueChanged(); });
+        populationSlider.onValueChanged.AddListener(delegate { PopulationValueChanged(); });
 
         //scroll view content
         oceanSlider.onValueChanged.AddListener(delegate { OceanValueChanged(); });
@@ -100,6 +105,10 @@ public class UIData : MonoBehaviour
     private void WealthValueChanged()
     {
         wealthMultiplier = wealthSlider.value;
+    }
+    private void PopulationValueChanged()
+    {
+        populationMultiplier = populationSlider.value;
     }
 
     //scroll view content
