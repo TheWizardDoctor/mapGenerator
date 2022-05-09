@@ -19,6 +19,8 @@ public class TileUI : MonoBehaviour
     [SerializeField]
     private TextMeshProUGUI PrecipitationText;
     [SerializeField]
+    private TextMeshProUGUI CountryText;
+    [SerializeField]
     private TextMeshProUGUI CityText;
     [SerializeField]
     private TextMeshProUGUI CityPopulationText;
@@ -41,7 +43,9 @@ public class TileUI : MonoBehaviour
 
         biomeText.text = "Biome: " + tile.Biome;
         ElevationText.text = "Elevation: " + (100*tile.Elevation).ToString("0.00 meters");
-        PrecipitationText.text = "Precipitation: " + tile.Precipitation.ToString("0.00 in/a"); ;
+        PrecipitationText.text = "Precipitation: " + tile.Precipitation.ToString("0.00 in/a");
+        CountryText.text = "Country: " + tile.country;
+
 
         if (tile.City != null)
         {

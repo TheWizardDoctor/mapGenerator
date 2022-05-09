@@ -5,13 +5,17 @@ using UnityEngine;
 public class Border : MonoBehaviour
 {
     private static readonly GameObject BorderSphere = Resources.Load<GameObject>("BorderWall");
+    private static bool[,] marked;
+    private static int country;
+
+
     public static void generateBorders(Tile[,] map, int countryNum)
     {
-//        Debug.Log(Map.height);
-//        Debug.Log(Map.width);
+        //        Debug.Log(Map.height);
+        //        Debug.Log(Map.width);
         while (countryNum > 1)
         {
-//            Debug.Log("Create Border Start");
+            //            Debug.Log("Create Border Start");
             if (genBorder(map))
             {
                 countryNum--;
@@ -21,19 +25,19 @@ public class Border : MonoBehaviour
 
     public static bool genBorder(Tile[,] map)
     {
-        if(map != null)
+        if (map != null)
         {
-//            Debug.Log("Get Startpoint");
+            //            Debug.Log("Get Startpoint");
             Tile startTile = genStartTile(map);
             if (startTile == null)
             {
                 return false;
             }
 
-//            Debug.Log("Generate Border");
+            //            Debug.Log("Generate Border");
             decideDirection(map, startTile);
 
-//            Debug.Log("Establish Border");
+            //            Debug.Log("Establish Border");
             establishBorder(map, startTile);
 
             return true;
@@ -47,14 +51,14 @@ public class Border : MonoBehaviour
         startTile.Border = 2;
         genBorderSphere(startTile);
         Tile current = startTile;
-        if (current.X == 0 || current.X == Map.width-1 
-            || current.Y == 0 || current.Y == Map.height-1)
+        if (current.X == 0 || current.X == Map.width - 1
+            || current.Y == 0 || current.Y == Map.height - 1)
         {
             return;
         }
 
         current = tiles[startTile.X - 1, startTile.Y - 1];
-        if(current.Border == 1)
+        if (current.Border == 1)
         {
             establishBorder(tiles, current);
         }
@@ -174,10 +178,10 @@ public class Border : MonoBehaviour
                 genWeightedBorder(tiles, nextTile);
                 break;
             case 3: // NW,SE
-                nextTile = tiles[startTile.X+1, startTile.Y - 1];
+                nextTile = tiles[startTile.X + 1, startTile.Y - 1];
                 nextTile.Border = 1;
                 genWeightedBorder(tiles, nextTile);
-                nextTile = tiles[startTile.X-1, startTile.Y + 1];
+                nextTile = tiles[startTile.X - 1, startTile.Y + 1];
                 nextTile.Border = 1;
                 genWeightedBorder(tiles, nextTile);
                 break;
@@ -188,10 +192,10 @@ public class Border : MonoBehaviour
     public static Tile genWeightedBorder(Tile[,] tiles, Tile awayTile)
     {
         Tile finishTile = awayTile;
-        int burstLength = Map.height/20;
-//        Debug.Log(burstLength);
+        int burstLength = Map.height / 20;
+        //        Debug.Log(burstLength);
 
-        while(detectBorder(tiles, finishTile) == false
+        while (detectBorder(tiles, finishTile) == false
             || finishTile.X < 0
             || finishTile.X > Map.width - 1
             || finishTile.Y > Map.height - 1
@@ -200,8 +204,8 @@ public class Border : MonoBehaviour
             Tile prevTile = findPrev(tiles, finishTile);
             int xCord = prevTile.X - finishTile.X;
             int yCord = prevTile.Y - finishTile.Y;
-//            Debug.Log("xCord: "+xCord);
-//            Debug.Log("yCord: " + yCord);
+            //            Debug.Log("xCord: "+xCord);
+            //            Debug.Log("yCord: " + yCord);
 
             if (xCord < 0) // S, SE, SW
             {
@@ -209,7 +213,7 @@ public class Border : MonoBehaviour
                 {
                     finishTile = judgeSE(tiles, finishTile, burstLength);
                 }
-                if(yCord == 0) // S
+                if (yCord == 0) // S
                 {
                     finishTile = judgeS(tiles, finishTile, burstLength);
                 }
@@ -218,7 +222,7 @@ public class Border : MonoBehaviour
                     finishTile = judgeSW(tiles, finishTile, burstLength);
                 }
             }
-            if(xCord == 0) // E, W
+            if (xCord == 0) // E, W
             {
                 if (yCord < 0) // E
                 {
@@ -229,7 +233,7 @@ public class Border : MonoBehaviour
                     finishTile = judgeW(tiles, finishTile, burstLength);
                 }
             }
-            if(xCord > 0) // N, NE, NW
+            if (xCord > 0) // N, NE, NW
             {
                 if (yCord < 0) // NE
                 {
@@ -751,7 +755,7 @@ public class Border : MonoBehaviour
                 next = map[selected.X + 1, selected.Y];
                 break;
             case 1:
-                next = map[selected.X + 1, selected.Y+1];
+                next = map[selected.X + 1, selected.Y + 1];
                 break;
             default:
                 next = map[selected.X, selected.Y + 1];
@@ -943,7 +947,7 @@ public class Border : MonoBehaviour
     public static Tile coastEscape(Tile[,] tiles, Tile startTile)
     {
         int escapeVal = Map.height / 20;
-//        Debug.Log("Escape val = "+escapeVal);
+        //        Debug.Log("Escape val = "+escapeVal);
 
         if (tiles[startTile.X + 1, startTile.Y].Biome == Biome.Ocean)
         {
@@ -972,13 +976,13 @@ public class Border : MonoBehaviour
     {
         if (escapeVal == 0)
         {
-//            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
+            //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
             selected.Border = 1;
             return selected;
         }
         if (detectBorder(tiles, selected) == true || detectOcean(tiles, selected) > 0)
         {
-//            Debug.Log("Away point invalid");
+            //            Debug.Log("Away point invalid");
 
             return null;
         }
@@ -990,7 +994,7 @@ public class Border : MonoBehaviour
             rand = Random.Range(-1, 2);
             next = tiles[selected.X - 1, selected.Y + rand];
         }
-//        Debug.Log("Next point is " + next.X + ", " + next.Y);
+        //        Debug.Log("Next point is " + next.X + ", " + next.Y);
         escapeVal--;
         Tile endPoint = escapeNorth(tiles, next, escapeVal);
         if (endPoint == null)
@@ -1005,13 +1009,13 @@ public class Border : MonoBehaviour
     {
         if (escapeVal == 0)
         {
-//            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
+            //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
             selected.Border = 1;
             return selected;
         }
         if (detectBorder(tiles, selected) == true || detectOcean(tiles, selected) > 0)
         {
-//            Debug.Log("Away point invalid");
+            //            Debug.Log("Away point invalid");
 
             return null;
         }
@@ -1023,7 +1027,7 @@ public class Border : MonoBehaviour
             rand = Random.Range(-1, 2);
             next = tiles[selected.X + 1, selected.Y + rand];
         }
-//        Debug.Log("Next point is " + next.X + ", " + next.Y);
+        //        Debug.Log("Next point is " + next.X + ", " + next.Y);
         escapeVal--;
         Tile endPoint = escapeSouth(tiles, next, escapeVal);
         if (endPoint == null)
@@ -1038,13 +1042,13 @@ public class Border : MonoBehaviour
     {
         if (escapeVal == 0)
         {
-//            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
+            //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
             selected.Border = 1;
             return selected;
         }
         if (detectBorder(tiles, selected) == true || detectOcean(tiles, selected) > 0)
         {
-//            Debug.Log("Away point invalid");
+            //            Debug.Log("Away point invalid");
 
             return null;
         }
@@ -1056,7 +1060,7 @@ public class Border : MonoBehaviour
             rand = Random.Range(-1, 2);
             next = tiles[selected.X + rand, selected.Y + 1];
         }
-//        Debug.Log("Next point is " + next.X + ", " + next.Y);
+        //        Debug.Log("Next point is " + next.X + ", " + next.Y);
         escapeVal--;
         Tile endPoint = escapeEast(tiles, next, escapeVal);
         if (endPoint == null)
@@ -1071,13 +1075,13 @@ public class Border : MonoBehaviour
     {
         if (escapeVal == 0)
         {
-//            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
+            //            Debug.Log("Away point found at " + selected.X + ", " + selected.Y);
             selected.Border = 1;
             return selected;
         }
         if (detectBorder(tiles, selected) == true || detectOcean(tiles, selected) > 0)
         {
-//            Debug.Log("Away point invalid");
+            //            Debug.Log("Away point invalid");
 
             return null;
         }
@@ -1089,7 +1093,7 @@ public class Border : MonoBehaviour
             rand = Random.Range(-1, 2);
             next = tiles[selected.X + rand, selected.Y - 1];
         }
-//        Debug.Log("Next point is " + next.X + ", " + next.Y);
+        //        Debug.Log("Next point is " + next.X + ", " + next.Y);
         escapeVal--;
         Tile endPoint = escapeWest(tiles, next, escapeVal);
         if (endPoint == null)
@@ -1103,23 +1107,23 @@ public class Border : MonoBehaviour
 
     public static Tile genStartTile(Tile[,] tiles)
     {
-//        Debug.Log(Map.height);
-//        Debug.Log(Map.width);
+        //        Debug.Log(Map.height);
+        //        Debug.Log(Map.width);
 
         int startX = Random.Range(Map.width / 20, (Map.width - Map.width / 20));
         int startY = Random.Range(Map.height / 20, (Map.height - Map.height / 20));
 
-//        Debug.Log(startX);
-//        Debug.Log(startY);
+        //        Debug.Log(startX);
+        //        Debug.Log(startY);
 
         ref Tile startTile = ref tiles[startX, startY];
         //Debug.Log(side);
 
-        if(startTile.Biome != Biome.Ocean)
+        if (startTile.Biome != Biome.Ocean)
         {
-            if( escapeEast(tiles, startTile, startX) == null 
-                && escapeWest(tiles, startTile, startX) == null 
-                && escapeNorth(tiles, startTile, startY) == null 
+            if (escapeEast(tiles, startTile, startX) == null
+                && escapeWest(tiles, startTile, startX) == null
+                && escapeNorth(tiles, startTile, startY) == null
                 && escapeSouth(tiles, startTile, startY) != null)
             {
                 return null;
@@ -1130,11 +1134,11 @@ public class Border : MonoBehaviour
         int oceans = detectOcean(tiles, startTile);
         if (startTile.Border == 2 || oceans > 0 || detectBorder(tiles, startTile) == true)
         {
-//            Debug.Log("Start point invalid");
+            //            Debug.Log("Start point invalid");
             return null;
         }
 
-//        Debug.Log("Start point found at " + startTile.X + ", " + startTile.Y);
+        //        Debug.Log("Start point found at " + startTile.X + ", " + startTile.Y);
         startTile.Border = 1;
 
         GameObject s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
@@ -1149,7 +1153,7 @@ public class Border : MonoBehaviour
     {
         int ocean = 0;
 
-        if(tiles[selected.X-1, selected.Y].Biome == Biome.Ocean)
+        if (tiles[selected.X - 1, selected.Y].Biome == Biome.Ocean)
         {
             ocean += 1;
         }
@@ -1157,11 +1161,11 @@ public class Border : MonoBehaviour
         {
             ocean += 1;
         }
-        if (tiles[selected.X, selected.Y-1].Biome == Biome.Ocean)
+        if (tiles[selected.X, selected.Y - 1].Biome == Biome.Ocean)
         {
             ocean += 1;
         }
-        if (tiles[selected.X, selected.Y+1].Biome == Biome.Ocean)
+        if (tiles[selected.X, selected.Y + 1].Biome == Biome.Ocean)
         {
             ocean += 1;
         }
@@ -1172,7 +1176,7 @@ public class Border : MonoBehaviour
     // Checks a tile's neighbors for an established border tile. Returns true if one is found.
     private static bool detectBorder(Tile[,] tiles, Tile selected)
     {
-        if( selected.X <= 0
+        if (selected.X <= 0
             || selected.X >= Map.width - 1
             || selected.Y >= Map.height - 1
             || selected.Y <= 0)
@@ -1201,7 +1205,7 @@ public class Border : MonoBehaviour
         {
             return true;
         }
-        if (tiles[selected.X + 1, selected.Y -1].Border == 2)
+        if (tiles[selected.X + 1, selected.Y - 1].Border == 2)
         {
             return true;
         }
@@ -1220,14 +1224,119 @@ public class Border : MonoBehaviour
     // Creates a marker at Tile's location
     private static void genBorderSphere(Tile selected)
     {
-        if(selected.Biome == Biome.Ocean)
+        if (selected.Biome == Biome.Ocean)
         {
             return;
         }
         //GameObject s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         GameObject s = GameObject.Instantiate(BorderSphere);
-        s.transform.position = new Vector3(selected.X, (selected.Elevation/10)+1, selected.Y);
+        s.transform.position = new Vector3(selected.X, (selected.Elevation / 10) + 1, selected.Y);
         s.GetComponent<Renderer>().material.color = new Color(1, 0, 0, 1);
         s.transform.SetParent(Map.BorderTiles.transform);
+    }
+
+    public static void SetTileCountries()
+    {
+        country = 1;
+        marked = new bool[Map.width, Map.height];
+        for (int i = 0; i < Map.width; i++)
+        {
+            for (int j = 0; j < Map.height; j++)
+            {
+                if (Map.tiles[i, j].Biome == Biome.Ocean)
+                {
+                    marked[i, j] = true;
+                }
+                else
+                {
+                    marked[i, j] = false;
+                }
+            }
+        }
+
+        for (int i = 1; i < Map.width - 1; i++)
+        {
+            for (int j = 1; j < Map.height - 1; j++)
+            {
+                if(Map.tiles[i,j].border==2 && marked[i, j] == false)
+                {
+                    Expand(Map.tiles[i, j]);
+                    country++;
+                }
+                //if (marked[i, j - 1] == false)
+                //{
+                //    Expand(Map.tiles[i, j - 1]);
+                //}
+                //if (marked[i - 1, j - 1] == false)
+                //{
+                //    Expand(Map.tiles[i - 1, j - 1]);
+                //}
+                //if (marked[i + 1, j] == false)
+                //{
+                //    Expand(Map.tiles[i + 1, j]);
+                //}
+                //if (marked[i + 1, j + 1] == false)
+                //{
+                //    Expand(Map.tiles[i + 1, j + 1]);
+                //}
+                
+            }
+        }
+        marked = null;
+    }
+
+    public static void Expand(Tile tile)
+    {
+        tile.country = country;
+        marked[tile.X, tile.Y] = true;
+
+        if (tile.left != null && tile.left.Biome != Biome.Ocean && marked[tile.left.X, tile.left.Y] == false)
+        {
+            if (tile.left.border == 2)
+            {
+                tile.left.country = country;
+                marked[tile.left.X, tile.left.Y] = true;
+            }
+            else
+            {
+                Expand(tile.left);
+            }
+        }
+        if (tile.right != null && tile.right.Biome != Biome.Ocean && marked[tile.right.X, tile.right.Y] == false)
+        {
+            if (tile.right.border == 2)
+            {
+                tile.right.country = country;
+                marked[tile.right.X, tile.right.Y] = true;
+            }
+            else
+            {
+                Expand(tile.right);
+            }
+        }
+        if (tile.up != null && tile.up.Biome != Biome.Ocean && marked[tile.up.X, tile.up.Y] == false)
+        {
+            if (tile.up.border == 2)
+            {
+                tile.up.country = country;
+                marked[tile.up.X, tile.up.Y] = true;
+            }
+            else
+            {
+                Expand(tile.up);
+            }
+        }
+        if (tile.down != null && tile.down.Biome != Biome.Ocean && marked[tile.down.X, tile.down.Y] == false)
+        {
+            if (tile.down.border == 2)
+            {
+                tile.down.country = country;
+                marked[tile.down.X, tile.down.Y] = true;
+            }
+            else
+            {
+                Expand(tile.down);
+            }
+        }
     }
 }

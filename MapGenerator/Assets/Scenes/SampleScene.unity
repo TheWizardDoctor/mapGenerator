@@ -313,7 +313,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2667598fa045541449be10034a774caa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tilePrefab: {fileID: 7779679060674455505, guid: c667db2cc911d854b9264940a57fdb60, type: 3}
   cam: {fileID: 963194227}
 --- !u!114 &963194230
 MonoBehaviour:
