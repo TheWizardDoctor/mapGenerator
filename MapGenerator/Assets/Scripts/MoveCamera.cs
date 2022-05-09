@@ -60,58 +60,6 @@ public class MoveCamera : MonoBehaviour
             TakePicture();
         }
 
-        //if (Input.GetKeyDown(KeyCode.T))
-        //{
-        //    City.GenerateCities(Map.scanRadius * 5);
-
-        //    for (int i = 0; i < City.cityList.Count; i++)
-        //    {
-        //        double rand = RandomNum.r.NextDouble();
-
-        //        if (rand < 0.333)
-        //        {
-        //            City.TradeRouteFood(City.cityList[i]);
-        //        }
-        //        else if (rand < 0.666)
-        //        {
-        //            City.TradeRouteLumber(City.cityList[i]);
-        //        }
-        //        else
-        //        {
-        //            City.TradeRouteWater(City.cityList[i]);
-        //        }
-        //    }
-        //}
-        //if (Input.GetKeyDown(KeyCode.C))
-        //{
-        //    //very simplistic city creation
-        //    //(currently only checks 8 nearby tiles to get tile's creation value)
-        //    var watch = System.Diagnostics.Stopwatch.StartNew();
-        //    City.GenerateCities(1);
-        //    watch.Stop();
-        //    Debug.Log("Time to create 1 cities is:" + watch.ElapsedMilliseconds + "ms");
-        //}
-        //if (Input.GetKeyDown(KeyCode.N))
-        //{
-        //    int random = 0, random2 = 0;
-        //    while (random == random2 && City.cityList.Count > 1)
-        //    {
-        //        random = RandomNum.r.Next(City.cityList.Count);
-        //        random2 = RandomNum.r.Next(City.cityList.Count);
-        //    }
-
-        //    Tile one = Map.tiles[City.cityList[random].x, City.cityList[random].y];
-        //    Tile two = Map.tiles[City.cityList[random2].x, City.cityList[random2].y];
-
-        //    if (one != null && two != null)
-        //    {
-        //        var watch = System.Diagnostics.Stopwatch.StartNew();
-        //        Road.CreateRoad(one, two);
-        //        watch.Stop();
-        //        Debug.Log("Time to create 1 road is:" + watch.ElapsedMilliseconds + "ms");
-        //    }
-        //}
-
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             TileUI.S.Disable();
