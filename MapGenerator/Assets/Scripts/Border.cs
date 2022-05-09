@@ -6,7 +6,7 @@ public class Border : MonoBehaviour
 {
     private static readonly GameObject BorderSphere = Resources.Load<GameObject>("BorderWall");
     private static bool[,] marked;
-    private static int country;
+    private static Country country;
 
 
     public static void generateBorders(Tile[,] map, int countryNum)
@@ -1237,7 +1237,6 @@ public class Border : MonoBehaviour
 
     public static void SetTileCountries()
     {
-        country = 1;
         marked = new bool[Map.width, Map.height];
         for (int i = 0; i < Map.width; i++)
         {
@@ -1260,8 +1259,8 @@ public class Border : MonoBehaviour
             {
                 if(Map.tiles[i,j].border==2 && marked[i, j] == false)
                 {
+                    country = new Country();
                     Expand(Map.tiles[i, j]);
-                    country++;
                 }
                 //if (marked[i, j - 1] == false)
                 //{
@@ -1287,6 +1286,7 @@ public class Border : MonoBehaviour
 
     public static void Expand(Tile tile)
     {
+        country.tilesInCountry.Add(tile);
         tile.country = country;
         marked[tile.X, tile.Y] = true;
 
@@ -1294,6 +1294,7 @@ public class Border : MonoBehaviour
         {
             if (tile.left.border == 2)
             {
+                country.tilesInCountry.Add(tile);
                 tile.left.country = country;
                 marked[tile.left.X, tile.left.Y] = true;
             }
@@ -1306,6 +1307,7 @@ public class Border : MonoBehaviour
         {
             if (tile.right.border == 2)
             {
+                country.tilesInCountry.Add(tile);
                 tile.right.country = country;
                 marked[tile.right.X, tile.right.Y] = true;
             }
@@ -1318,6 +1320,7 @@ public class Border : MonoBehaviour
         {
             if (tile.up.border == 2)
             {
+                country.tilesInCountry.Add(tile);
                 tile.up.country = country;
                 marked[tile.up.X, tile.up.Y] = true;
             }
@@ -1330,6 +1333,7 @@ public class Border : MonoBehaviour
         {
             if (tile.down.border == 2)
             {
+                country.tilesInCountry.Add(tile);
                 tile.down.country = country;
                 marked[tile.down.X, tile.down.Y] = true;
             }

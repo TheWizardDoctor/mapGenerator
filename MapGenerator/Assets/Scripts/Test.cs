@@ -36,9 +36,11 @@ public class Test : MonoBehaviour
         //(currently only checks 8 nearby tiles to get tile's creation value)
 
 		watch = System.Diagnostics.Stopwatch.StartNew();
-		City.GenerateCities(Mathf.RoundToInt(10 * Map.scanRadius * UIData.cityMultiplier));
-		watch.Stop();
+        City.GenerateCapitals();
+        City.GenerateCities(Mathf.RoundToInt(5 * Map.scanRadius * UIData.cityMultiplier));
+        watch.Stop();
 		Debug.Log("Time to create cities is:" + watch.ElapsedMilliseconds + "ms");
+
 
         watch = System.Diagnostics.Stopwatch.StartNew();
         for (int i = 0; i < City.cityList.Count; i++)

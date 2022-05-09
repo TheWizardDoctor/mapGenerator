@@ -19,6 +19,7 @@ public class City
     public float lumber;
     public float food;
     public int roads;
+    public bool capital;
 
     private City(int xVal, int yVal)
     {
@@ -28,6 +29,7 @@ public class City
         population = Mathf.RoundToInt(UIData.populationMultiplier * RandomNum.r.Next(100, 10000));
         x = xVal;
         y = yVal;
+        capital = false;
         cityList.Add(this);
         SetResources(this);
     }
@@ -42,8 +44,57 @@ public class City
         }
     }
 
-    //create a single city
+    public static void GenerateCapitals()
+    {
+        foreach(Country c in Country.countryList)
+        {
+            float bestVal = int.MinValue;
+            if(c.tilesInCountry.Count==0)
+            {
+                continue;
+            }
 
+            Tile bestTile = c.tilesInCountry[0];
+
+            foreach (Tile tile in c.tilesInCountry)
+            {
+                if (tile.City != null || tile.Biome == Biome.Ocean)
+                {
+                    continue;
+                }
+
+                float currentVal = tile.tileValue;
+                if (currentVal > bestVal)
+                {
+                    bestVal = currentVal;
+                    bestTile = tile;
+                }
+                else if (currentVal == bestVal)
+                {
+                    if (RandomNum.r.NextDouble() > 0.5)
+                    {
+                        bestTile = tile;
+                    }
+                }
+            }
+
+            //Debug.Log("Best City Location (X:" + bestTile.X + " Y:" + bestTile.Y + ")");
+            AddCity(bestTile);
+            GameObject city = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
+            city.transform.SetParent(Map.Houses.transform);
+            city.transform.position = new Vector3(bestTile.X, (bestTile.Elevation / 10) + 1, bestTile.Y);
+            city.transform.localScale = 1.3f * city.transform.localScale;
+
+            City newCity = new City(bestTile.X, bestTile.Y);
+            newCity.wealth *= RandomNum.r.Next(2,3);
+            newCity.population *= RandomNum.r.Next(2, 5);
+            newCity.capital = true;
+            bestTile.City = newCity;
+            //Debug.Log("best val:" + bestVal);
+        }
+    }
+
+    //create a single city
     private static void GenerateCity()
     {
         Tile[,] tiles = Map.tiles;
@@ -83,22 +134,6 @@ public class City
         //Debug.Log("best val:" + bestVal);
     }
 
-    /*private static void GenerateCity()
-    {
-        Tile[,] tiles = Map.tiles;
-
-        Tile randTile = tiles[RandomNum.r.Next(Map.width), RandomNum.r.Next(Map.height)];
-        while (randTile.Biome == Biome.Ocean)
-        {
-            randTile = tiles[RandomNum.r.Next(Map.width), RandomNum.r.Next(Map.height)];
-        }
-
-        GameObject city = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
-        city.transform.position = new Vector3(randTile.X, (randTile.Elevation / 10) + 1, randTile.Y);
-
-        City newCity = new City(randTile.X, randTile.Y);
-        randTile.City = newCity;
-    }*/
     public static void PlaceNewCity(Tile tile)
     {
         if(tile.City==null)

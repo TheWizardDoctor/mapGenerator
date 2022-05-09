@@ -42,15 +42,32 @@ public class TileUI : MonoBehaviour
         Tile tile = Map.tiles[Mathf.RoundToInt(tilePos.x), Mathf.RoundToInt(tilePos.y)];
 
         biomeText.text = "Biome: " + tile.Biome;
-        ElevationText.text = "Elevation: " + (100*tile.Elevation).ToString("0.00 meters");
-        PrecipitationText.text = "Precipitation: " + tile.Precipitation.ToString("0.00 in/a");
-        CountryText.text = "Country: " + tile.country;
+        if(tile.Biome==Biome.Ocean)
+        {
+            ElevationText.text = "Elevation: 0 meters";
+            PrecipitationText.text = "Precipitation: N/A";
+            CountryText.text = "Country: N/A";
+        }
+        else
+        {
+            ElevationText.text = "Elevation: " + (100 * tile.Elevation).ToString("0.00 meters");
+            PrecipitationText.text = "Precipitation: " + tile.Precipitation.ToString("0.00 in/a");
+            CountryText.text = "Country: " + tile.country.name;
+        }
+        
 
 
         if (tile.City != null)
         {
             CitySubMenu.SetActive(true);
-            CityText.text = "City: " + tile.City.name;
+            if(tile.City.capital)
+            {
+                CityText.text = "Capital City: " + tile.City.name;
+            }
+            else
+            {
+                CityText.text = "City: " + tile.City.name;
+            }
             CityPopulationText.text = "Population: " + tile.City.population;
             CityWealthText.text = "Money: " + String.Format("{0:C0}", tile.City.wealth);
         }

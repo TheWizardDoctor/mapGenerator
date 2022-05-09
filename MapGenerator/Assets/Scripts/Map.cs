@@ -201,5 +201,6 @@ public class Map
 		
 		Tile.CalculateAllValues();
 		City.LoadCityNames();
+		Country.LoadCountryNames();
 	}
 }

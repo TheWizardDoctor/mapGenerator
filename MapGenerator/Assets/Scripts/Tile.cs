@@ -16,7 +16,7 @@ public class Tile
     private float elevation;
     private float latitude;
     private float precipitation;
-    public int country;
+    public Country country;
     private City city;
     private bool road;
     private int x;
@@ -39,12 +39,6 @@ public class Tile
     private float navDifficulty = 0;
 
     //constructor
-    public Tile()
-    {
-        biome = Biome.Ocean;
-        elevation = 0;
-        precipitation = 0;
-    }
     public Tile(int xCord, int yCord)
     {
         elevation = -1;
@@ -53,6 +47,7 @@ public class Tile
         x = xCord;
         y = yCord;
         latitude = ((yCord + 1) * 90 / (Map.height / 2)) - 90;
+        country = Country.unclaimedLand;
     }
 
     //Serialize
