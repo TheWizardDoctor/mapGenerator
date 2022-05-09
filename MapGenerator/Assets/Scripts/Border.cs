@@ -1259,8 +1259,17 @@ public class Border : MonoBehaviour
             {
                 if(Map.tiles[i,j].border==2 && marked[i, j] == false)
                 {
-                    country = new Country();
-                    Expand(Map.tiles[i, j]);
+                    if(marked[i-1, j] == false || marked[i, j-1]==false)
+                    {
+                        country = new Country();
+                        Expand(Map.tiles[i-1, j]);
+                    }
+                    else if(marked[i + 1, j] == false || marked[i, j + 1] == false)
+                    {
+                        country = new Country();
+                        Expand(Map.tiles[i+1, j]);
+                    }
+                    
                 }
                 //if (marked[i, j - 1] == false)
                 //{
@@ -1294,7 +1303,7 @@ public class Border : MonoBehaviour
         {
             if (tile.left.border == 2)
             {
-                country.tilesInCountry.Add(tile);
+                country.tilesInCountry.Add(tile.left);
                 tile.left.country = country;
                 marked[tile.left.X, tile.left.Y] = true;
             }
@@ -1307,7 +1316,7 @@ public class Border : MonoBehaviour
         {
             if (tile.right.border == 2)
             {
-                country.tilesInCountry.Add(tile);
+                country.tilesInCountry.Add(tile.right);
                 tile.right.country = country;
                 marked[tile.right.X, tile.right.Y] = true;
             }
@@ -1320,7 +1329,7 @@ public class Border : MonoBehaviour
         {
             if (tile.up.border == 2)
             {
-                country.tilesInCountry.Add(tile);
+                country.tilesInCountry.Add(tile.up);
                 tile.up.country = country;
                 marked[tile.up.X, tile.up.Y] = true;
             }
@@ -1333,7 +1342,7 @@ public class Border : MonoBehaviour
         {
             if (tile.down.border == 2)
             {
-                country.tilesInCountry.Add(tile);
+                country.tilesInCountry.Add(tile.down);
                 tile.down.country = country;
                 marked[tile.down.X, tile.down.Y] = true;
             }

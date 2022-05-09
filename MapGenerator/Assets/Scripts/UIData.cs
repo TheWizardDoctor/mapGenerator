@@ -10,12 +10,12 @@ public class UIData : MonoBehaviour
     public static float cityMultiplier = 0.5f;
 
     [SerializeField]
-    private Slider riverSlider;
-    public static float riverMultiplier = 0.5f;
+    private Slider roadSlider;
+    public static float roadMultiplier = 0.5f;
 
     [SerializeField]
-    private Slider countrySlider;
-    public static float countryMultiplier = 0.5f;
+    private Slider sizeSlider;
+    public static float sizeMultiplier = 0.5f;
 
     [SerializeField]
     private Slider wealthSlider;
@@ -24,6 +24,10 @@ public class UIData : MonoBehaviour
     [SerializeField]
     private Slider populationSlider;
     public static float populationMultiplier = 0.5f;
+
+    [SerializeField]
+    private Slider borderSlider;
+    public static float borderMultiplier = 0.5f;
 
 
     //Scroll View Content
@@ -73,9 +77,10 @@ public class UIData : MonoBehaviour
     {
         citySlider.onValueChanged.AddListener(delegate { CityValueChanged(); });
         wealthSlider.onValueChanged.AddListener(delegate { WealthValueChanged(); });
-        countrySlider.onValueChanged.AddListener(delegate { CountryValueChanged(); });
-        riverSlider.onValueChanged.AddListener(delegate { RiverValueChanged(); });
+        sizeSlider.onValueChanged.AddListener(delegate { SizeValueChanged(); });
+        roadSlider.onValueChanged.AddListener(delegate { RoadValueChanged(); });
         populationSlider.onValueChanged.AddListener(delegate { PopulationValueChanged(); });
+        borderSlider.onValueChanged.AddListener(delegate { BorderValueChanged(); });
 
         //scroll view content
         oceanSlider.onValueChanged.AddListener(delegate { OceanValueChanged(); });
@@ -94,13 +99,13 @@ public class UIData : MonoBehaviour
     {
         cityMultiplier = citySlider.value;
     }
-    private void RiverValueChanged()
+    private void RoadValueChanged()
     {
-        riverMultiplier = riverSlider.value;
+        roadMultiplier = roadSlider.value;
     }
-    private void CountryValueChanged()
+    private void SizeValueChanged()
     {
-        countryMultiplier = countrySlider.value;
+        sizeMultiplier = sizeSlider.value;
     }
     private void WealthValueChanged()
     {
@@ -109,6 +114,10 @@ public class UIData : MonoBehaviour
     private void PopulationValueChanged()
     {
         populationMultiplier = populationSlider.value;
+    }
+    private void BorderValueChanged()
+    {
+        borderMultiplier = borderSlider.value;
     }
 
     //scroll view content
