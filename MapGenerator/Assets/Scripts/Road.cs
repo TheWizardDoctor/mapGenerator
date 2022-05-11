@@ -5,8 +5,8 @@ public class Road
 {
     private static SimplePriorityQueue<Tile> fringe;
     private static readonly int minCost = 5;
-    private static readonly Material roadMat = Resources.Load<Material>("Road");
-    private static readonly Material OceanPathMat = Resources.Load<Material>("OceanPath");
+    private static readonly GameObject roadPrefab = Resources.Load<GameObject>("Road");
+    private static readonly GameObject oceanPathPrefab = Resources.Load<GameObject>("OceanPath");
     private static float[,] gVals;
     private static float[,] hVals;
     private static float[,] fVals;
@@ -77,17 +77,27 @@ public class Road
                 Tile temp = current;
                 while (temp != null)
                 {
-                    temp.Road = true;
+                    if (temp.Road == false)
+                    {
+                        temp.Road = true;
 
-                    if(temp.Biome!=Biome.Ocean)
-                    {
-                        temp.cube.GetComponent<MeshRenderer>().material = roadMat;
+                        Vector3 pos = new Vector3(temp.cube.transform.position.x,
+                            temp.cube.transform.position.y + 0.025f + (0.5f * temp.cube.transform.localScale.y),
+                            temp.cube.transform.position.z);
+                        if (temp.Biome != Biome.Ocean)
+                        {
+                            GameObject newRoad = GameObject.Instantiate<GameObject>(roadPrefab, pos, temp.cube.transform.rotation);
+                            newRoad.transform.SetParent(Map.RoadTiles.transform);
+                            //temp.cube.GetComponent<MeshRenderer>().material = roadMat;
+                        }
+                        else
+                        {
+                            GameObject newRoad = GameObject.Instantiate<GameObject>(oceanPathPrefab, pos, temp.cube.transform.rotation);
+                            newRoad.transform.SetParent(Map.RoadTiles.transform);
+                            //temp.cube.GetComponent<MeshRenderer>().material = OceanPathMat;
+                        }
                     }
-                    else
-                    {
-                        temp.cube.transform.SetParent(Map.RoadTiles.transform);
-                        temp.cube.GetComponent<MeshRenderer>().material = OceanPathMat;
-                    }
+                    
                     
                     temp = temp.previous;
                 }

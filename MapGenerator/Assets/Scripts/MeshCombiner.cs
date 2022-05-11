@@ -24,6 +24,13 @@ public class MeshCombiner : MonoBehaviour
         transform.GetComponent<MeshFilter>().mesh = new Mesh();
         transform.GetComponent<MeshFilter>().mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
         transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
+
+        MeshCollider meshCollider = transform.GetComponent<MeshCollider>();
+        if (meshCollider != null)
+        {
+            meshCollider.sharedMesh = transform.GetComponent<MeshFilter>().mesh;
+        }
+
         transform.gameObject.SetActive(true);
     }
 }

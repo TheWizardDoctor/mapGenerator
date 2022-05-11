@@ -20,6 +20,7 @@ public class City
     public float food;
     public int roads;
     public bool capital;
+    public GameObject house;
 
     private City(int xVal, int yVal)
     {
@@ -80,15 +81,16 @@ public class City
 
             //Debug.Log("Best City Location (X:" + bestTile.X + " Y:" + bestTile.Y + ")");
             AddCity(bestTile);
-            GameObject city = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
-            city.transform.SetParent(Map.Houses.transform);
-            city.transform.position = new Vector3(bestTile.X, (bestTile.Elevation / 10) + 1, bestTile.Y);
-            city.transform.localScale = 1.3f * city.transform.localScale;
+            GameObject cityGameObject = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
+            cityGameObject.transform.SetParent(Map.Houses.transform);
+            cityGameObject.transform.position = new Vector3(bestTile.X, (bestTile.Elevation / 10) + 1, bestTile.Y);
+            cityGameObject.transform.localScale = 1.3f * cityGameObject.transform.localScale;
 
             City newCity = new City(bestTile.X, bestTile.Y);
             newCity.wealth *= RandomNum.r.Next(2,3);
             newCity.population *= RandomNum.r.Next(2, 5);
             newCity.capital = true;
+            newCity.house = cityGameObject;
             bestTile.City = newCity;
             //Debug.Log("best val:" + bestVal);
         }
@@ -125,11 +127,12 @@ public class City
 
         //Debug.Log("Best City Location (X:" + bestTile.X + " Y:" + bestTile.Y + ")");
         AddCity(bestTile);
-        GameObject city = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
-        city.transform.SetParent(Map.Houses.transform);
-        city.transform.position = new Vector3(bestTile.X, (bestTile.Elevation / 10) + 1, bestTile.Y);
+        GameObject cityGameObject = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
+        cityGameObject.transform.SetParent(Map.Houses.transform);
+        cityGameObject.transform.position = new Vector3(bestTile.X, (bestTile.Elevation / 10) + 1, bestTile.Y);
 
         City newCity = new City(bestTile.X, bestTile.Y);
+        newCity.house = cityGameObject;
         bestTile.City = newCity;
         //Debug.Log("best val:" + bestVal);
     }
@@ -216,6 +219,28 @@ public class City
 
                 tiles[tile.X + i, tile.Y + j].tileValue = -1000 * Map.scanRadius;
             }
+        }
+    }
+    public static void RemoveCity(Tile tile)
+    {
+        if(tile.City!=null)
+        {
+            Tile[,] tiles = Map.tiles;
+
+            for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
+            {
+                for (int j = -Map.scanRadius; j <= Map.scanRadius; j++)
+                {
+                    if (tile.X + i < 0 || tile.Y + j < 0 || tile.X + i > Map.width - 1 || tile.Y + j > Map.height - 1)
+                    {
+                        continue;
+                    }
+
+                    tiles[tile.X + i, tile.Y + j].tileValue = +1000 * Map.scanRadius;
+                }
+            }
+            UnityEngine.GameObject.Destroy(tile.City.house);
+            cityList.Remove(tile.City);
         }
     }
 

@@ -42,7 +42,7 @@ public class Test : MonoBehaviour
         //very simplistic city creation
         //(currently only checks 8 nearby tiles to get tile's creation value)
 
-		watch = System.Diagnostics.Stopwatch.StartNew();
+        watch.Restart();
         if(UIData.cityMultiplier>0)
         {
             City.GenerateCapitals();
@@ -52,7 +52,7 @@ public class Test : MonoBehaviour
 		Debug.Log("Time to create cities is:" + watch.ElapsedMilliseconds + "ms");
 
 
-        watch = System.Diagnostics.Stopwatch.StartNew();
+        watch.Restart();
         if(UIData.roadMultiplier>0)
         {
             int numRoads = Mathf.RoundToInt(UIData.roadMultiplier * 2*City.cityList.Count);
@@ -92,8 +92,21 @@ public class Test : MonoBehaviour
         watch.Stop();
         Debug.Log("Time to create roads is:" + watch.ElapsedMilliseconds + "ms");
 
+        watch.Restart();
+
         //HUGE FPS savers
-        //Map.OceanTiles.GetComponent<MeshCombiner>().CombineMeshes();
         Map.BorderTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.BorealForestTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.DesertTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.MountainTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.OceanTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.PrairieTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.RainforestTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.SavannaTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.ShrublandTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.TemperateForestTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.TundraTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        watch.Stop();
+        Debug.Log("Time to combine meshes is:" + watch.ElapsedMilliseconds + "ms");
     }
 }

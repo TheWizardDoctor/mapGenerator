@@ -64,38 +64,29 @@ public class MoveCamera : MonoBehaviour
         {
             TileUI.S.Disable();
 
-            if (createCity)
-            {
-                RaycastHit hit;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit))
+            {
+                Vector2Int tilePos = new Vector2Int(Mathf.RoundToInt(hit.point.x), Mathf.RoundToInt(hit.point.z));
+
+                if (createCity)
                 {
-                    Vector2 tilePos = new Vector2(hit.collider.gameObject.transform.position.x, hit.collider.gameObject.transform.position.z);
-                    City.PlaceNewCity(Map.tiles[Mathf.RoundToInt(tilePos.x), Mathf.RoundToInt(tilePos.y)]);
+                    City.PlaceNewCity(Map.tiles[tilePos.x, tilePos.y]);
+
+                    createCity = false;
+                    createRoad = false;
                 }
-
-                createCity = false;
-                createRoad = false;
-            }
-            else if (createRoad)
-            {
-
-
-                RaycastHit hit;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                if (Physics.Raycast(ray, out hit))
+                else if (createRoad)
                 {
-                    Vector2 tilePos = new Vector2(hit.collider.gameObject.transform.position.x, hit.collider.gameObject.transform.position.z);
-
                     if (startTile == null)
                     {
-                        startTile = Map.tiles[Mathf.RoundToInt(tilePos.x), Mathf.RoundToInt(tilePos.y)];
+                        startTile = Map.tiles[tilePos.x, tilePos.y];
                     }
                     else
                     {
-                        Tile endTile = Map.tiles[Mathf.RoundToInt(tilePos.x), Mathf.RoundToInt(tilePos.y)];
+                        Tile endTile = Map.tiles[tilePos.x, tilePos.y];
                         Road.CreateRoad(startTile, endTile);
                         startTile = null;
 
@@ -103,15 +94,8 @@ public class MoveCamera : MonoBehaviour
                         createRoad = false;
                     }
                 }
-            }
-            else
-            {
-                RaycastHit hit;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                if (Physics.Raycast(ray, out hit))
+                else
                 {
-                    Vector2 tilePos = new Vector2(hit.collider.gameObject.transform.position.x, hit.collider.gameObject.transform.position.z);
                     TileUI.S.SetTileMenu(tilePos);
                 }
             }

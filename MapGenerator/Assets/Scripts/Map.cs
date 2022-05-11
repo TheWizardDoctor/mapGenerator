@@ -13,6 +13,7 @@ public class Map
     public static int scanRadius;
     public static Tile[,] tiles;
 
+	public static GameObject tileSet;
 	public static GameObject OceanTiles;
 	public static GameObject DesertTiles;
 	public static GameObject BorealForestTiles;
@@ -33,10 +34,9 @@ public class Map
         height = h;
         scanRadius = (int)Math.Floor(0.02 * width);
 
-        GameObject tileSet = new GameObject("Tiles");
-        tiles = new Tile[width, height];
+		GameObject tileSet = GameObject.Find("All Tiles");
+		tiles = new Tile[width, height];
 
-		//test
 		OceanTiles = GameObject.Find("Ocean Tiles");
 		OceanTiles.transform.SetParent(tileSet.transform);
 
