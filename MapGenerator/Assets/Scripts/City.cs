@@ -50,7 +50,7 @@ public class City
         foreach(Country c in Country.countryList)
         {
             float bestVal = int.MinValue;
-            if(c.tilesInCountry.Count==0)
+            if(c.tilesInCountry.Count == 0)
             {
                 continue;
             }
@@ -91,6 +91,7 @@ public class City
             newCity.population *= RandomNum.r.Next(2, 5);
             newCity.capital = true;
             newCity.house = cityGameObject;
+            bestTile.country.hasCapital = true;
             bestTile.City = newCity;
             //Debug.Log("best val:" + bestVal);
         }
@@ -139,15 +140,25 @@ public class City
 
     public static void PlaceNewCity(Tile tile)
     {
-        if(tile.City==null)
+        if (tile.City == null)
         {
             AddCity(tile);
-            GameObject city = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
-            city.transform.SetParent(Map.Houses.transform);
-            city.transform.position = new Vector3(tile.X, (tile.Elevation / 10) + 1, tile.Y);
-
+            GameObject cityGameObject = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
+            cityGameObject.transform.position = new Vector3(tile.X, (tile.Elevation / 10) + 1, tile.Y);
+            //cityGameObject.transform.SetParent(Map.Houses.transform);   
             City newCity = new City(tile.X, tile.Y);
+            newCity.house = cityGameObject;
             tile.City = newCity;
+
+            if (tile.country.hasCapital == false)
+            {
+                cityGameObject.transform.localScale = 1.3f * cityGameObject.transform.localScale;
+                newCity.wealth *= RandomNum.r.Next(2, 3);
+                newCity.population *= RandomNum.r.Next(2, 5);
+                newCity.capital = true;
+                tile.country.hasCapital = true;
+            }
+            
         }
     }
 
@@ -225,6 +236,7 @@ public class City
     {
         if(tile.City!=null)
         {
+            Debug.Log("remove");
             Tile[,] tiles = Map.tiles;
 
             for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
@@ -239,8 +251,14 @@ public class City
                     tiles[tile.X + i, tile.Y + j].tileValue = +1000 * Map.scanRadius;
                 }
             }
-            UnityEngine.GameObject.Destroy(tile.City.house);
-            cityList.Remove(tile.City);
+            if(tile.City.capital)
+            {
+                tile.country.hasCapital = false;
+            }
+            
+            UnityEngine.GameObject.Destroy(tile.City.house.gameObject);
+            _ = cityList.Remove(tile.City);
+            tile.City = null;
         }
     }
 

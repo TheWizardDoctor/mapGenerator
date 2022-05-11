@@ -12,6 +12,7 @@ public class Country
     public static List<string> countryNames;
 
     public List<Tile> tilesInCountry;
+    public bool hasCapital;
 
     //instance fields
     public string name;

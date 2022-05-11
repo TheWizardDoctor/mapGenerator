@@ -7,8 +7,8 @@ using UnityEngine;
 public class Test : MonoBehaviour
 {
     public Camera cam;
-    int width = 300;	//x
-    int height = 200;	//y
+    int width = 402;	//x
+    int height = 268;	//y
 
     // Start is called before the first frame update
     void Start()
@@ -33,7 +33,7 @@ public class Test : MonoBehaviour
         watch = System.Diagnostics.Stopwatch.StartNew();
         if(UIData.borderMultiplier>0)
         {
-            Border.generateBorders(Map.tiles, Mathf.RoundToInt(0.0005f*Map.width*Map.height*0.5f+UIData.borderMultiplier));
+            Border.generateBorders(Map.tiles, Mathf.RoundToInt(Map.width*0.005f+UIData.borderMultiplier));
             Border.SetTileCountries();
         }
         watch.Stop();

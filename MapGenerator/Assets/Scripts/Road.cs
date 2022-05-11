@@ -68,12 +68,8 @@ public class Road
                 return;
             }
 
-            //print("cur loc:(" + current.Y + "," + current.X + ")");
-            //print("\tfVal:" + current.FVal);
-
             if (current.Equals(end))
             {
-                //Debug.Log("cost:" + current.GVal);
                 Tile temp = current;
                 while (temp != null)
                 {
@@ -88,13 +84,11 @@ public class Road
                         {
                             GameObject newRoad = GameObject.Instantiate<GameObject>(roadPrefab, pos, temp.cube.transform.rotation);
                             newRoad.transform.SetParent(Map.RoadTiles.transform);
-                            //temp.cube.GetComponent<MeshRenderer>().material = roadMat;
                         }
                         else
                         {
                             GameObject newRoad = GameObject.Instantiate<GameObject>(oceanPathPrefab, pos, temp.cube.transform.rotation);
                             newRoad.transform.SetParent(Map.RoadTiles.transform);
-                            //temp.cube.GetComponent<MeshRenderer>().material = OceanPathMat;
                         }
                     }
                     
@@ -209,7 +203,7 @@ public class Road
     }
     private static float CalculateCost(Tile t)
     {
-        if (t.Road)
+        if (t.Road && t.Biome != Biome.Ocean)
         {
             return minCost;
         }
@@ -240,63 +234,6 @@ public class Road
                 return 10;
         }
     }
-
-    //private static void FringeSortedAdd(List<Tile> fringe, Tile tileToAdd)
-    //{
-    //    if (fringe.Count == 0) //|| tileToAdd.FVal >= fringe[fringe.Count - 1].FVal)
-    //    {
-    //        fringe.Add(tileToAdd);
-    //        return;
-    //    }
-
-    //    int low = 0;
-    //    int high = fringe.Count - 1;
-
-    //    while (low <= high)
-    //    {
-    //        int mid = (low + high) / 2;
-
-    //        if (tileToAdd.FVal == fringe[mid].FVal)
-    //        {
-    //            fringe.Insert(mid, tileToAdd);
-    //            return;
-    //        }
-    //        else if (mid != 0 && fringe[mid - 1].FVal <= tileToAdd.FVal && fringe[mid].FVal > tileToAdd.FVal)
-    //        {
-    //            fringe.Insert(mid, tileToAdd);
-    //            return;
-    //        }
-    //        else if (fringe[mid].FVal < tileToAdd.FVal)
-    //        {
-    //            low = mid + 1;
-    //        }
-    //        else
-    //        {
-    //            high = mid - 1;
-    //        }
-    //    }
-    //}
-    /*private static void FringeSortedAdd(LinkedList<Tile> fringe, Tile tileToAdd)
-    {
-        float val = tileToAdd.FVal;
-        LinkedListNode<Tile> current = fringe.First;
-
-        while (current != null && current.Value.FVal < val)
-        {
-            current = current.Next;
-        }
-
-        if (current == null)
-        {
-            fringe.AddLast(tileToAdd);
-        }
-        else
-        {
-            fringe.AddBefore(current, tileToAdd);
-        }
-    }*/
-
-    //public static GameObject RoadSet { get; set; }
 
     private static void SetAdded(Tile t, bool b)
     {
