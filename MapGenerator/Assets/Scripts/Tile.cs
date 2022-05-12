@@ -14,6 +14,7 @@ public class Tile
     //Tile Attributes
     private Biome biome;
     private float elevation;
+    private double temperature;
     private float latitude;
     private float precipitation;
     public Country country;
@@ -43,6 +44,7 @@ public class Tile
     {
         elevation = -1;
         precipitation = 0;
+        temperature = 21;
         biome = Biome.Ocean;
         x = xCord;
         y = yCord;
@@ -67,7 +69,11 @@ public class Tile
         get => precipitation;
         set => precipitation = value;
     }
-    
+    public double Temperature
+    {
+        get => temperature;
+        set => temperature = value;
+    }
     public Biome Biome
     {
         get => biome;
@@ -109,7 +115,7 @@ public class Tile
         get { return navDifficulty; }
         set { navDifficulty = value; }
     }
-    
+
     //methods
     public static void CalculateAllValues()
     {
@@ -148,13 +154,15 @@ public class Tile
         Material temperateForestMat = Resources.Load("TemperateForest", typeof(Material)) as Material;
         Material tundraMat = Resources.Load("Tundra", typeof(Material)) as Material;
 
-        float l = Math.Abs(latitude);
-        double temperature = (((elevation * -0.8 + 40) + (30 - l * 1.7 + 0.059 * Math.Pow(l, 2) - 0.0007 * Math.Pow(l, 3)) * 3) / 4);
+        float lat = Math.Abs(latitude);
+        //temp range: ~ -50 - 60
+        //temperature = (((elevation * -0.8 + 40) + (30 - lat * 1.7 + 0.059 * Math.Pow(lat, 2) - 0.0007 * Math.Pow(lat, 3)) * 3) / 4);
+        temperature = (40 - lat) + ((elevation * -1 + 30)/2);
 
         cube.transform.localScale = new Vector3(1, elevation / 10 + 1, 1);
         cube.transform.position = new Vector3(x, (elevation / 10 + 1) / 2, y);
 
-        if (elevation < 4.5+UIData.oceanMultiplier)
+        if (elevation < UIData.oceanMultiplier*10 && UIData.oceanMultiplier!=0)
         {
             cube.transform.SetParent(Map.OceanTiles.transform);
             cube.transform.localScale = new Vector3(1, 5 / 10 + 1, 1);
@@ -163,76 +171,79 @@ public class Tile
             cube.GetComponent<Renderer>().material = oceanMat;
             navDifficulty = 12;
         }
-        else if (elevation >= 50 - UIData.mountainMultiplier*3)
+        else if (elevation >= 70 - UIData.mountainMultiplier*40)
         {
             cube.transform.SetParent(Map.MountainTiles.transform);
             biome = Biome.Mountain;
             cube.GetComponent<Renderer>().material = mountainMat;
             navDifficulty = 9;
         }
-        else if (temperature <= 0)
-        {
-            if (precipitation-UIData.tundraMultiplier*3+UIData.borealForestMultiplier*3 < 100)
+        else {
+
+            if (temperature <= Map.coldDistro)
             {
-                cube.transform.SetParent(Map.TundraTiles.transform);
-                biome = Biome.Tundra;
-                cube.GetComponent<Renderer>().material = tundraMat;
-                navDifficulty = 7;
+                if (precipitation < Map.tundraDistro)
+                {
+                    cube.transform.SetParent(Map.TundraTiles.transform);
+                    biome = Biome.Tundra;
+                    cube.GetComponent<Renderer>().material = tundraMat;
+                    navDifficulty = 7;
+                }
+                else //(BorealForest)
+                {
+                    cube.transform.SetParent(Map.BorealForestTiles.transform);
+                    biome = Biome.BorealForest;
+                    cube.GetComponent<Renderer>().material = borealMat;
+                    navDifficulty = 5;
+                }
             }
-            else
+            else if (temperature <= Map.temperateDistro)
             {
-                cube.transform.SetParent(Map.BorealForestTiles.transform);
-                biome = Biome.BorealForest;
-                cube.GetComponent<Renderer>().material = borealMat;
-                navDifficulty = 5;
+                if (precipitation < Map.prairieDistro)
+                {
+                    cube.transform.SetParent(Map.PrairieTiles.transform);
+                    biome = Biome.Prairie;
+                    cube.GetComponent<Renderer>().material = prairieMat;
+                    navDifficulty = 1;
+                }
+                else if (precipitation < Map.shrublandDistro)
+                {
+                    cube.transform.SetParent(Map.ShrublandTiles.transform);
+                    biome = Biome.Shrubland;
+                    cube.GetComponent<Renderer>().material = shrublandMat;
+                    navDifficulty = 2;
+                }
+                else //(BorealForestDistro)
+                {
+                    cube.transform.SetParent(Map.TemperateForestTiles.transform);
+                    biome = Biome.TemperateForest;
+                    cube.GetComponent<Renderer>().material = temperateForestMat;
+                    navDifficulty = 3;
+                }
             }
-        }
-        else if (temperature <= 20)
-        {
-            if (precipitation-UIData.prairieMultiplier*3 < 100)
+            else //(WarmDistro)
             {
-                cube.transform.SetParent(Map.PrairieTiles.transform);
-                biome = Biome.Prairie;
-                cube.GetComponent<Renderer>().material = prairieMat;
-                navDifficulty = 1;
-            }
-            else if (precipitation-UIData.shrublandMultiplier*3 < 200)
-            {
-                cube.transform.SetParent(Map.ShrublandTiles.transform);
-                biome = Biome.Shrubland;
-                cube.GetComponent<Renderer>().material = shrublandMat;
-                navDifficulty = 2;
-            }
-            else
-            {
-                cube.transform.SetParent(Map.TemperateForestTiles.transform);
-                biome = Biome.TemperateForest;
-                cube.GetComponent<Renderer>().material = temperateForestMat;
-                navDifficulty = 3;
-            }
-        }
-        else
-        {
-            if (precipitation-UIData.desertMultiplier*3 < 100)
-            {
-                cube.transform.SetParent(Map.DesertTiles.transform);
-                biome = Biome.Desert;
-                cube.GetComponent<Renderer>().material = desertMat;
-                navDifficulty = 6;
-            }
-            else if (precipitation-UIData.savannaMultiplier*3 < 200)
-            {
-                cube.transform.SetParent(Map.SavannaTiles.transform);
-                biome = Biome.Savanna;
-                cube.GetComponent<Renderer>().material = savanahMat;
-                navDifficulty = 4;
-            }
-            else
-            {
-                cube.transform.SetParent(Map.RainforestTiles.transform);
-                biome = Biome.Rainforest;
-                cube.GetComponent<Renderer>().material = rainforestMat;
-                navDifficulty = 8;
+                if (precipitation < Map.desertDistro)
+                {
+                    cube.transform.SetParent(Map.DesertTiles.transform);
+                    biome = Biome.Desert;
+                    cube.GetComponent<Renderer>().material = desertMat;
+                    navDifficulty = 6;
+                }
+                else if (precipitation < Map.savannaDistro)
+                {
+                    cube.transform.SetParent(Map.SavannaTiles.transform);
+                    biome = Biome.Savanna;
+                    cube.GetComponent<Renderer>().material = savanahMat;
+                    navDifficulty = 4;
+                }
+                else //(RainForestDistro)
+                {
+                    cube.transform.SetParent(Map.RainforestTiles.transform);
+                    biome = Biome.Rainforest;
+                    cube.GetComponent<Renderer>().material = rainforestMat;
+                    navDifficulty = 8;
+                }
             }
         }
         return 0;

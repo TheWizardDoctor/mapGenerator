@@ -28,6 +28,19 @@ public class Map
 	public static GameObject BorderTiles;
 	public static GameObject Houses;
 
+	public static float totalDistro;
+	public static float tundraDistro;
+	public static float borealForestDistro;
+	public static float coldDistro;
+	public static float prairieDistro;
+	public static float shrublandDistro;
+	public static float temperateForestDistro;
+	public static float temperateDistro;
+	public static float desertDistro;
+	public static float savannaDistro;
+	public static float rainForestDistro;
+	public static float warmDistro;
+
 	public static void createMap(int w, int h)
     {
         width = w;
@@ -191,6 +204,74 @@ public class Map
 		}
 		
 
+		//Determine biome distribution for biome generation:
+
+		//get the total distribution number (sum of sliders)
+		Map.totalDistro = 0;
+		Map.totalDistro += UIData.tundraMultiplier;
+		Map.totalDistro += UIData.borealForestMultiplier;
+		Map.totalDistro += UIData.prairieMultiplier;
+		Map.totalDistro += UIData.shrublandMultiplier;
+		Map.totalDistro += UIData.temperateForestMultiplier;
+		Map.totalDistro += UIData.desertMultiplier;
+		Map.totalDistro += UIData.savannaMultiplier;
+		Map.totalDistro += UIData.rainForestMultiplier;
+		//get temp distributions (fraction of total)
+		if(totalDistro != 0){
+			Map.tundraDistro = UIData.tundraMultiplier / Map.totalDistro;
+			Map.borealForestDistro = UIData.borealForestMultiplier / Map.totalDistro;
+			Map.coldDistro = Map.tundraDistro + Map.borealForestDistro;
+			Map.prairieDistro = UIData.prairieMultiplier / Map.totalDistro;
+			Map.shrublandDistro = UIData.shrublandMultiplier / Map.totalDistro;
+			Map.temperateForestDistro = UIData.temperateForestMultiplier / Map.totalDistro;
+			Map.temperateDistro = Map.prairieDistro + Map.shrublandDistro + Map.temperateForestDistro;
+			Map.desertDistro = UIData.desertMultiplier / Map.totalDistro;
+			Map.savannaDistro = UIData.savannaMultiplier / Map.totalDistro;
+			Map.rainForestDistro = UIData.rainForestMultiplier / Map.totalDistro;
+			Map.warmDistro = Map.desertDistro + Map.savannaDistro + Map.rainForestDistro;
+		}
+		//get precip distributions (fraction of temperature)
+		if(coldDistro != 0){
+			Map.tundraDistro = Map.tundraDistro / Map.coldDistro;
+			Map.borealForestDistro = Map.borealForestDistro / Map.coldDistro;
+		}
+		if(temperateDistro != 0){
+			Map.prairieDistro = Map.prairieDistro / Map.temperateDistro;
+			Map.shrublandDistro = Map.shrublandDistro / Map.temperateDistro;
+			Map.temperateForestDistro = Map.temperateForestDistro / Map.temperateDistro;
+		}
+		if(warmDistro != 0){
+			Map.desertDistro = Map.desertDistro / Map.warmDistro;
+			Map.savannaDistro = Map.savannaDistro / Map.warmDistro;
+			Map.rainForestDistro = Map.rainForestDistro / Map.warmDistro;
+		}
+		//turn these numbers into borders for inequalities
+		// !! vv THIS HAS A STRICT ORDER, DO NOT CHANGE WITHOUT KNOWING WHAT YOU ARE DOING, ASK SAM vv !!
+
+		Map.borealForestDistro += Map.tundraDistro; //(should be 1 or 0)
+		Map.tundraDistro = -10 + (300 * tundraDistro);
+		Map.borealForestDistro = -10 + (300 * borealForestDistro);
+
+		Map.shrublandDistro += Map.prairieDistro;
+		Map.temperateForestDistro += Map.shrublandDistro; //(should be 1 or 0)
+		Map.prairieDistro = -10 + (300 * prairieDistro);
+		Map.shrublandDistro = -10 + (300 * shrublandDistro);
+		Map.temperateForestDistro = -10 + (300 * temperateForestDistro);
+
+		Map.savannaDistro += Map.desertDistro;
+		Map.rainForestDistro += Map.savannaDistro; //(should be 1 or 0)
+		Map.desertDistro = -10 + (300 * desertDistro);
+		Map.savannaDistro = -10 + (300 * savannaDistro);
+		Map.rainForestDistro = -10 + (300 * rainForestDistro);
+
+		Map.temperateDistro += Map.coldDistro;
+		Map.warmDistro += Map.temperateDistro; //(should be 1 or 0)
+		Map.coldDistro = -50 + (110 * Map.coldDistro);
+		Map.temperateDistro = -50 + (110 * Map.temperateDistro);
+		Map.warmDistro = -50 + (110 * Map.warmDistro);
+
+		// !! ^^ END OF STRICT ORDER, thank you ^^ !!
+
         for (int j = 0; j < height; j++)
         {
             for (int i = 0; i < width; i++)
@@ -198,9 +279,61 @@ public class Map
 				tiles[i, j].CalculateBiome();
             }
         }
-		
+
 		Tile.CalculateAllValues();
 		City.LoadCityNames();
 		Country.LoadCountryNames();
 	}
+
+	/*
+	//properties (biome distributions)
+	public static float TotalDistro{
+		get => totalDistro;
+		set => totalDistro = value;
+	}
+	public static float TundraDistro{
+		get => tundraDistro;
+		set => tundraDistro = value;
+	}
+	public static float BorealForestDistro{
+		get => borealForestDistro;
+		set => borealForestDistro = value;
+	}
+	public static float ColdDistro{
+		get => coldDistro;
+		set => coldDistro = value;
+	}
+	public static float PrairieDistro{
+		get => prairieDistro;
+		set => prairieDistro = value;
+	}
+	public static float ShrublandDistro{
+		get => shrublandDistro;
+		set => shrublandDistro = value;
+	}
+	public static float TemperateForestDistro{
+		get => temperateForestDistro;
+		set => temperateForestDistro = value;
+	}
+	public static float TemperateDistro{
+		get => temperateDistro;
+		set => temperateDistro = value;
+	}
+	public static float DesertDistro{
+		get => desertDistro;
+		set => desertDistro = value;
+	}
+	public static float SavannaDistro{
+		get => savannaDistro;
+		set => savannaDistro = value;
+	}
+	public static float RainForestDistro{
+		get => rainForestDistro;
+		set => rainForestDistro = value;
+	}
+	public static float WarmDistro{
+		get => warmDistro;
+		set => warmDistro = value;
+	}
+	*/
 }
