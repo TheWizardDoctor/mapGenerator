@@ -413,7 +413,7 @@ public class City
 
     public static int BiomeValue(Tile tile)
     {
-        if(tile != null)
+        if(tile == null)
         {
             return 0;
         }

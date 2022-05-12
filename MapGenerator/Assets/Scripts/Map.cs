@@ -43,7 +43,7 @@ public class Map
     {
         width = w;
         height = h;
-        scanRadius = (int)Math.Floor(0.02 * width);
+        scanRadius = Mathf.RoundToInt(0.03f * width);
 
 		GameObject tileSet = GameObject.Find("All Tiles");
 		tiles = new Tile[width, height];
@@ -86,63 +86,6 @@ public class Map
 
 		Houses = GameObject.Find("Houses");
 
-		//this is the code for loading the demo map
-		/*
-		var filePath = @"Elevation.csv";
-		var data = File.ReadLines(filePath);
-		int[,] exampleMapElevation = new int[height, width];
-		int indexi = 0;
-		int indexj = 0;
-		foreach (string row in data)
-		{
-			indexj = 0;
-			string[] items = row.Split(',');
-			foreach (string s in items)
-			{
-				int n;
-				if (s == "")
-				{
-					n = 0;
-				}
-				else
-				{
-					n = Convert.ToInt32(s);
-				}
-				exampleMapElevation[indexi, indexj] = n;
-				indexj++;
-			}
-			indexi++;
-		}
-		filePath = @"Precipitation.csv";
-		data = File.ReadLines(filePath);
-		int[,] exampleMapPrecipitation = new int[height, width];
-		indexi = 0;
-		indexj = 0;
-		foreach (string row in data)
-		{
-			indexj = 0;
-			string[] items = row.Split(',');
-			foreach (string s in items)
-			{
-				int n = Convert.ToInt32(s);
-				exampleMapPrecipitation[indexi, indexj] = n;
-				indexj++;
-			}
-			indexi++;
-		}
-
-
-		for (int i = 0; i < height; i++)
-		{
-			for (int j = 0; j < width; j++)
-			{
-				tiles[i, j] = new Tile(height, i, j, tileSet.transform);
-				tiles[i, j].Elevation = exampleMapElevation[i, j];
-				tiles[i, j].Precipitation = exampleMapPrecipitation[i, j];
-				tiles[i, j].calculateBiome();
-			}
-		}
-		*/
 		//creating initial tiles
 		for (int i = 0; i < height; i++)
         {

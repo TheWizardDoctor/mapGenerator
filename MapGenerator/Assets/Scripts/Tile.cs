@@ -143,7 +143,7 @@ public class Tile
         Material oceanMat = Resources.Load("Ocean", typeof(Material)) as Material;
         Material prairieMat = Resources.Load("Prairie", typeof(Material)) as Material;
         Material rainforestMat = Resources.Load("Rainforest", typeof(Material)) as Material;
-        Material savanahMat = Resources.Load("Savannah", typeof(Material)) as Material;
+        Material savannaMat = Resources.Load("Savanna", typeof(Material)) as Material;
         Material shrublandMat = Resources.Load("Shrubland", typeof(Material)) as Material;
         Material temperateForestMat = Resources.Load("TemperateForest", typeof(Material)) as Material;
         Material tundraMat = Resources.Load("Tundra", typeof(Material)) as Material;
@@ -228,7 +228,7 @@ public class Tile
                 {
                     cube.transform.SetParent(Map.SavannaTiles.transform);
                     biome = Biome.Savanna;
-                    cube.GetComponent<Renderer>().material = savanahMat;
+                    cube.GetComponent<Renderer>().material = savannaMat;
                     navDifficulty = 4;
                 }
                 else //(RainForestDistro)

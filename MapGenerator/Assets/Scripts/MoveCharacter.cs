@@ -42,8 +42,8 @@ public class MoveCharacter : MonoBehaviour
         }
 
         //looking around
-        xMouse += Input.GetAxis("Mouse X") * defSpeed;
-        yMouse -= Input.GetAxis("Mouse Y") * defSpeed;
+        xMouse += Input.GetAxis("Mouse X") * defSpeed/2;
+        yMouse -= Input.GetAxis("Mouse Y") * defSpeed/2;
         yMouse = Mathf.Clamp(yMouse, -90f, 90f);
 
         transform.localEulerAngles = new Vector3(yMouse, xMouse, 0);

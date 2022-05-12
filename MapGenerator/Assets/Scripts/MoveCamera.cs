@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum Action { displayTileInfo, createCity, createRoad, destroyCity, destroyRoad };
 
 public class MoveCamera : MonoBehaviour
 {
     //private Transform cam;
+    public GameObject Instructions;
+    public GameObject TileInfo;
     public Camera firstCam;
     public GameObject secondCam;
 
@@ -86,6 +89,30 @@ public class MoveCamera : MonoBehaviour
             secondCam.SetActive(true);
             firstCam.enabled = false;
         }
+        else if (Input.GetKeyDown(KeyCode.M))
+        {
+            HideInstructions();
+        }
+        else if (Input.GetKeyDown(KeyCode.B))
+        {
+            if(Map.BorderTiles.activeInHierarchy)
+            {
+                Map.BorderTiles.SetActive(false);
+            }
+            else
+            {
+                Map.BorderTiles.SetActive(true);
+            }
+            
+        }
+        //else if (Input.GetKeyDown(KeyCode.Escape))
+        //{
+        //    Map.tiles = null;
+        //    City.cityList = null;
+        //    Country.countryList = null;
+        //    Count
+        //    SceneManager.LoadScene("UIScene");
+        //}
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
@@ -159,4 +186,20 @@ public class MoveCamera : MonoBehaviour
     {
         ScreenCapture.CaptureScreenshot("Screenshot.png", 4);
     }
+
+    private void HideInstructions()
+    {
+        if(Instructions != null)
+        {
+            if(Instructions.activeInHierarchy)
+            {
+                Instructions.SetActive(false);
+            }
+            else
+            {
+                Instructions.SetActive(true);
+            }
+        }
+    }
+
 }

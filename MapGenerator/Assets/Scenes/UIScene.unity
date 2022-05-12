@@ -600,7 +600,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 730149560}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.8863637
+  m_Size: 0.8863636
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3020,7 +3020,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Load From File
+  m_Text: Quit Game
 --- !u!222 &521575087
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3820,8 +3820,9 @@ GameObject:
   - component: {fileID: 624193215}
   - component: {fileID: 624193214}
   - component: {fileID: 624193213}
+  - component: {fileID: 624193216}
   m_Layer: 5
-  m_Name: LoadButton
+  m_Name: QuitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3890,7 +3891,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 624193214}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 624193216}
+        m_TargetAssemblyTypeName: CloseGame, Assembly-CSharp
+        m_MethodName: Close
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &624193214
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3929,6 +3942,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 624193211}
   m_CullTransparentMesh: 1
+--- !u!114 &624193216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 624193211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 515bb9da9fb745c46961e86b894b4792, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &625942248
 GameObject:
   m_ObjectHideFlags: 0
