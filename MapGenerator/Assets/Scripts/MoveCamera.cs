@@ -8,6 +8,9 @@ public enum Action { displayTileInfo, createCity, createRoad, destroyCity, destr
 public class MoveCamera : MonoBehaviour
 {
     //private Transform cam;
+    public Camera firstCam;
+    public GameObject secondCam;
+
     private Transform camPos;
     private readonly float zoomScale = 5;
     private float scrollWheel;
@@ -18,7 +21,7 @@ public class MoveCamera : MonoBehaviour
 
     private void Awake()
     {
-        camPos = gameObject.GetComponent<Camera>().transform;
+        camPos = firstCam.transform;
     }
 
     // Update is called once per frame
@@ -53,7 +56,7 @@ public class MoveCamera : MonoBehaviour
         {
             userAction = Action.createRoad;
         }
-        else if (Input.GetKeyDown(KeyCode.S))
+        else if (Input.GetKeyDown(KeyCode.P))
         {
             TakePicture();
         }
@@ -61,13 +64,27 @@ public class MoveCamera : MonoBehaviour
         {
             userAction = Action.destroyRoad;
         }
-        else if (Input.GetKeyDown(KeyCode.D))
+        else if (Input.GetKeyDown(KeyCode.Tab))
         {
             userAction = Action.displayTileInfo;
         }
         else if (Input.GetKeyDown(KeyCode.V))
         {
             userAction = Action.destroyCity;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Cursor.lockState = CursorLockMode.None;
+            TileUI.S.HideCursor();
+            secondCam.SetActive(false);
+            firstCam.enabled = true;
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            TileUI.S.ShowCursor();
+            secondCam.SetActive(true);
+            firstCam.enabled = false;
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
@@ -114,7 +131,11 @@ public class MoveCamera : MonoBehaviour
                 }
                 else
                 {
-                    TileUI.S.SetTileMenu(tilePos);
+                    if (Map.tiles[tilePos.x, tilePos.y].Biome!= Biome.Ocean)
+                    {
+                        TileUI.S.SetTileMenu(tilePos);
+                    }
+                    
                 }
             }
         }

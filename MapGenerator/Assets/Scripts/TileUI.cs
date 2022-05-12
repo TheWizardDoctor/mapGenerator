@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TileUI : MonoBehaviour
 {
@@ -26,6 +27,8 @@ public class TileUI : MonoBehaviour
     private TextMeshProUGUI CityPopulationText;
     [SerializeField]
     private TextMeshProUGUI CityWealthText;
+    [SerializeField]
+    private Text CursorLocationText;
 
     private void Start()
     {
@@ -81,5 +84,14 @@ public class TileUI : MonoBehaviour
     public void Disable()
     {
         menu.SetActive(false);
+    }
+
+    public void ShowCursor()
+    {
+        CursorLocationText.enabled = true;
+    }
+    public void HideCursor()
+    {
+        CursorLocationText.enabled = false;
     }
 }

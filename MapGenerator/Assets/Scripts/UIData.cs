@@ -29,6 +29,10 @@ public class UIData : MonoBehaviour
     private Slider borderSlider;
     public static float borderMultiplier = 0.5f;
 
+    [SerializeField]
+    //private Slider heightSlider;
+    public static float heightMultiplier = 0.5f;
+
 
     //Scroll View Content
     [SerializeField]

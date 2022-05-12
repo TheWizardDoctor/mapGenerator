@@ -196,7 +196,7 @@ public class City
                     newCity.House = cityGameObject;
                     tile.City = newCity;
 
-                    if (tile.country != null && tile.country.hasCapital == false)
+                    if (tile.country != null && tile.country.hasCapital == false && Country.countryList != null && tile.country != Country.countryList[0])
                     {
                         cityGameObject.transform.localScale = 1.3f * cityGameObject.transform.localScale;
                         newCity.Wealth *= RandomNum.r.Next(2, 3);
