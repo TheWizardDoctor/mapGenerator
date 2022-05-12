@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,10 +8,21 @@ public class ChangeScenes : MonoBehaviour
 
     public void LoadScene(string name)
     {
-        if(loadingTextGO!=null)
+        if (loadingTextGO != null)
         {
             loadingTextGO.SetActive(true);
         }
-        SceneManager.LoadScene(name);
+
+        StartCoroutine(LoadYourAsyncScene(name));
+    }
+
+    private IEnumerator LoadYourAsyncScene(string name)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(name);
+
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
     }
 }

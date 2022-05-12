@@ -1379,7 +1379,6 @@ MonoBehaviour:
   wealthSlider: {fileID: 1706977302}
   populationSlider: {fileID: 1191858648}
   borderSlider: {fileID: 805323240}
-  heightSlider: {fileID: 0}
   oceanSlider: {fileID: 431161837}
   mountainSlider: {fileID: 1211984244}
   tundraSlider: {fileID: 798126912}
@@ -6845,7 +6844,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 80}
+  m_AnchoredPosition: {x: 0, y: 107.9}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1131607083

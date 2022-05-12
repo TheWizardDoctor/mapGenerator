@@ -100,7 +100,11 @@ public class MoveCamera : MonoBehaviour
 
                 if (userAction == Action.createCity)
                 {
-                    City.PlaceNewCity(Map.tiles[tilePos.x, tilePos.y]);
+                    if (Map.tiles[tilePos.x, tilePos.y].Biome != Biome.Ocean)
+                    {
+                        City.PlaceNewCity(Map.tiles[tilePos.x, tilePos.y]);
+                    }
+                    
                 }
                 else if (userAction == Action.createRoad)
                 {
@@ -148,7 +152,7 @@ public class MoveCamera : MonoBehaviour
         Vector3 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin);
         Vector3 move = new Vector3(pos.x, 0, pos.y);
 
-        transform.Translate(move, Space.World);
+        firstCam.transform.Translate(move, Space.World);
     }
 
     private void TakePicture()

@@ -6,9 +6,7 @@ using UnityEngine;
 
 public class Map
 {
-	[SerializeField]
     public static int width;
-	[SerializeField]
 	public static int height;
     public static int scanRadius;
     public static Tile[,] tiles;

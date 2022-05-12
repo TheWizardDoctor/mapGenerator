@@ -52,12 +52,6 @@ public class Tile
         country = Country.unclaimedLand;
     }
 
-    //Serialize
-    public String SerializeTile()
-    {
-        return JsonUtility.ToJson(this);
-    }
-
     //properties
     public float Elevation
     {

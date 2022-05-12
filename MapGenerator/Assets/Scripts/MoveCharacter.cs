@@ -5,11 +5,14 @@ using UnityEngine;
 public class MoveCharacter : MonoBehaviour
 {
     float moveX, moveY, moveZ, xMouse, yMouse = 0;
-    float speed = 8;
+    float startMovement;
+    float defSpeed = 5;
+    float speed;
 
     // Start is called before the first frame update
     void Start()
     {
+        speed = defSpeed;
         Tile temp = Map.tiles[0, 0];
         if (temp != null)
         {
@@ -29,9 +32,18 @@ public class MoveCharacter : MonoBehaviour
         moveZ = Input.GetAxis("Vertical") * Time.deltaTime * speed;
         transform.Translate(moveX, 0, moveZ);
 
+        if (moveX == 0 && moveZ == 0)
+        {
+            speed = defSpeed;
+        }
+        else
+        {
+            speed += 2f * Time.deltaTime;
+        }
+
         //looking around
-        xMouse += Input.GetAxis("Mouse X") * speed;
-        yMouse -= Input.GetAxis("Mouse Y") * speed;
+        xMouse += Input.GetAxis("Mouse X") * defSpeed;
+        yMouse -= Input.GetAxis("Mouse Y") * defSpeed;
         yMouse = Mathf.Clamp(yMouse, -90f, 90f);
 
         transform.localEulerAngles = new Vector3(yMouse, xMouse, 0);
