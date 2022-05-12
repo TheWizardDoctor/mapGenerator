@@ -33,7 +33,7 @@ public class Test : MonoBehaviour
         watch = System.Diagnostics.Stopwatch.StartNew();
         if(UIData.borderMultiplier>0)
         {
-            Border.generateBorders(Map.tiles, Mathf.RoundToInt(Map.width*0.005f+UIData.borderMultiplier));
+            Border.generateBorders(Map.tiles, Mathf.RoundToInt(Map.width*0.01f+UIData.borderMultiplier));
             Border.SetTileCountries();
         }
         watch.Stop();
@@ -53,16 +53,16 @@ public class Test : MonoBehaviour
 
 
         watch.Restart();
-        if(UIData.roadMultiplier>0)
+        if (UIData.roadMultiplier > 0)
         {
             int numRoads = Mathf.RoundToInt(UIData.roadMultiplier * 2*City.cityList.Count);
             for (int i = 0; i < numRoads; i++)
             {
                 City c = City.cityList[RandomNum.r.Next(0, City.cityList.Count)];
 
-                if(c.food < c.water)
+                if(c.Food < c.Water)
                 {
-                    if(c.lumber<c.food)
+                    if(c.Lumber<c.Food)
                     {
                         //Road for lumber
                         City.TradeRouteLumber(c);
@@ -75,7 +75,7 @@ public class Test : MonoBehaviour
                 }
                 else
                 {
-                    if(c.lumber<c.water)
+                    if(c.Lumber<c.Water)
                     {
                         //Road for lumber
                         City.TradeRouteLumber(c);

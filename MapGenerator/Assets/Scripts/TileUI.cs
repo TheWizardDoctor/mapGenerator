@@ -60,16 +60,16 @@ public class TileUI : MonoBehaviour
         if (tile.City != null)
         {
             CitySubMenu.SetActive(true);
-            if(tile.City.capital)
+            if(tile.City.Capital)
             {
-                CityText.text = "Capital City: " + tile.City.name;
+                CityText.text = "Capital City: " + tile.City.Name;
             }
             else
             {
-                CityText.text = "City: " + tile.City.name;
+                CityText.text = "City: " + tile.City.Name;
             }
-            CityPopulationText.text = "Population: " + tile.City.population;
-            CityWealthText.text = "Money: " + String.Format("{0:C0}", tile.City.wealth);
+            CityPopulationText.text = "Population: " + String.Format("{0:n0}", tile.City.Population);
+            CityWealthText.text = "Money: " + String.Format("{0:C0}", tile.City.Wealth);
         }
         else
         {

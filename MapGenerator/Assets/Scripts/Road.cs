@@ -15,21 +15,19 @@ public class Road
 
     public static void CreateRoad(City start, City end)
     {
-        if (start == null || end == null)
+        if (start == null || end == null || Map.tiles == null)
         {
-            Debug.Log("NULL ERROR");
             return;
         }
 
-        Tile startTile = Map.tiles[start.x, start.y];
-        Tile endTile = Map.tiles[end.x, end.y];
+        Tile startTile = Map.tiles[start.X, start.Y];
+        Tile endTile = Map.tiles[end.X, end.Y];
         CreateRoad(startTile, endTile);
     }
     public static void CreateRoad(Tile start, Tile end)
     {
         if (start == null || end == null || Map.tiles == null)
         {
-            Debug.Log("NULL ERROR");
             return;
         }
         Tile[,] tiles = Map.tiles;
@@ -42,17 +40,26 @@ public class Road
 
         foreach (Tile t in tiles)
         {
+            if (t == null)
+            {
+                continue;
+            }
+
             SetAdded(t, false);
             t.previous = null;
             SetClosed(t, false);
             SetGVal(t, float.MaxValue);
             SetFVal(t, float.MaxValue);
             SetHVal(t, minCost * Mathf.Sqrt(Mathf.Pow(end.X - t.X, 2) + Mathf.Pow(end.Y - t.Y, 2)));
-            //t.HVal = minCost * (Mathf.Abs(end.X - t.X) + Mathf.Abs(end.Y - t.Y));
-            //t.HVal = minCost * Mathf.Sqrt(Mathf.Pow(end.X - t.X, 2) + Mathf.Pow(end.Y - t.Y, 2));
         }
 
         fringe = new SimplePriorityQueue<Tile>();
+
+        if (fringe == null)
+        {
+            return;
+        }
+
         SetAdded(start, true);
         SetGVal(start, 0);
         SetFVal(start, GetHVal(start));
@@ -62,11 +69,16 @@ public class Road
         {
             Tile current = fringe.Dequeue();
 
-            if (start.City != null && GetGVal(current) > start.City.wealth)
+            if (current == null)
             {
-                Debug.Log("Too Much Money");
-                return;
+                continue;
             }
+
+            //if (start.City != null && GetGVal(current) > start.City.Wealth)
+            //{
+            //    Debug.Log("Too Much Money");
+            //    return;
+            //}
 
             if (current.Equals(end))
             {
@@ -82,13 +94,19 @@ public class Road
                             temp.cube.transform.position.z);
                         if (temp.Biome != Biome.Ocean)
                         {
-                            GameObject newRoad = GameObject.Instantiate<GameObject>(roadPrefab, pos, temp.cube.transform.rotation);
-                            newRoad.transform.SetParent(Map.RoadTiles.transform);
+                            GameObject newRoad = Object.Instantiate(roadPrefab, pos, temp.cube.transform.rotation);
+                            if (newRoad)
+                            {
+                                newRoad.transform.SetParent(Map.RoadTiles.transform);
+                            }
                         }
                         else
                         {
                             GameObject newRoad = GameObject.Instantiate<GameObject>(oceanPathPrefab, pos, temp.cube.transform.rotation);
-                            newRoad.transform.SetParent(Map.RoadTiles.transform);
+                            if (newRoad)
+                            {
+                                newRoad.transform.SetParent(Map.RoadTiles.transform);
+                            }
                         }
                     }
                     
@@ -203,78 +221,82 @@ public class Road
     }
     private static float CalculateCost(Tile t)
     {
-        if (t.Road && t.Biome != Biome.Ocean)
+        if (t == null)
         {
-            return minCost;
+            return 100;
         }
 
-        switch (t.Biome)
+        return t.Road && t.Biome != Biome.Ocean ? minCost : t.Biome switch
         {
-            case Biome.BorealForest:
-                return 25;
-            case Biome.Desert:
-                return 10;
-            case Biome.Mountain:
-                return 33;
-            case Biome.Ocean:
-                return 50;
-            case Biome.Prairie:
-                return 17;
-            case Biome.Rainforest:
-                return 31;
-            case Biome.Savanna:
-                return 9;
-            case Biome.Shrubland:
-                return 15;
-            case Biome.TemperateForest:
-                return 27;
-            case Biome.Tundra:
-                return 8;
-            default:
-                return 10;
-        }
+            Biome.BorealForest => 25,
+            Biome.Desert => 10,
+            Biome.Mountain => 33,
+            Biome.Ocean => 50,
+            Biome.Prairie => 17,
+            Biome.Rainforest => 31,
+            Biome.Savanna => 9,
+            Biome.Shrubland => 15,
+            Biome.TemperateForest => 27,
+            Biome.Tundra => 8,
+            _ => 100,
+        };
     }
 
     private static void SetAdded(Tile t, bool b)
     {
-        added[t.X, t.Y] = b;
+        if (t != null)
+        {
+            added[t.X, t.Y] = b;
+        }
     }
     private static bool GetAdded(Tile t)
     {
-        return added[t.X, t.Y];
+        return t != null && added[t.X, t.Y];
     }
     private static void SetClosed(Tile t, bool b)
     {
-        closed[t.X, t.Y] = b;
+        if (t != null)
+        {
+            closed[t.X, t.Y] = b;
+        }
     }
     private static bool GetClosed(Tile t)
     {
-        return closed[t.X, t.Y];
+        return t != null && closed[t.X, t.Y];
     }
     private static void SetGVal(Tile t, float val)
     {
-        gVals[t.X, t.Y] = val;
+        if (t != null)
+        {
+            gVals[t.X, t.Y] = val;
+        }
     }
     private static float GetGVal(Tile t)
     {
-        return gVals[t.X, t.Y];
+        return t != null ? gVals[t.X, t.Y] : float.MaxValue;
     }
 
     private static void SetHVal(Tile t, float val)
     {
-        hVals[t.X, t.Y] = val;
+        if (t != null)
+        {
+            hVals[t.X, t.Y] = val;
+        }
     }
     private static float GetHVal(Tile t)
     {
-        return hVals[t.X, t.Y];
+        return t != null ? hVals[t.X, t.Y] : float.MaxValue;
     }
 
     private static void SetFVal(Tile t, float val)
     {
-        fVals[t.X, t.Y] = val;
+        if (t != null)
+        {
+            fVals[t.X, t.Y] = val;
+        }
     }
     private static float GetFVal(Tile t)
     {
-        return fVals[t.X, t.Y];
+        return t != null ? fVals[t.X, t.Y] : float.MaxValue;
     }
 }

@@ -135,7 +135,7 @@ public class Tile
         }
     }
 
-    public int calculateBiome()
+    public int CalculateBiome()
     {
         Material borealMat = Resources.Load("BorealForest", typeof(Material)) as Material;
         Material desertMat = Resources.Load("Desert", typeof(Material)) as Material;

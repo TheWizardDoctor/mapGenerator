@@ -138,7 +138,7 @@ public class Map
             for (int j = 0; j < width; j++)
             {
                 tiles[j, i] = new Tile(j, i);
-                tiles[j, i].calculateBiome();
+                tiles[j, i].CalculateBiome();
             }
         }
         //setting lefts and rights and ups and downs
@@ -195,7 +195,7 @@ public class Map
         {
             for (int i = 0; i < width; i++)
             {
-				tiles[i, j].calculateBiome();
+				tiles[i, j].CalculateBiome();
             }
         }
 		

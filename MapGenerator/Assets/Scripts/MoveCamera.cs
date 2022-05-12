@@ -9,13 +9,11 @@ public class MoveCamera : MonoBehaviour
 {
     //private Transform cam;
     private Transform camPos;
-    private float zoomScale = 5;
+    private readonly float zoomScale = 5;
     private float scrollWheel;
 
     private Action userAction;
-
     private Tile startTile;
-
     private Vector3 dragOrigin;
 
     private void Awake()
@@ -24,7 +22,7 @@ public class MoveCamera : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         scrollWheel = Input.mouseScrollDelta.y;
 
@@ -47,7 +45,7 @@ public class MoveCamera : MonoBehaviour
 
         }
 
-        if(Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.C))
         {
             userAction = Action.createCity;
         }
@@ -55,15 +53,15 @@ public class MoveCamera : MonoBehaviour
         {
             userAction = Action.createRoad;
         }
-        else if(Input.GetKeyDown(KeyCode.S))
+        else if (Input.GetKeyDown(KeyCode.S))
         {
             TakePicture();
         }
-        else if(Input.GetKeyDown(KeyCode.T))
+        else if (Input.GetKeyDown(KeyCode.T))
         {
             userAction = Action.destroyRoad;
         }
-        else if(Input.GetKeyDown(KeyCode.D))
+        else if (Input.GetKeyDown(KeyCode.D))
         {
             userAction = Action.displayTileInfo;
         }
@@ -85,7 +83,6 @@ public class MoveCamera : MonoBehaviour
 
                 if (userAction == Action.createCity)
                 {
-                    Debug.Log("Place City");
                     City.PlaceNewCity(Map.tiles[tilePos.x, tilePos.y]);
                 }
                 else if (userAction == Action.createRoad)
@@ -110,7 +107,7 @@ public class MoveCamera : MonoBehaviour
                         Destroy(hit.collider.gameObject);
                     }
                 }
-                else if(userAction == Action.destroyCity)
+                else if (userAction == Action.destroyCity)
                 {
                     Tile cityTile = Map.tiles[tilePos.x, tilePos.y];
                     City.RemoveCity(cityTile);
@@ -122,7 +119,10 @@ public class MoveCamera : MonoBehaviour
             }
         }
 
-        if (!Input.GetMouseButton(0)) return;
+        if (!Input.GetMouseButton(0))
+        {
+            return;
+        }
 
         Vector3 pos = Camera.main.ScreenToViewportPoint(Input.mousePosition - dragOrigin);
         Vector3 move = new Vector3(pos.x, 0, pos.y);
@@ -133,6 +133,5 @@ public class MoveCamera : MonoBehaviour
     private void TakePicture()
     {
         ScreenCapture.CaptureScreenshot("Screenshot.png", 4);
-        Debug.Log("Took Screenshot");
     }
 }

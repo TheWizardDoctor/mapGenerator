@@ -14,6 +14,7 @@ public class Border : MonoBehaviour
         //        Debug.Log(Map.height);
         //        Debug.Log(Map.width);
         while (countryNum > 1)
+        while (countryNum > 1)
         {
             //            Debug.Log("Create Border Start");
             if (genBorder(map))
@@ -1079,7 +1080,7 @@ public class Border : MonoBehaviour
             selected.Border = 1;
             return selected;
         }
-        if (detectBorder(tiles, selected) == true || detectOcean(tiles, selected) > 0)
+        if (detectBorder(tiles, selected) || detectOcean(tiles, selected) > 0)
         {
             //            Debug.Log("Away point invalid");
 
@@ -1140,10 +1141,6 @@ public class Border : MonoBehaviour
 
         //        Debug.Log("Start point found at " + startTile.X + ", " + startTile.Y);
         startTile.Border = 1;
-
-        GameObject s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        s.transform.position = new Vector3(startTile.X, (startTile.Elevation / 10) + 2, startTile.Y);
-        s.GetComponent<Renderer>().material.color = new Color(1, 1, 0, 1);
 
         return startTile;
     }
@@ -1228,8 +1225,7 @@ public class Border : MonoBehaviour
         {
             return;
         }
-        //GameObject s = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-        GameObject s = GameObject.Instantiate(BorderSphere);
+        GameObject s = Instantiate(BorderSphere);
         s.transform.position = new Vector3(selected.X, (selected.Elevation / 10) + 1, selected.Y);
         s.GetComponent<Renderer>().material.color = new Color(1, 0, 0, 1);
         s.transform.SetParent(Map.BorderTiles.transform);

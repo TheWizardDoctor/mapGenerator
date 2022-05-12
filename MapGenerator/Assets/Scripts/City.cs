@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -8,49 +6,63 @@ public class City
 {
     //static fields
     public static List<City> cityList = new List<City>();
-    public static List<String> cityNames;
+    public static List<string> cityNames;
 
     //instance fields
-    public string name;
-    public int population;
-    public int x, y;
-    public int wealth;
-    public float water;
-    public float lumber;
-    public float food;
-    public int roads;
-    public bool capital;
-    public GameObject house;
+    public string Name { get; }
+    public int Population { get; private set; }
+    public int X { get; }
+    public int Y { get; }
+    public int Wealth { get; private set; }
+    public float Water { get; private set; }
+    public float Lumber { get; private set; }
+    public float Food { get; private set; }
+    public bool Capital { get; private set; }
+    public GameObject House { get; private set; }
 
     private City(int xVal, int yVal)
     {
-        int num = RandomNum.r.Next(0, cityNames.Count);
-        name = cityNames[num];
-        cityNames.RemoveAt(num);
-        population = Mathf.RoundToInt(UIData.populationMultiplier * RandomNum.r.Next(100, 10000));
-        x = xVal;
-        y = yVal;
-        capital = false;
-        cityList.Add(this);
+        if (cityNames.Count > 0)
+        {
+            int num = RandomNum.r.Next(0, cityNames.Count);
+            Name = cityNames[num];
+            cityNames.RemoveAt(num);
+        }
+        X = xVal > 0 && xVal < Map.width ? xVal : 0;
+        Y = yVal > 0 && yVal < Map.height ? yVal : 0;
+        Population = Mathf.RoundToInt((0.5f + UIData.populationMultiplier) * RandomNum.r.Next(100, 10000));
+        Capital = false;
+        if (cityList != null)
+        {
+            cityList.Add(this);
+        }
         SetResources(this);
     }
 
-    //create num number of cities
+    //create 1 to Map.width number of cities
     public static void GenerateCities(int num)
     {
-        while (num > 0)
+        if (num > 0 && num < Map.width)
         {
-            GenerateCity();
-            num--;
+            while (num > 0)
+            {
+                GenerateCity();
+                num--;
+            }
         }
     }
 
     public static void GenerateCapitals()
     {
-        foreach(Country c in Country.countryList)
+        if (null == Country.countryList)
+        {
+            return;
+        }
+
+        foreach (Country c in Country.countryList)
         {
             float bestVal = int.MinValue;
-            if(c.tilesInCountry.Count == 0)
+            if (c.tilesInCountry == null || c.tilesInCountry.Count == 0)
             {
                 continue;
             }
@@ -59,7 +71,7 @@ public class City
 
             foreach (Tile tile in c.tilesInCountry)
             {
-                if (tile.City != null || tile.Biome == Biome.Ocean)
+                if (tile == null || tile.City != null || tile.Biome == Biome.Ocean)
                 {
                     continue;
                 }
@@ -79,21 +91,29 @@ public class City
                 }
             }
 
-            //Debug.Log("Best City Location (X:" + bestTile.X + " Y:" + bestTile.Y + ")");
-            AddCity(bestTile);
-            GameObject cityGameObject = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
-            cityGameObject.transform.SetParent(Map.Houses.transform);
-            cityGameObject.transform.position = new Vector3(bestTile.X, (bestTile.Elevation / 10) + 1, bestTile.Y);
-            cityGameObject.transform.localScale = 1.3f * cityGameObject.transform.localScale;
+            if (bestTile != null)
+            {
+                AddCity(bestTile);
+                GameObject cityGameObject = Object.Instantiate(Resources.Load<GameObject>("house"));
+                if (cityGameObject != null)
+                {
+                    cityGameObject.transform.SetParent(Map.Houses.transform);
+                    cityGameObject.transform.position = new Vector3(bestTile.X, (bestTile.Elevation / 10) + 1, bestTile.Y);
+                    cityGameObject.transform.localScale = 1.3f * cityGameObject.transform.localScale;
+                }
 
-            City newCity = new City(bestTile.X, bestTile.Y);
-            newCity.wealth *= RandomNum.r.Next(2,3);
-            newCity.population *= RandomNum.r.Next(2, 5);
-            newCity.capital = true;
-            newCity.house = cityGameObject;
-            bestTile.country.hasCapital = true;
-            bestTile.City = newCity;
-            //Debug.Log("best val:" + bestVal);
+                City newCity = new City(bestTile.X, bestTile.Y);
+
+                if (newCity != null)
+                {
+                    newCity.Wealth *= RandomNum.r.Next(2, 3);
+                    newCity.Population *= RandomNum.r.Next(2, 5);
+                    newCity.Capital = true;
+                    newCity.House = cityGameObject;
+                    bestTile.country.hasCapital = true;
+                    bestTile.City = newCity;
+                }
+            }
         }
     }
 
@@ -101,12 +121,23 @@ public class City
     private static void GenerateCity()
     {
         Tile[,] tiles = Map.tiles;
+
+        if(tiles == null)
+        {
+            return;
+        }
+
         float bestVal = int.MinValue;
         ref Tile bestTile = ref tiles[0, 0];
 
+        if (bestTile == null)
+        {
+            return;
+        }
+
         foreach (Tile tile in tiles)
         {
-            if (tile.City != null || tile.Biome == Biome.Ocean)
+            if (tile == null || tile.City != null || tile.Biome == Biome.Ocean)
             {
                 continue;
             }
@@ -126,98 +157,136 @@ public class City
             }
         }
 
-        //Debug.Log("Best City Location (X:" + bestTile.X + " Y:" + bestTile.Y + ")");
-        AddCity(bestTile);
-        GameObject cityGameObject = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
-        cityGameObject.transform.SetParent(Map.Houses.transform);
-        cityGameObject.transform.position = new Vector3(bestTile.X, (bestTile.Elevation / 10) + 1, bestTile.Y);
+        if (bestTile != null)
+        {
+            AddCity(bestTile);
+            GameObject cityGameObject = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
 
-        City newCity = new City(bestTile.X, bestTile.Y);
-        newCity.house = cityGameObject;
-        bestTile.City = newCity;
-        //Debug.Log("best val:" + bestVal);
+            if(cityGameObject != null)
+            {
+                cityGameObject.transform.SetParent(Map.Houses.transform);
+                cityGameObject.transform.position = new Vector3(bestTile.X, (bestTile.Elevation / 10) + 1, bestTile.Y);
+
+                City newCity = new City(bestTile.X, bestTile.Y);
+
+                if (newCity != null)
+                {
+                    newCity.House = cityGameObject;
+                    bestTile.City = newCity;
+                }
+            }
+        }
     }
 
     public static void PlaceNewCity(Tile tile)
     {
-        if (tile.City == null)
+        if (tile != null && tile.City == null)
         {
             AddCity(tile);
-            GameObject cityGameObject = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
-            cityGameObject.transform.position = new Vector3(tile.X, (tile.Elevation / 10) + 1, tile.Y);
-            //cityGameObject.transform.SetParent(Map.Houses.transform);   
-            City newCity = new City(tile.X, tile.Y);
-            newCity.house = cityGameObject;
-            tile.City = newCity;
+            GameObject cityGameObject = Object.Instantiate(Resources.Load<GameObject>("house"));
 
-            if (tile.country.hasCapital == false)
+            if (cityGameObject != null)
             {
-                cityGameObject.transform.localScale = 1.3f * cityGameObject.transform.localScale;
-                newCity.wealth *= RandomNum.r.Next(2, 3);
-                newCity.population *= RandomNum.r.Next(2, 5);
-                newCity.capital = true;
-                tile.country.hasCapital = true;
+                cityGameObject.transform.position = new Vector3(tile.X, (tile.Elevation / 10) + 1, tile.Y);
+                cityGameObject.transform.SetParent(Map.Houses.transform);
+                City newCity = new City(tile.X, tile.Y);
+
+                if (newCity != null)
+                {
+                    newCity.House = cityGameObject;
+                    tile.City = newCity;
+
+                    if (tile.country != null && tile.country.hasCapital == false)
+                    {
+                        cityGameObject.transform.localScale = 1.3f * cityGameObject.transform.localScale;
+                        newCity.Wealth *= RandomNum.r.Next(2, 3);
+                        newCity.Population *= RandomNum.r.Next(2, 5);
+                        newCity.Capital = true;
+                        tile.country.hasCapital = true;
+                    }
+                }
             }
-            
         }
     }
 
     public static void TradeRouteFood(City start)
     {
+        if (start == null)
+        {
+            return;
+        }
+
         float bestGuessVal = 0;
         City bestGuessCity = null;
         foreach (City c in cityList)
         {
-            if (c.food > bestGuessVal)
+            if (c != null && c != start && c.Food > bestGuessVal)
             {
-                //Debug.Log("food:" + c.food);
-                bestGuessVal = c.food;
+                bestGuessVal = c.Food;
                 bestGuessCity = c;
             }
         }
-        //Debug.Log("Best:" + bestGuessVal);
 
-        Road.CreateRoad(start, bestGuessCity);
+        if (bestGuessCity != null)
+        {
+            Road.CreateRoad(start, bestGuessCity);
+        }
     }
     public static void TradeRouteWater(City start)
     {
+        if (start == null)
+        {
+            return;
+        }
+
         float bestGuessVal = 0;
         City bestGuessCity = null;
         foreach (City c in cityList)
         {
-            if (c.water > bestGuessVal && c != start)
+            if (c != null && c.Water > bestGuessVal && c != start)
             {
-                bestGuessVal = c.water;
+                bestGuessVal = c.Water;
                 bestGuessCity = c;
             }
         }
 
-        Road.CreateRoad(start, bestGuessCity);
+        if (bestGuessCity != null)
+        {
+            Road.CreateRoad(start, bestGuessCity);
+        }
     }
     public static void TradeRouteLumber(City start)
     {
+        if (start == null)
+        {
+            return;
+        }
+
         float bestGuessVal = 0;
         City bestGuessCity = null;
         foreach (City c in cityList)
         {
-            if (c.lumber > bestGuessVal && c != start)
+            if (c != null && c.Lumber > bestGuessVal && c != start)
             {
-                bestGuessVal = c.lumber;
+                bestGuessVal = c.Lumber;
                 bestGuessCity = c;
             }
         }
 
-        Road.CreateRoad(start, bestGuessCity);
+        if (bestGuessCity != null)
+        {
+            Road.CreateRoad(start, bestGuessCity);
+        }
     }
-
-    /*public static float GetValue(Tile tile)
-    {
-        return tile.tileValue;
-    }*/
 
     private static void AddCity(Tile tile)
     {
         Tile[,] tiles = Map.tiles;
+
+        if (tile == null || tiles == null)
+        {
+            return;
+        }
 
         for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
         {
@@ -234,11 +303,10 @@ public class City
     }
     public static void RemoveCity(Tile tile)
     {
-        if(tile.City!=null)
-        {
-            Debug.Log("remove");
-            Tile[,] tiles = Map.tiles;
+        Tile[,] tiles = Map.tiles;
 
+        if (tile.City != null && tiles != null)
+        {
             for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
             {
                 for (int j = -Map.scanRadius; j <= Map.scanRadius; j++)
@@ -251,14 +319,17 @@ public class City
                     tiles[tile.X + i, tile.Y + j].tileValue = +1000 * Map.scanRadius;
                 }
             }
-            if(tile.City.capital)
+            if(tile.City != null && tile.City.Capital)
             {
                 tile.country.hasCapital = false;
             }
-            
-            UnityEngine.GameObject.Destroy(tile.City.house.gameObject);
-            _ = cityList.Remove(tile.City);
-            tile.City = null;
+
+            if (tile.City != null)
+            {
+                Object.Destroy(tile.City.House);
+                _ = cityList.Remove(tile.City);
+                tile.City = null;
+            }
         }
     }
 
@@ -266,116 +337,110 @@ public class City
     {
         Tile[,] tiles = Map.tiles;
 
+        if (city == null || tiles == null)
+        {
+            return;
+        }
+
         for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
         {
             for (int j = -Map.scanRadius; j <= Map.scanRadius; j++)
             {
-                if (city.x + i < 0 || city.y + j < 0 || city.x + i > Map.width - 1 || city.y + j > Map.height - 1)
+                if (city.X + i < 0 || city.Y + j < 0 || city.X + i > Map.width - 1 || city.Y + j > Map.height - 1)
                 {
                     continue;
                 }
 
-                Tile temp = tiles[city.x + i, city.y + j];
+                Tile temp = tiles[city.X + i, city.Y + j];
+
+                if(temp == null)
+                {
+                    continue;
+                }
 
                 switch (temp.Biome)
                 {
                     case Biome.Ocean:
-                        city.water += 50;
-                        city.food += 20;
+                        city.Water += 50;
+                        city.Food += 20;
                         break;
                     case Biome.Mountain:
-                        city.food += 5;
-                        city.lumber += 10;
+                        city.Food += 5;
+                        city.Lumber += 10;
                         break;
                     case Biome.Tundra:
-                        city.lumber += 10;
-                        city.water += 10;
-                        city.food += 5;
+                        city.Lumber += 10;
+                        city.Water += 10;
+                        city.Food += 5;
                         break;
                     case Biome.BorealForest:
-                        city.water += 15;
-                        city.food += 15;
-                        city.lumber += 15;
+                        city.Water += 15;
+                        city.Food += 15;
+                        city.Lumber += 15;
                         break;
                     case Biome.Prairie:
-                        city.food += 15;
-                        city.water += 10;
+                        city.Food += 15;
+                        city.Water += 10;
                         break;
                     case Biome.Shrubland:
-                        city.food += 15;
-                        city.water += 10;
-                        city.lumber += 5;
+                        city.Food += 15;
+                        city.Water += 10;
+                        city.Lumber += 5;
                         break;
                     case Biome.TemperateForest:
-                        city.food += 15;
-                        city.lumber += 25;
-                        city.water += 10;
+                        city.Food += 15;
+                        city.Lumber += 25;
+                        city.Water += 10;
                         break;
                     case Biome.Desert:
-                        city.food += 5;
+                        city.Food += 5;
                         break;
                     case Biome.Savanna:
-                        city.water += 10;
-                        city.lumber += 20;
-                        city.food += 20;
+                        city.Water += 10;
+                        city.Lumber += 20;
+                        city.Food += 20;
                         break;
                     case Biome.Rainforest:
-                        city.water += 30;
-                        city.lumber += 20;
-                        city.food += 15;
+                        city.Water += 30;
+                        city.Lumber += 20;
+                        city.Food += 15;
                         break;
                 }
             }
         }
-        city.wealth = Mathf.RoundToInt(RandomNum.r.Next(10, 100) * UIData.wealthMultiplier * (city.food + city.water + city.lumber));
+        city.Wealth = Mathf.RoundToInt(RandomNum.r.Next(10, 100) * UIData.wealthMultiplier * (city.Food + city.Water + city.Lumber));
     }
 
     public static int BiomeValue(Tile tile)
     {
-        float randomness = (float)RandomNum.r.NextDouble();
-        switch (tile.Biome)
-        {
-            case Biome.BorealForest:
-                return Mathf.RoundToInt(1.2f * randomness);
-            case Biome.Desert:
-                return Mathf.RoundToInt(1 * randomness);
-            case Biome.Mountain:
-                return Mathf.RoundToInt(1.1f * randomness);
-            case Biome.Ocean:
-                return Mathf.RoundToInt(1.2f * randomness);
-            case Biome.Prairie:
-                return Mathf.RoundToInt(1.15f * randomness);
-            case Biome.Rainforest:
-                return Mathf.RoundToInt(1.2f * randomness);
-            case Biome.Savanna:
-                return Mathf.RoundToInt(1.2f * randomness);
-            case Biome.Shrubland:
-                return Mathf.RoundToInt(1.15f * randomness);
-            case Biome.TemperateForest:
-                return Mathf.RoundToInt(1.2f * randomness);
-            case Biome.Tundra:
-                return Mathf.RoundToInt(1.15f * randomness);
-            default:
-                return 0;
-        }
-    }
-
-    public static int HasCity(Tile tile)
-    {
-        if (tile.City != null)
-        {
-            return -50 * Map.scanRadius;
-        }
-        else
+        if(tile != null)
         {
             return 0;
         }
+
+        float randomness = (float)RandomNum.r.NextDouble();
+        return tile.Biome switch
+        {
+            Biome.BorealForest => Mathf.RoundToInt(1.2f * randomness),
+            Biome.Desert => Mathf.RoundToInt(1 * randomness),
+            Biome.Mountain => Mathf.RoundToInt(1.1f * randomness),
+            Biome.Ocean => Mathf.RoundToInt(1.2f * randomness),
+            Biome.Prairie => Mathf.RoundToInt(1.15f * randomness),
+            Biome.Rainforest => Mathf.RoundToInt(1.2f * randomness),
+            Biome.Savanna => Mathf.RoundToInt(1.2f * randomness),
+            Biome.Shrubland => Mathf.RoundToInt(1.15f * randomness),
+            Biome.TemperateForest => Mathf.RoundToInt(1.2f * randomness),
+            Biome.Tundra => Mathf.RoundToInt(1.15f * randomness),
+            _ => 0,
+        };
     }
 
     public static void LoadCityNames()
     {
-        var cityNameFile = File.ReadAllLines("CityNames.txt");
-        cityNames = new List<string>(cityNameFile);
-
+        string[] cityNameFile = File.ReadAllLines("CityNames.txt");
+        if (cityNameFile != null)
+        {
+            cityNames = new List<string>(cityNameFile);
+        }
     }
 }
