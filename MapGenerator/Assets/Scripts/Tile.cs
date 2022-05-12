@@ -167,6 +167,45 @@ public class Tile
         }
         else if (elevation >= 70 - UIData.mountainMultiplier*40)
         {
+            //make mountains appear taller on the map
+            float mult = 1.25f;
+            if(elevation > 70){
+                elevation = mult * elevation;
+                cube.transform.localScale = new Vector3(1, elevation / 10 + 1, 1);
+            }
+            if(elevation > 69){
+                elevation = mult * elevation;
+                cube.transform.localScale = new Vector3(1, elevation / 10 + 1, 1);
+            }
+            if(elevation > 67){
+                elevation = mult * elevation;
+                cube.transform.localScale = new Vector3(1, elevation / 10 + 1, 1);
+            }
+            if(elevation > 65){
+                elevation = mult * elevation;
+                cube.transform.localScale = new Vector3(1, elevation / 10 + 1, 1);
+            }
+            if(elevation > 63){
+                elevation = mult * elevation;
+                cube.transform.localScale = new Vector3(1, elevation / 10 + 1, 1);
+            }
+            if(elevation > 60){
+                elevation = mult * elevation;
+                cube.transform.localScale = new Vector3(1, elevation / 10 + 1, 1);
+            }
+            if(elevation > 55){
+                elevation = mult * elevation;
+                cube.transform.localScale = new Vector3(1, elevation / 10 + 1, 1);
+            }
+            if(elevation > 50){
+                elevation = mult * elevation;
+                cube.transform.localScale = new Vector3(1, elevation / 10 + 1, 1);
+            }
+            if(elevation > 45){
+                elevation = mult * elevation;
+                cube.transform.localScale = new Vector3(1, elevation / 10 + 1, 1);
+            }
+
             cube.transform.SetParent(Map.MountainTiles.transform);
             biome = Biome.Mountain;
             cube.GetComponent<Renderer>().material = mountainMat;
