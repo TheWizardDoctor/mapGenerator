@@ -105,14 +105,10 @@ public class MoveCamera : MonoBehaviour
             }
             
         }
-        //else if (Input.GetKeyDown(KeyCode.Escape))
-        //{
-        //    Map.tiles = null;
-        //    City.cityList = null;
-        //    Country.countryList = null;
-        //    Count
-        //    SceneManager.LoadScene("UIScene");
-        //}
+        else if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
