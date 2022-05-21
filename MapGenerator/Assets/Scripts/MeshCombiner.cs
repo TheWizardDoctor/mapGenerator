@@ -10,13 +10,13 @@ public class MeshCombiner : MonoBehaviour
     public void CombineMeshes()
     {
         MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
-        CombineInstance[] combine = new CombineInstance[meshFilters.Length-1];
+        CombineInstance[] combine = new CombineInstance[meshFilters.Length - 1];
 
         int i = 1;
         while (i < meshFilters.Length)
         {
-            combine[i-1].mesh = meshFilters[i].sharedMesh;
-            combine[i-1].transform = meshFilters[i].transform.localToWorldMatrix;
+            combine[i - 1].mesh = meshFilters[i].sharedMesh;
+            combine[i - 1].transform = meshFilters[i].transform.localToWorldMatrix;
             meshFilters[i].gameObject.SetActive(false);
 
             i++;

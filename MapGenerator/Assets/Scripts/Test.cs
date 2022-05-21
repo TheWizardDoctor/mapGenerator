@@ -8,14 +8,14 @@ public class Test : MonoBehaviour
 {
     public Camera cam;
     int width = 402;	//x
-    int height = 268;	//y
+    int height = 268;   //y
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
-        width = Mathf.RoundToInt(width*UIData.sizeMultiplier);
-        height = Mathf.RoundToInt(height*UIData.sizeMultiplier);
-        if(width <= 120 || height == 80)
+        width = Mathf.RoundToInt(width * UIData.sizeMultiplier);
+        height = Mathf.RoundToInt(height * UIData.sizeMultiplier);
+        if (width <= 120 || height == 80)
         {
             width = 120;
             height = 80;
@@ -24,14 +24,14 @@ public class Test : MonoBehaviour
         //used for perspective Camera
         cam.transform.position = new Vector3(width / 2, height, height / 2);
 
-        Map.createMap(width, height);
+        Map.S.CreateMap(width, height);
 
 
         //Simple Border creation
-        if(UIData.borderMultiplier>0)
+        if (UIData.borderMultiplier > 0)
         {
-            Border.generateBorders(Map.tiles, Mathf.RoundToInt(Map.width * 0.01f + UIData.borderMultiplier));
-            Border.SetTileCountries();
+            Border.S.generateBorders(Map.S.tiles, Mathf.RoundToInt((Map.S.width * 0.01f) + UIData.borderMultiplier));
+            Border.S.SetTileCountries();
         }
 
         //very simplistic city creation
@@ -41,7 +41,7 @@ public class Test : MonoBehaviour
         if (UIData.cityMultiplier > 0)
         {
             City.GenerateCapitals();
-            City.GenerateCities(Mathf.RoundToInt(0.5f * Map.width * UIData.cityMultiplier));
+            City.GenerateCities(Mathf.RoundToInt(0.5f * Map.S.width * UIData.cityMultiplier));
         }
 
         if (UIData.roadMultiplier > 0)
@@ -51,9 +51,9 @@ public class Test : MonoBehaviour
             {
                 City c = City.cityList[RandomNum.r.Next(0, City.cityList.Count)];
 
-                if(c.Food < c.Water)
+                if (c.Food < c.Water)
                 {
-                    if(c.Lumber<c.Food)
+                    if (c.Lumber < c.Food)
                     {
                         //Road for lumber
                         City.TradeRouteLumber(c);
@@ -66,7 +66,7 @@ public class Test : MonoBehaviour
                 }
                 else
                 {
-                    if(c.Lumber<c.Water)
+                    if (c.Lumber < c.Water)
                     {
                         //Road for lumber
                         City.TradeRouteLumber(c);
@@ -81,16 +81,16 @@ public class Test : MonoBehaviour
         }
 
         //HUGE FPS savers
-        Map.BorderTiles.GetComponent<MeshCombiner>().CombineMeshes();
-        Map.BorealForestTiles.GetComponent<MeshCombiner>().CombineMeshes();
-        Map.DesertTiles.GetComponent<MeshCombiner>().CombineMeshes();
-        Map.MountainTiles.GetComponent<MeshCombiner>().CombineMeshes();
-        Map.OceanTiles.GetComponent<MeshCombiner>().CombineMeshes();
-        Map.PrairieTiles.GetComponent<MeshCombiner>().CombineMeshes();
-        Map.RainforestTiles.GetComponent<MeshCombiner>().CombineMeshes();
-        Map.SavannaTiles.GetComponent<MeshCombiner>().CombineMeshes();
-        Map.ShrublandTiles.GetComponent<MeshCombiner>().CombineMeshes();
-        Map.TemperateForestTiles.GetComponent<MeshCombiner>().CombineMeshes();
-        Map.TundraTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.S.BorderTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.S.BorealForestTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.S.DesertTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.S.MountainTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.S.OceanTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.S.PrairieTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.S.RainforestTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.S.SavannaTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.S.ShrublandTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.S.TemperateForestTiles.GetComponent<MeshCombiner>().CombineMeshes();
+        Map.S.TundraTiles.GetComponent<MeshCombiner>().CombineMeshes();
     }
 }

@@ -95,19 +95,22 @@ public class MoveCamera : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.B))
         {
-            if(Map.BorderTiles.activeInHierarchy)
+            if (Map.S.BorderTiles.activeInHierarchy)
             {
-                Map.BorderTiles.SetActive(false);
+                Map.S.BorderTiles.SetActive(false);
             }
             else
             {
-                Map.BorderTiles.SetActive(true);
+                Map.S.BorderTiles.SetActive(true);
             }
-            
+
         }
         else if (Input.GetKeyDown(KeyCode.Escape))
         {
-            Application.Quit();
+            Country.Reset();
+            City.Reset();
+            Camera.main.GetComponent<ChangeScenes>().LoadScene("UIScene");
+            //Application.Quit();
         }
 
         if (Input.GetKeyDown(KeyCode.Mouse0))
@@ -123,21 +126,21 @@ public class MoveCamera : MonoBehaviour
 
                 if (userAction == Action.createCity)
                 {
-                    if (Map.tiles[tilePos.x, tilePos.y].Biome != Biome.Ocean)
+                    if (Map.S.tiles[tilePos.x, tilePos.y].Biome != Biome.Ocean)
                     {
-                        City.PlaceNewCity(Map.tiles[tilePos.x, tilePos.y]);
+                        City.PlaceNewCity(Map.S.tiles[tilePos.x, tilePos.y]);
                     }
-                    
+
                 }
                 else if (userAction == Action.createRoad)
                 {
                     if (startTile == null)
                     {
-                        startTile = Map.tiles[tilePos.x, tilePos.y];
+                        startTile = Map.S.tiles[tilePos.x, tilePos.y];
                     }
                     else
                     {
-                        Tile endTile = Map.tiles[tilePos.x, tilePos.y];
+                        Tile endTile = Map.S.tiles[tilePos.x, tilePos.y];
                         Road.CreateRoad(startTile, endTile);
                         startTile = null;
                     }
@@ -146,23 +149,23 @@ public class MoveCamera : MonoBehaviour
                 {
                     if (hit.collider.gameObject.layer == 7)
                     {
-                        Tile roadTile = Map.tiles[tilePos.x, tilePos.y];
+                        Tile roadTile = Map.S.tiles[tilePos.x, tilePos.y];
                         roadTile.Road = false;
                         Destroy(hit.collider.gameObject);
                     }
                 }
                 else if (userAction == Action.destroyCity)
                 {
-                    Tile cityTile = Map.tiles[tilePos.x, tilePos.y];
+                    Tile cityTile = Map.S.tiles[tilePos.x, tilePos.y];
                     City.RemoveCity(cityTile);
                 }
                 else
                 {
-                    if (Map.tiles[tilePos.x, tilePos.y].Biome!= Biome.Ocean)
+                    if (Map.S.tiles[tilePos.x, tilePos.y].Biome != Biome.Ocean)
                     {
                         TileUI.S.SetTileMenu(tilePos);
                     }
-                    
+
                 }
             }
         }
@@ -185,9 +188,9 @@ public class MoveCamera : MonoBehaviour
 
     private void HideInstructions()
     {
-        if(Instructions != null)
+        if (Instructions != null)
         {
-            if(Instructions.activeInHierarchy)
+            if (Instructions.activeInHierarchy)
             {
                 Instructions.SetActive(false);
             }

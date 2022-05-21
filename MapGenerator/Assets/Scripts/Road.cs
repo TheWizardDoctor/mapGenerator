@@ -15,28 +15,28 @@ public class Road
 
     public static void CreateRoad(City start, City end)
     {
-        if (start == null || end == null || Map.tiles == null)
+        if (start == null || end == null || Map.S.tiles == null || Map.S.tiles[start.X, start.Y] == null || Map.S.tiles[end.X, end.Y] == null)
         {
             return;
         }
 
-        Tile startTile = Map.tiles[start.X, start.Y];
-        Tile endTile = Map.tiles[end.X, end.Y];
+        Tile startTile = Map.S.tiles[start.X, start.Y];
+        Tile endTile = Map.S.tiles[end.X, end.Y];
         CreateRoad(startTile, endTile);
     }
     public static void CreateRoad(Tile start, Tile end)
     {
-        if (start == null || end == null || Map.tiles == null)
+        if (start == null || end == null || Map.S.tiles == null)
         {
             return;
         }
-        Tile[,] tiles = Map.tiles;
+        Tile[,] tiles = Map.S.tiles;
 
-        gVals = new float[Map.width, Map.height];
-        hVals = new float[Map.width, Map.height];
-        fVals = new float[Map.width, Map.height];
-        added = new bool[Map.width, Map.height];
-        closed = new bool[Map.width, Map.height];
+        gVals = new float[Map.S.width, Map.S.height];
+        hVals = new float[Map.S.width, Map.S.height];
+        fVals = new float[Map.S.width, Map.S.height];
+        added = new bool[Map.S.width, Map.S.height];
+        closed = new bool[Map.S.width, Map.S.height];
 
         foreach (Tile t in tiles)
         {
@@ -97,7 +97,7 @@ public class Road
                             GameObject newRoad = Object.Instantiate(roadPrefab, pos, temp.cube.transform.rotation);
                             if (newRoad)
                             {
-                                newRoad.transform.SetParent(Map.RoadTiles.transform);
+                                newRoad.transform.SetParent(Map.S.RoadTiles.transform);
                             }
                         }
                         else
@@ -105,12 +105,12 @@ public class Road
                             GameObject newRoad = GameObject.Instantiate<GameObject>(oceanPathPrefab, pos, temp.cube.transform.rotation);
                             if (newRoad)
                             {
-                                newRoad.transform.SetParent(Map.RoadTiles.transform);
+                                newRoad.transform.SetParent(Map.S.RoadTiles.transform);
                             }
                         }
                     }
-                    
-                    
+
+
                     temp = temp.previous;
                 }
                 return;

@@ -26,7 +26,6 @@ public class Tile
     public Tile down = null;
     public Tile left = null;
     public Tile right = null;
-    private Transform tileSet;
     public GameObject cube = UnityEngine.Object.Instantiate(cubePrefab);
 
 
@@ -48,7 +47,7 @@ public class Tile
         biome = Biome.Ocean;
         x = xCord;
         y = yCord;
-        latitude = ((yCord + 1) * 90 / (Map.height / 2)) - 90;
+        latitude = ((yCord + 1) * 90 / (Map.S.height / 2)) - 90;
         country = Country.unclaimedLand;
     }
 
@@ -113,17 +112,17 @@ public class Tile
     //methods
     public static void CalculateAllValues()
     {
-        Tile[,] tiles = Map.tiles;
+        Tile[,] tiles = Map.S.tiles;
 
         foreach (Tile tile in tiles)
         {
             tile.tileValue = 0;
 
-            for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
+            for (int i = -Map.S.scanRadius; i <= Map.S.scanRadius; i++)
             {
-                for (int j = -Map.scanRadius; j <= Map.scanRadius; j++)
+                for (int j = -Map.S.scanRadius; j <= Map.S.scanRadius; j++)
                 {
-                    if (tile.X + i < 0 || tile.Y + j < 0 || tile.X + i > Map.width - 1 || tile.Y + j > Map.height - 1)
+                    if (tile.X + i < 0 || tile.Y + j < 0 || tile.X + i > Map.S.width - 1 || tile.Y + j > Map.S.height - 1)
                     {
                         continue;
                     }
@@ -151,65 +150,66 @@ public class Tile
         float lat = Math.Abs(latitude);
         //temp range: ~ -50 - 60
         //temperature = (((elevation * -0.8 + 40) + (30 - lat * 1.7 + 0.059 * Math.Pow(lat, 2) - 0.0007 * Math.Pow(lat, 3)) * 3) / 4);
-        temperature = (40 - lat) + ((elevation * -1 + 30)/2);
+        temperature = (40 - lat) + ((elevation * -1 + 30) / 2);
 
         cube.transform.localScale = new Vector3(1, elevation / 10 + 1, 1);
         cube.transform.position = new Vector3(x, (elevation / 10 + 1) / 2, y);
 
-        if (elevation < UIData.oceanMultiplier*10 && UIData.oceanMultiplier!=0)
+        if (elevation < UIData.oceanMultiplier * 10 && UIData.oceanMultiplier != 0)
         {
-            cube.transform.SetParent(Map.OceanTiles.transform);
+            cube.transform.SetParent(Map.S.OceanTiles.transform);
             cube.transform.localScale = new Vector3(1, 5 / 10 + 1, 1);
             cube.transform.position = new Vector3(x, 5 / 10 + 1, y);
             biome = Biome.Ocean;
             cube.GetComponent<Renderer>().material = oceanMat;
             navDifficulty = 12;
         }
-        else if (elevation >= 70 - UIData.mountainMultiplier*40)
+        else if (elevation >= 70 - UIData.mountainMultiplier * 40)
         {
-            cube.transform.SetParent(Map.MountainTiles.transform);
+            cube.transform.SetParent(Map.S.MountainTiles.transform);
             biome = Biome.Mountain;
             cube.GetComponent<Renderer>().material = mountainMat;
             navDifficulty = 9;
         }
-        else {
+        else
+        {
 
-            if (temperature <= Map.coldDistro)
+            if (temperature <= Map.S.coldDistro)
             {
-                if (precipitation < Map.tundraDistro)
+                if (precipitation < Map.S.tundraDistro)
                 {
-                    cube.transform.SetParent(Map.TundraTiles.transform);
+                    cube.transform.SetParent(Map.S.TundraTiles.transform);
                     biome = Biome.Tundra;
                     cube.GetComponent<Renderer>().material = tundraMat;
                     navDifficulty = 7;
                 }
                 else //(BorealForest)
                 {
-                    cube.transform.SetParent(Map.BorealForestTiles.transform);
+                    cube.transform.SetParent(Map.S.BorealForestTiles.transform);
                     biome = Biome.BorealForest;
                     cube.GetComponent<Renderer>().material = borealMat;
                     navDifficulty = 5;
                 }
             }
-            else if (temperature <= Map.temperateDistro)
+            else if (temperature <= Map.S.temperateDistro)
             {
-                if (precipitation < Map.prairieDistro)
+                if (precipitation < Map.S.prairieDistro)
                 {
-                    cube.transform.SetParent(Map.PrairieTiles.transform);
+                    cube.transform.SetParent(Map.S.PrairieTiles.transform);
                     biome = Biome.Prairie;
                     cube.GetComponent<Renderer>().material = prairieMat;
                     navDifficulty = 1;
                 }
-                else if (precipitation < Map.shrublandDistro)
+                else if (precipitation < Map.S.shrublandDistro)
                 {
-                    cube.transform.SetParent(Map.ShrublandTiles.transform);
+                    cube.transform.SetParent(Map.S.ShrublandTiles.transform);
                     biome = Biome.Shrubland;
                     cube.GetComponent<Renderer>().material = shrublandMat;
                     navDifficulty = 2;
                 }
                 else //(BorealForestDistro)
                 {
-                    cube.transform.SetParent(Map.TemperateForestTiles.transform);
+                    cube.transform.SetParent(Map.S.TemperateForestTiles.transform);
                     biome = Biome.TemperateForest;
                     cube.GetComponent<Renderer>().material = temperateForestMat;
                     navDifficulty = 3;
@@ -217,23 +217,23 @@ public class Tile
             }
             else //(WarmDistro)
             {
-                if (precipitation < Map.desertDistro)
+                if (precipitation < Map.S.desertDistro)
                 {
-                    cube.transform.SetParent(Map.DesertTiles.transform);
+                    cube.transform.SetParent(Map.S.DesertTiles.transform);
                     biome = Biome.Desert;
                     cube.GetComponent<Renderer>().material = desertMat;
                     navDifficulty = 6;
                 }
-                else if (precipitation < Map.savannaDistro)
+                else if (precipitation < Map.S.savannaDistro)
                 {
-                    cube.transform.SetParent(Map.SavannaTiles.transform);
+                    cube.transform.SetParent(Map.S.SavannaTiles.transform);
                     biome = Biome.Savanna;
                     cube.GetComponent<Renderer>().material = savannaMat;
                     navDifficulty = 4;
                 }
                 else //(RainForestDistro)
                 {
-                    cube.transform.SetParent(Map.RainforestTiles.transform);
+                    cube.transform.SetParent(Map.S.RainforestTiles.transform);
                     biome = Biome.Rainforest;
                     cube.GetComponent<Renderer>().material = rainforestMat;
                     navDifficulty = 8;

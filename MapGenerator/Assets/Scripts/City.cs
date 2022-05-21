@@ -28,8 +28,8 @@ public class City
             Name = cityNames[num];
             cityNames.RemoveAt(num);
         }
-        X = xVal > 0 && xVal < Map.width ? xVal : 0;
-        Y = yVal > 0 && yVal < Map.height ? yVal : 0;
+        X = xVal > 0 && xVal < Map.S.width ? xVal : 0;
+        Y = yVal > 0 && yVal < Map.S.height ? yVal : 0;
         Population = Mathf.RoundToInt((0.5f + UIData.populationMultiplier) * RandomNum.r.Next(100, 10000));
         Capital = false;
         if (cityList != null)
@@ -39,10 +39,10 @@ public class City
         SetResources(this);
     }
 
-    //create 1 to Map.width number of cities
+    //create 1 to Map.S.width number of cities
     public static void GenerateCities(int num)
     {
-        if (num > 0 && num < Map.width)
+        if (num > 0 && num < Map.S.width)
         {
             while (num > 0)
             {
@@ -97,7 +97,7 @@ public class City
                 GameObject cityGameObject = Object.Instantiate(Resources.Load<GameObject>("house"));
                 if (cityGameObject != null)
                 {
-                    cityGameObject.transform.SetParent(Map.Houses.transform);
+                    cityGameObject.transform.SetParent(Map.S.Houses.transform);
                     cityGameObject.transform.position = new Vector3(bestTile.X, (bestTile.Elevation / 10) + 1, bestTile.Y);
                     cityGameObject.transform.localScale = 1.3f * cityGameObject.transform.localScale;
                 }
@@ -120,9 +120,9 @@ public class City
     //create a single city
     private static void GenerateCity()
     {
-        Tile[,] tiles = Map.tiles;
+        Tile[,] tiles = Map.S.tiles;
 
-        if(tiles == null)
+        if (tiles == null)
         {
             return;
         }
@@ -162,9 +162,9 @@ public class City
             AddCity(bestTile);
             GameObject cityGameObject = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("house"));
 
-            if(cityGameObject != null)
+            if (cityGameObject != null)
             {
-                cityGameObject.transform.SetParent(Map.Houses.transform);
+                cityGameObject.transform.SetParent(Map.S.Houses.transform);
                 cityGameObject.transform.position = new Vector3(bestTile.X, (bestTile.Elevation / 10) + 1, bestTile.Y);
 
                 City newCity = new City(bestTile.X, bestTile.Y);
@@ -188,7 +188,7 @@ public class City
             if (cityGameObject != null)
             {
                 cityGameObject.transform.position = new Vector3(tile.X, (tile.Elevation / 10) + 1, tile.Y);
-                cityGameObject.transform.SetParent(Map.Houses.transform);
+                cityGameObject.transform.SetParent(Map.S.Houses.transform);
                 City newCity = new City(tile.X, tile.Y);
 
                 if (newCity != null)
@@ -281,45 +281,45 @@ public class City
 
     private static void AddCity(Tile tile)
     {
-        Tile[,] tiles = Map.tiles;
+        Tile[,] tiles = Map.S.tiles;
 
         if (tile == null || tiles == null)
         {
             return;
         }
 
-        for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
+        for (int i = -Map.S.scanRadius; i <= Map.S.scanRadius; i++)
         {
-            for (int j = -Map.scanRadius; j <= Map.scanRadius; j++)
+            for (int j = -Map.S.scanRadius; j <= Map.S.scanRadius; j++)
             {
-                if (tile.X + i < 0 || tile.Y + j < 0 || tile.X + i > Map.width - 1 || tile.Y + j > Map.height - 1)
+                if (tile.X + i < 0 || tile.Y + j < 0 || tile.X + i > Map.S.width - 1 || tile.Y + j > Map.S.height - 1)
                 {
                     continue;
                 }
 
-                tiles[tile.X + i, tile.Y + j].tileValue = -1000 * Map.scanRadius;
+                tiles[tile.X + i, tile.Y + j].tileValue = -1000 * Map.S.scanRadius;
             }
         }
     }
     public static void RemoveCity(Tile tile)
     {
-        Tile[,] tiles = Map.tiles;
+        Tile[,] tiles = Map.S.tiles;
 
         if (tile.City != null && tiles != null)
         {
-            for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
+            for (int i = -Map.S.scanRadius; i <= Map.S.scanRadius; i++)
             {
-                for (int j = -Map.scanRadius; j <= Map.scanRadius; j++)
+                for (int j = -Map.S.scanRadius; j <= Map.S.scanRadius; j++)
                 {
-                    if (tile.X + i < 0 || tile.Y + j < 0 || tile.X + i > Map.width - 1 || tile.Y + j > Map.height - 1)
+                    if (tile.X + i < 0 || tile.Y + j < 0 || tile.X + i > Map.S.width - 1 || tile.Y + j > Map.S.height - 1)
                     {
                         continue;
                     }
 
-                    tiles[tile.X + i, tile.Y + j].tileValue = +1000 * Map.scanRadius;
+                    tiles[tile.X + i, tile.Y + j].tileValue = +1000 * Map.S.scanRadius;
                 }
             }
-            if(tile.City != null && tile.City.Capital)
+            if (tile.City != null && tile.City.Capital)
             {
                 tile.country.hasCapital = false;
             }
@@ -335,25 +335,25 @@ public class City
 
     private static void SetResources(City city)
     {
-        Tile[,] tiles = Map.tiles;
+        Tile[,] tiles = Map.S.tiles;
 
         if (city == null || tiles == null)
         {
             return;
         }
 
-        for (int i = -Map.scanRadius; i <= Map.scanRadius; i++)
+        for (int i = -Map.S.scanRadius; i <= Map.S.scanRadius; i++)
         {
-            for (int j = -Map.scanRadius; j <= Map.scanRadius; j++)
+            for (int j = -Map.S.scanRadius; j <= Map.S.scanRadius; j++)
             {
-                if (city.X + i < 0 || city.Y + j < 0 || city.X + i > Map.width - 1 || city.Y + j > Map.height - 1)
+                if (city.X + i < 0 || city.Y + j < 0 || city.X + i > Map.S.width - 1 || city.Y + j > Map.S.height - 1)
                 {
                     continue;
                 }
 
                 Tile temp = tiles[city.X + i, city.Y + j];
 
-                if(temp == null)
+                if (temp == null)
                 {
                     continue;
                 }
@@ -413,7 +413,7 @@ public class City
 
     public static int BiomeValue(Tile tile)
     {
-        if(tile == null)
+        if (tile == null)
         {
             return 0;
         }
@@ -433,6 +433,12 @@ public class City
             Biome.Tundra => Mathf.RoundToInt(1.15f * randomness),
             _ => 0,
         };
+    }
+
+    public static void Reset()
+    {
+        cityList = new List<City>();
+        LoadCityNames();
     }
 
     public static void LoadCityNames()

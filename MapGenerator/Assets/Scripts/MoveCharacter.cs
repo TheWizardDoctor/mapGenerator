@@ -4,16 +4,15 @@ using UnityEngine;
 
 public class MoveCharacter : MonoBehaviour
 {
-    float moveX, moveY, moveZ, xMouse, yMouse = 0;
-    float startMovement;
+    float moveX, moveZ, xMouse, yMouse = 0;
     float defSpeed = 5;
     float speed;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         speed = defSpeed;
-        Tile temp = Map.tiles[0, 0];
+        Tile temp = Map.S.tiles[0, 0];
         if (temp != null)
         {
             Vector3 pos = new Vector3(temp.cube.transform.position.x,
@@ -25,7 +24,7 @@ public class MoveCharacter : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         //movement
         moveX = Input.GetAxis("Horizontal") * Time.deltaTime * speed;
@@ -42,8 +41,8 @@ public class MoveCharacter : MonoBehaviour
         }
 
         //looking around
-        xMouse += Input.GetAxis("Mouse X") * defSpeed/2;
-        yMouse -= Input.GetAxis("Mouse Y") * defSpeed/2;
+        xMouse += Input.GetAxis("Mouse X") * defSpeed / 2;
+        yMouse -= Input.GetAxis("Mouse Y") * defSpeed / 2;
         yMouse = Mathf.Clamp(yMouse, -90f, 90f);
 
         transform.localEulerAngles = new Vector3(yMouse, xMouse, 0);

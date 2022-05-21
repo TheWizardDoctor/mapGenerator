@@ -32,7 +32,7 @@ public class TileUI : MonoBehaviour
 
     private void Start()
     {
-        if(S==null)
+        if (S == null)
         {
             S = this;
         }
@@ -42,10 +42,10 @@ public class TileUI : MonoBehaviour
     {
         menu.SetActive(true);
 
-        Tile tile = Map.tiles[Mathf.RoundToInt(tilePos.x), Mathf.RoundToInt(tilePos.y)];
+        Tile tile = Map.S.tiles[Mathf.RoundToInt(tilePos.x), Mathf.RoundToInt(tilePos.y)];
 
         biomeText.text = "Biome: " + tile.Biome;
-        if(tile.Biome==Biome.Ocean)
+        if (tile.Biome == Biome.Ocean)
         {
             ElevationText.text = "Elevation: 0 meters";
             PrecipitationText.text = "Precipitation: N/A";
@@ -57,13 +57,13 @@ public class TileUI : MonoBehaviour
             PrecipitationText.text = "Precipitation: " + tile.Precipitation.ToString("0.00 in/a");
             CountryText.text = "Country: " + tile.country.name;
         }
-        
+
 
 
         if (tile.City != null)
         {
             CitySubMenu.SetActive(true);
-            if(tile.City.Capital)
+            if (tile.City.Capital)
             {
                 CityText.text = "Capital City: " + tile.City.Name;
             }
@@ -78,7 +78,7 @@ public class TileUI : MonoBehaviour
         {
             CitySubMenu.SetActive(false);
         }
-        
+
 
     }
     public void Disable()

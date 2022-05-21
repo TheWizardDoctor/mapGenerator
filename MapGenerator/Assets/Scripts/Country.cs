@@ -31,9 +31,15 @@ public class Country
         countryList.Add(this);
     }
 
+    public static void Reset()
+    {
+        countryList = new List<Country>();
+        LoadCountryNames();
+    }
+
     public static void LoadCountryNames()
     {
-        var cityNameFile = File.ReadAllLines("CountryNames.txt");
+        string[] cityNameFile = File.ReadAllLines("CountryNames.txt");
         countryNames = new List<string>(cityNameFile);
     }
 }
